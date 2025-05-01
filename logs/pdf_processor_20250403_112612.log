@@ -1,0 +1,596 @@
+2025-04-03 11:26:12 - INFO - Arctaris rename_statements.py:1924 - setup_logging - Logging initialized at level INFO
+2025-04-03 11:26:12 - INFO - Arctaris rename_statements.py:1925 - setup_logging - Log file: C:\Users\Christian\OneDrive - Arctaris Michigan Partners, LLC\Desktop\Bank Automation\Codes\Bank Statements\logs\pdf_processor_20250403_112612.log
+2025-04-03 11:26:12 - INFO - Arctaris rename_statements.py:1990 - main - Starting PDF rename script (version 2.0)
+2025-04-03 11:26:12 - INFO - Arctaris rename_statements.py:1991 - main - Input folder: C:\Users\Christian\OneDrive - Arctaris Michigan Partners, LLC\Desktop\Bank Automation\input_statements
+2025-04-03 11:26:12 - INFO - Arctaris rename_statements.py:1992 - main - Output folder: C:\Users\Christian\OneDrive - Arctaris Michigan Partners, LLC\Desktop\Bank Automation\processed_statements
+2025-04-03 11:26:12 - INFO - Arctaris rename_statements.py:2010 - main - Found 4 repaired files that will be skipped
+2025-04-03 11:26:12 - INFO - Arctaris rename_statements.py:2025 - main - Found 110 PDF file(s) to process
+2025-04-03 11:26:12 - INFO - Arctaris rename_statements.py:1660 - find_duplicate_files - Duplicate group - Original: dxweb (26).pdf, Duplicates: dxweb (27).pdf
+2025-04-03 11:26:12 - INFO - Arctaris rename_statements.py:1660 - find_duplicate_files - Duplicate group - Original: dxweb (32).pdf, Duplicates: dxweb (33).pdf
+2025-04-03 11:26:12 - WARNING - Arctaris rename_statements.py:2033 - main - Found 2 groups of duplicate files:
+2025-04-03 11:26:12 - WARNING - Arctaris rename_statements.py:2035 - main -   Duplicate group (2 files):
+2025-04-03 11:26:12 - WARNING - Arctaris rename_statements.py:2038 - main -     - dxweb (26).pdf
+2025-04-03 11:26:12 - WARNING - Arctaris rename_statements.py:2038 - main -     - dxweb (27).pdf
+2025-04-03 11:26:12 - INFO - Arctaris rename_statements.py:2043 - main -   Original: dxweb (26).pdf, Duplicates: dxweb (27).pdf
+2025-04-03 11:26:12 - WARNING - Arctaris rename_statements.py:2035 - main -   Duplicate group (2 files):
+2025-04-03 11:26:12 - WARNING - Arctaris rename_statements.py:2038 - main -     - dxweb (32).pdf
+2025-04-03 11:26:12 - WARNING - Arctaris rename_statements.py:2038 - main -     - dxweb (33).pdf
+2025-04-03 11:26:12 - INFO - Arctaris rename_statements.py:2043 - main -   Original: dxweb (32).pdf, Duplicates: dxweb (33).pdf
+2025-04-03 11:26:12 - INFO - Arctaris rename_statements.py:2062 - main - 
+=== PREVIEW MODE ===
+2025-04-03 11:26:12 - INFO - Arctaris rename_statements.py:2070 - main - Verifying PDF files...
+2025-04-03 11:26:13 - INFO - Arctaris rename_statements.py:2107 - main - 110 files verified and ready for processing
+2025-04-03 11:26:13 - INFO - Arctaris rename_statements.py:2116 - main - 
+Processing batch 1 (1-20 of 110)
+2025-04-03 11:26:13 - INFO - Arctaris rename_statements.py:2121 - main - [1/110] Processing file: dxweb (10).pdf
+2025-04-03 11:26:13 - INFO - Arctaris rename_statements.py:270 - process_pdf - Processing dxweb file as BankUnited: dxweb (10).pdf
+2025-04-03 11:26:13 - INFO - Arctaris rename_statements.py:2128 - main - Extracted information: <__main__.StatementInfo object at 0x00000191A5F8B980>
+2025-04-03 11:26:13 - INFO - Arctaris rename_statements.py:270 - process_pdf - Processing dxweb file as BankUnited: dxweb (10).pdf
+2025-04-03 11:26:13 - INFO - Arctaris rename_statements.py:2141 - main - Would rename to: BankUnited\2025-04\Bank United Arctaris-10 April 2025 Statement.pdf
+2025-04-03 11:26:13 - INFO - Arctaris rename_statements.py:2121 - main - [2/110] Processing file: dxweb (11).pdf
+2025-04-03 11:26:13 - INFO - Arctaris rename_statements.py:270 - process_pdf - Processing dxweb file as BankUnited: dxweb (11).pdf
+2025-04-03 11:26:13 - INFO - Arctaris rename_statements.py:2128 - main - Extracted information: <__main__.StatementInfo object at 0x00000191A5DF7440>
+2025-04-03 11:26:13 - INFO - Arctaris rename_statements.py:270 - process_pdf - Processing dxweb file as BankUnited: dxweb (11).pdf
+2025-04-03 11:26:13 - INFO - Arctaris rename_statements.py:2141 - main - Would rename to: BankUnited\2025-04\Bank United Arctaris-11 April 2025 Statement.pdf
+2025-04-03 11:26:13 - INFO - Arctaris rename_statements.py:2121 - main - [3/110] Processing file: dxweb (12).pdf
+2025-04-03 11:26:13 - INFO - Arctaris rename_statements.py:270 - process_pdf - Processing dxweb file as BankUnited: dxweb (12).pdf
+2025-04-03 11:26:13 - INFO - Arctaris rename_statements.py:2128 - main - Extracted information: <__main__.StatementInfo object at 0x00000191A5F1A330>
+2025-04-03 11:26:13 - INFO - Arctaris rename_statements.py:270 - process_pdf - Processing dxweb file as BankUnited: dxweb (12).pdf
+2025-04-03 11:26:13 - INFO - Arctaris rename_statements.py:2141 - main - Would rename to: BankUnited\2025-04\Bank United Arctaris-12 April 2025 Statement.pdf
+2025-04-03 11:26:13 - INFO - Arctaris rename_statements.py:2121 - main - [4/110] Processing file: dxweb (13).pdf
+2025-04-03 11:26:13 - INFO - Arctaris rename_statements.py:270 - process_pdf - Processing dxweb file as BankUnited: dxweb (13).pdf
+2025-04-03 11:26:13 - INFO - Arctaris rename_statements.py:2128 - main - Extracted information: <__main__.StatementInfo object at 0x00000191A5FB1730>
+2025-04-03 11:26:13 - INFO - Arctaris rename_statements.py:270 - process_pdf - Processing dxweb file as BankUnited: dxweb (13).pdf
+2025-04-03 11:26:13 - INFO - Arctaris rename_statements.py:2141 - main - Would rename to: BankUnited\2025-04\Bank United Arctaris-13 April 2025 Statement.pdf
+2025-04-03 11:26:13 - INFO - Arctaris rename_statements.py:2121 - main - [5/110] Processing file: dxweb (14).pdf
+2025-04-03 11:26:13 - INFO - Arctaris rename_statements.py:270 - process_pdf - Processing dxweb file as BankUnited: dxweb (14).pdf
+2025-04-03 11:26:13 - INFO - Arctaris rename_statements.py:2128 - main - Extracted information: <__main__.StatementInfo object at 0x00000191A5FB17F0>
+2025-04-03 11:26:13 - INFO - Arctaris rename_statements.py:270 - process_pdf - Processing dxweb file as BankUnited: dxweb (14).pdf
+2025-04-03 11:26:13 - INFO - Arctaris rename_statements.py:2141 - main - Would rename to: BankUnited\2025-04\Bank United Arctaris-14 April 2025 Statement.pdf
+2025-04-03 11:26:13 - INFO - Arctaris rename_statements.py:2121 - main - [6/110] Processing file: dxweb (15).pdf
+2025-04-03 11:26:13 - INFO - Arctaris rename_statements.py:270 - process_pdf - Processing dxweb file as BankUnited: dxweb (15).pdf
+2025-04-03 11:26:13 - INFO - Arctaris rename_statements.py:2128 - main - Extracted information: <__main__.StatementInfo object at 0x00000191A5FB1850>
+2025-04-03 11:26:13 - INFO - Arctaris rename_statements.py:270 - process_pdf - Processing dxweb file as BankUnited: dxweb (15).pdf
+2025-04-03 11:26:13 - INFO - Arctaris rename_statements.py:2141 - main - Would rename to: BankUnited\2025-04\Bank United Arctaris-15 April 2025 Statement.pdf
+2025-04-03 11:26:13 - INFO - Arctaris rename_statements.py:2121 - main - [7/110] Processing file: dxweb (16).pdf
+2025-04-03 11:26:13 - INFO - Arctaris rename_statements.py:270 - process_pdf - Processing dxweb file as BankUnited: dxweb (16).pdf
+2025-04-03 11:26:13 - INFO - Arctaris rename_statements.py:2128 - main - Extracted information: <__main__.StatementInfo object at 0x00000191A5FB18B0>
+2025-04-03 11:26:13 - INFO - Arctaris rename_statements.py:270 - process_pdf - Processing dxweb file as BankUnited: dxweb (16).pdf
+2025-04-03 11:26:13 - INFO - Arctaris rename_statements.py:2141 - main - Would rename to: BankUnited\2025-04\Bank United Arctaris-16 April 2025 Statement.pdf
+2025-04-03 11:26:13 - INFO - Arctaris rename_statements.py:2121 - main - [8/110] Processing file: dxweb (17).pdf
+2025-04-03 11:26:13 - INFO - Arctaris rename_statements.py:270 - process_pdf - Processing dxweb file as BankUnited: dxweb (17).pdf
+2025-04-03 11:26:13 - INFO - Arctaris rename_statements.py:2128 - main - Extracted information: <__main__.StatementInfo object at 0x00000191A5FB1910>
+2025-04-03 11:26:13 - INFO - Arctaris rename_statements.py:270 - process_pdf - Processing dxweb file as BankUnited: dxweb (17).pdf
+2025-04-03 11:26:13 - INFO - Arctaris rename_statements.py:2141 - main - Would rename to: BankUnited\2025-04\Bank United Arctaris-17 April 2025 Statement.pdf
+2025-04-03 11:26:13 - INFO - Arctaris rename_statements.py:2121 - main - [9/110] Processing file: dxweb (18).pdf
+2025-04-03 11:26:13 - INFO - Arctaris rename_statements.py:270 - process_pdf - Processing dxweb file as BankUnited: dxweb (18).pdf
+2025-04-03 11:26:13 - INFO - Arctaris rename_statements.py:2128 - main - Extracted information: <__main__.StatementInfo object at 0x00000191A5EA6BD0>
+2025-04-03 11:26:13 - INFO - Arctaris rename_statements.py:270 - process_pdf - Processing dxweb file as BankUnited: dxweb (18).pdf
+2025-04-03 11:26:13 - INFO - Arctaris rename_statements.py:2141 - main - Would rename to: BankUnited\2025-04\Bank United Arctaris-18 April 2025 Statement.pdf
+2025-04-03 11:26:13 - INFO - Arctaris rename_statements.py:2121 - main - [10/110] Processing file: dxweb (19).pdf
+2025-04-03 11:26:13 - INFO - Arctaris rename_statements.py:270 - process_pdf - Processing dxweb file as BankUnited: dxweb (19).pdf
+2025-04-03 11:26:13 - INFO - Arctaris rename_statements.py:2128 - main - Extracted information: <__main__.StatementInfo object at 0x00000191A5F89B20>
+2025-04-03 11:26:13 - INFO - Arctaris rename_statements.py:270 - process_pdf - Processing dxweb file as BankUnited: dxweb (19).pdf
+2025-04-03 11:26:13 - INFO - Arctaris rename_statements.py:2141 - main - Would rename to: BankUnited\2025-04\Bank United Arctaris-19 April 2025 Statement.pdf
+2025-04-03 11:26:13 - INFO - Arctaris rename_statements.py:2121 - main - [11/110] Processing file: dxweb (20).pdf
+2025-04-03 11:26:13 - INFO - Arctaris rename_statements.py:270 - process_pdf - Processing dxweb file as BankUnited: dxweb (20).pdf
+2025-04-03 11:26:13 - INFO - Arctaris rename_statements.py:2128 - main - Extracted information: <__main__.StatementInfo object at 0x00000191A5F88EC0>
+2025-04-03 11:26:13 - INFO - Arctaris rename_statements.py:270 - process_pdf - Processing dxweb file as BankUnited: dxweb (20).pdf
+2025-04-03 11:26:13 - INFO - Arctaris rename_statements.py:2141 - main - Would rename to: BankUnited\2025-04\Bank United Arctaris-20 April 2025 Statement.pdf
+2025-04-03 11:26:13 - INFO - Arctaris rename_statements.py:2121 - main - [12/110] Processing file: dxweb (21).pdf
+2025-04-03 11:26:13 - INFO - Arctaris rename_statements.py:270 - process_pdf - Processing dxweb file as BankUnited: dxweb (21).pdf
+2025-04-03 11:26:13 - INFO - Arctaris rename_statements.py:2128 - main - Extracted information: <__main__.StatementInfo object at 0x00000191A5F897F0>
+2025-04-03 11:26:13 - INFO - Arctaris rename_statements.py:270 - process_pdf - Processing dxweb file as BankUnited: dxweb (21).pdf
+2025-04-03 11:26:13 - INFO - Arctaris rename_statements.py:2141 - main - Would rename to: BankUnited\2025-04\Bank United Arctaris-21 April 2025 Statement.pdf
+2025-04-03 11:26:13 - INFO - Arctaris rename_statements.py:2121 - main - [13/110] Processing file: dxweb (22).pdf
+2025-04-03 11:26:13 - INFO - Arctaris rename_statements.py:270 - process_pdf - Processing dxweb file as BankUnited: dxweb (22).pdf
+2025-04-03 11:26:13 - INFO - Arctaris rename_statements.py:2128 - main - Extracted information: <__main__.StatementInfo object at 0x00000191A5F89970>
+2025-04-03 11:26:13 - INFO - Arctaris rename_statements.py:270 - process_pdf - Processing dxweb file as BankUnited: dxweb (22).pdf
+2025-04-03 11:26:13 - INFO - Arctaris rename_statements.py:2141 - main - Would rename to: BankUnited\2025-04\Bank United Arctaris-22 April 2025 Statement.pdf
+2025-04-03 11:26:13 - INFO - Arctaris rename_statements.py:2121 - main - [14/110] Processing file: dxweb (23).pdf
+2025-04-03 11:26:13 - INFO - Arctaris rename_statements.py:270 - process_pdf - Processing dxweb file as BankUnited: dxweb (23).pdf
+2025-04-03 11:26:13 - INFO - Arctaris rename_statements.py:2128 - main - Extracted information: <__main__.StatementInfo object at 0x00000191A5F8B7A0>
+2025-04-03 11:26:13 - INFO - Arctaris rename_statements.py:270 - process_pdf - Processing dxweb file as BankUnited: dxweb (23).pdf
+2025-04-03 11:26:13 - INFO - Arctaris rename_statements.py:2141 - main - Would rename to: BankUnited\2025-04\Bank United Arctaris-23 April 2025 Statement.pdf
+2025-04-03 11:26:13 - INFO - Arctaris rename_statements.py:2121 - main - [15/110] Processing file: dxweb (24).pdf
+2025-04-03 11:26:13 - INFO - Arctaris rename_statements.py:270 - process_pdf - Processing dxweb file as BankUnited: dxweb (24).pdf
+2025-04-03 11:26:13 - INFO - Arctaris rename_statements.py:2128 - main - Extracted information: <__main__.StatementInfo object at 0x00000191A5F8BCB0>
+2025-04-03 11:26:13 - INFO - Arctaris rename_statements.py:270 - process_pdf - Processing dxweb file as BankUnited: dxweb (24).pdf
+2025-04-03 11:26:13 - INFO - Arctaris rename_statements.py:2141 - main - Would rename to: BankUnited\2025-04\Bank United Arctaris-24 April 2025 Statement.pdf
+2025-04-03 11:26:13 - INFO - Arctaris rename_statements.py:2121 - main - [16/110] Processing file: dxweb (25).pdf
+2025-04-03 11:26:13 - INFO - Arctaris rename_statements.py:270 - process_pdf - Processing dxweb file as BankUnited: dxweb (25).pdf
+2025-04-03 11:26:13 - INFO - Arctaris rename_statements.py:2128 - main - Extracted information: <__main__.StatementInfo object at 0x00000191A5F8BB00>
+2025-04-03 11:26:13 - INFO - Arctaris rename_statements.py:270 - process_pdf - Processing dxweb file as BankUnited: dxweb (25).pdf
+2025-04-03 11:26:13 - INFO - Arctaris rename_statements.py:2141 - main - Would rename to: BankUnited\2025-04\Bank United Arctaris-25 April 2025 Statement.pdf
+2025-04-03 11:26:13 - INFO - Arctaris rename_statements.py:2121 - main - [17/110] Processing file: dxweb (26).pdf
+2025-04-03 11:26:13 - INFO - Arctaris rename_statements.py:270 - process_pdf - Processing dxweb file as BankUnited: dxweb (26).pdf
+2025-04-03 11:26:13 - INFO - Arctaris rename_statements.py:2128 - main - Extracted information: <__main__.StatementInfo object at 0x00000191A5F8BBF0>
+2025-04-03 11:26:13 - INFO - Arctaris rename_statements.py:270 - process_pdf - Processing dxweb file as BankUnited: dxweb (26).pdf
+2025-04-03 11:26:13 - INFO - Arctaris rename_statements.py:2141 - main - Would rename to: BankUnited\2025-04\Bank United Arctaris-26 April 2025 Statement.pdf
+2025-04-03 11:26:13 - INFO - Arctaris rename_statements.py:2121 - main - [18/110] Processing file: dxweb (27).pdf
+2025-04-03 11:26:13 - INFO - Arctaris rename_statements.py:270 - process_pdf - Processing dxweb file as BankUnited: dxweb (27).pdf
+2025-04-03 11:26:13 - INFO - Arctaris rename_statements.py:2128 - main - Extracted information: <__main__.StatementInfo object at 0x00000191A5F89D30>
+2025-04-03 11:26:13 - INFO - Arctaris rename_statements.py:270 - process_pdf - Processing dxweb file as BankUnited: dxweb (27).pdf
+2025-04-03 11:26:13 - INFO - Arctaris rename_statements.py:2141 - main - Would rename to: BankUnited\2025-04\Bank United Arctaris-27 April 2025 Statement.pdf
+2025-04-03 11:26:13 - INFO - Arctaris rename_statements.py:2121 - main - [19/110] Processing file: dxweb (28).pdf
+2025-04-03 11:26:13 - INFO - Arctaris rename_statements.py:270 - process_pdf - Processing dxweb file as BankUnited: dxweb (28).pdf
+2025-04-03 11:26:13 - INFO - Arctaris rename_statements.py:2128 - main - Extracted information: <__main__.StatementInfo object at 0x00000191A5F884A0>
+2025-04-03 11:26:13 - INFO - Arctaris rename_statements.py:270 - process_pdf - Processing dxweb file as BankUnited: dxweb (28).pdf
+2025-04-03 11:26:13 - INFO - Arctaris rename_statements.py:2141 - main - Would rename to: BankUnited\2025-04\Bank United Arctaris-28 April 2025 Statement.pdf
+2025-04-03 11:26:13 - INFO - Arctaris rename_statements.py:2121 - main - [20/110] Processing file: dxweb (29).pdf
+2025-04-03 11:26:13 - INFO - Arctaris rename_statements.py:270 - process_pdf - Processing dxweb file as BankUnited: dxweb (29).pdf
+2025-04-03 11:26:13 - INFO - Arctaris rename_statements.py:2128 - main - Extracted information: <__main__.StatementInfo object at 0x00000191A5F88350>
+2025-04-03 11:26:13 - INFO - Arctaris rename_statements.py:270 - process_pdf - Processing dxweb file as BankUnited: dxweb (29).pdf
+2025-04-03 11:26:13 - INFO - Arctaris rename_statements.py:2141 - main - Would rename to: BankUnited\2025-04\Bank United Arctaris-29 April 2025 Statement.pdf
+2025-04-03 11:26:13 - INFO - Arctaris rename_statements.py:2116 - main - 
+Processing batch 2 (21-40 of 110)
+2025-04-03 11:26:13 - INFO - Arctaris rename_statements.py:2121 - main - [21/110] Processing file: dxweb (30).pdf
+2025-04-03 11:26:13 - INFO - Arctaris rename_statements.py:270 - process_pdf - Processing dxweb file as BankUnited: dxweb (30).pdf
+2025-04-03 11:26:13 - INFO - Arctaris rename_statements.py:2128 - main - Extracted information: <__main__.StatementInfo object at 0x00000191A5F88320>
+2025-04-03 11:26:13 - INFO - Arctaris rename_statements.py:270 - process_pdf - Processing dxweb file as BankUnited: dxweb (30).pdf
+2025-04-03 11:26:13 - INFO - Arctaris rename_statements.py:2141 - main - Would rename to: BankUnited\2025-04\Bank United Arctaris-30 April 2025 Statement.pdf
+2025-04-03 11:26:13 - INFO - Arctaris rename_statements.py:2121 - main - [22/110] Processing file: dxweb (31).pdf
+2025-04-03 11:26:13 - INFO - Arctaris rename_statements.py:270 - process_pdf - Processing dxweb file as BankUnited: dxweb (31).pdf
+2025-04-03 11:26:13 - INFO - Arctaris rename_statements.py:2128 - main - Extracted information: <__main__.StatementInfo object at 0x00000191A5A36390>
+2025-04-03 11:26:13 - INFO - Arctaris rename_statements.py:270 - process_pdf - Processing dxweb file as BankUnited: dxweb (31).pdf
+2025-04-03 11:26:13 - INFO - Arctaris rename_statements.py:2141 - main - Would rename to: BankUnited\2025-04\Bank United Arctaris-31 April 2025 Statement.pdf
+2025-04-03 11:26:13 - INFO - Arctaris rename_statements.py:2121 - main - [23/110] Processing file: dxweb (32).pdf
+2025-04-03 11:26:13 - INFO - Arctaris rename_statements.py:270 - process_pdf - Processing dxweb file as BankUnited: dxweb (32).pdf
+2025-04-03 11:26:13 - INFO - Arctaris rename_statements.py:2128 - main - Extracted information: <__main__.StatementInfo object at 0x00000191A5EBC410>
+2025-04-03 11:26:13 - INFO - Arctaris rename_statements.py:270 - process_pdf - Processing dxweb file as BankUnited: dxweb (32).pdf
+2025-04-03 11:26:13 - INFO - Arctaris rename_statements.py:2141 - main - Would rename to: BankUnited\2025-04\Bank United Arctaris-32 April 2025 Statement.pdf
+2025-04-03 11:26:13 - INFO - Arctaris rename_statements.py:2121 - main - [24/110] Processing file: dxweb (33).pdf
+2025-04-03 11:26:13 - INFO - Arctaris rename_statements.py:270 - process_pdf - Processing dxweb file as BankUnited: dxweb (33).pdf
+2025-04-03 11:26:13 - INFO - Arctaris rename_statements.py:2128 - main - Extracted information: <__main__.StatementInfo object at 0x00000191A5D1E690>
+2025-04-03 11:26:13 - INFO - Arctaris rename_statements.py:270 - process_pdf - Processing dxweb file as BankUnited: dxweb (33).pdf
+2025-04-03 11:26:13 - INFO - Arctaris rename_statements.py:2141 - main - Would rename to: BankUnited\2025-04\Bank United Arctaris-33 April 2025 Statement.pdf
+2025-04-03 11:26:13 - INFO - Arctaris rename_statements.py:2121 - main - [25/110] Processing file: dxweb (34).pdf
+2025-04-03 11:26:13 - INFO - Arctaris rename_statements.py:270 - process_pdf - Processing dxweb file as BankUnited: dxweb (34).pdf
+2025-04-03 11:26:13 - INFO - Arctaris rename_statements.py:2128 - main - Extracted information: <__main__.StatementInfo object at 0x00000191A5F893A0>
+2025-04-03 11:26:13 - INFO - Arctaris rename_statements.py:270 - process_pdf - Processing dxweb file as BankUnited: dxweb (34).pdf
+2025-04-03 11:26:13 - INFO - Arctaris rename_statements.py:2141 - main - Would rename to: BankUnited\2025-04\Bank United Arctaris-34 April 2025 Statement.pdf
+2025-04-03 11:26:13 - INFO - Arctaris rename_statements.py:2121 - main - [26/110] Processing file: dxweb (35).pdf
+2025-04-03 11:26:13 - INFO - Arctaris rename_statements.py:270 - process_pdf - Processing dxweb file as BankUnited: dxweb (35).pdf
+2025-04-03 11:26:13 - INFO - Arctaris rename_statements.py:2128 - main - Extracted information: <__main__.StatementInfo object at 0x00000191A5F8A2A0>
+2025-04-03 11:26:13 - INFO - Arctaris rename_statements.py:270 - process_pdf - Processing dxweb file as BankUnited: dxweb (35).pdf
+2025-04-03 11:26:13 - INFO - Arctaris rename_statements.py:2141 - main - Would rename to: BankUnited\2025-04\Bank United Arctaris-35 April 2025 Statement.pdf
+2025-04-03 11:26:13 - INFO - Arctaris rename_statements.py:2121 - main - [27/110] Processing file: dxweb (8).pdf
+2025-04-03 11:26:13 - INFO - Arctaris rename_statements.py:270 - process_pdf - Processing dxweb file as BankUnited: dxweb (8).pdf
+2025-04-03 11:26:13 - INFO - Arctaris rename_statements.py:2128 - main - Extracted information: <__main__.StatementInfo object at 0x00000191A5F88680>
+2025-04-03 11:26:13 - INFO - Arctaris rename_statements.py:270 - process_pdf - Processing dxweb file as BankUnited: dxweb (8).pdf
+2025-04-03 11:26:13 - INFO - Arctaris rename_statements.py:2141 - main - Would rename to: BankUnited\2025-04\Bank United Arctaris-8 April 2025 Statement.pdf
+2025-04-03 11:26:13 - INFO - Arctaris rename_statements.py:2121 - main - [28/110] Processing file: dxweb (9).pdf
+2025-04-03 11:26:13 - INFO - Arctaris rename_statements.py:270 - process_pdf - Processing dxweb file as BankUnited: dxweb (9).pdf
+2025-04-03 11:26:13 - INFO - Arctaris rename_statements.py:2128 - main - Extracted information: <__main__.StatementInfo object at 0x00000191A5F893D0>
+2025-04-03 11:26:13 - INFO - Arctaris rename_statements.py:270 - process_pdf - Processing dxweb file as BankUnited: dxweb (9).pdf
+2025-04-03 11:26:13 - INFO - Arctaris rename_statements.py:2141 - main - Would rename to: BankUnited\2025-04\Bank United Arctaris-9 April 2025 Statement.pdf
+2025-04-03 11:26:13 - INFO - Arctaris rename_statements.py:2121 - main - [29/110] Processing file: NewStatement (1).pdf
+2025-04-03 11:26:13 - WARNING - Arctaris rename_statements.py:309 - process_pdf - Limited text extracted from newstatement (1).pdf, attempting filename-based detection
+2025-04-03 11:26:13 - INFO - Arctaris rename_statements.py:339 - process_pdf - Using filename-based detection: Classified as Berkshire
+2025-04-03 11:26:13 - INFO - Arctaris rename_statements.py:2128 - main - Extracted information: <__main__.StatementInfo object at 0x00000191A5F8A000>
+2025-04-03 11:26:13 - WARNING - Arctaris rename_statements.py:309 - process_pdf - Limited text extracted from newstatement (1).pdf, attempting filename-based detection
+2025-04-03 11:26:13 - INFO - Arctaris rename_statements.py:339 - process_pdf - Using filename-based detection: Classified as Berkshire
+2025-04-03 11:26:13 - INFO - Arctaris rename_statements.py:2141 - main - Would rename to: Berkshire\2025-04\4519-ARCTARIS OPPORTUNITY ZONE FUND 2020, LLC-20250403.pdf
+2025-04-03 11:26:13 - INFO - Arctaris rename_statements.py:2121 - main - [30/110] Processing file: NewStatement (2).pdf
+2025-04-03 11:26:13 - WARNING - Arctaris rename_statements.py:309 - process_pdf - Limited text extracted from newstatement (2).pdf, attempting filename-based detection
+2025-04-03 11:26:13 - INFO - Arctaris rename_statements.py:339 - process_pdf - Using filename-based detection: Classified as Berkshire
+2025-04-03 11:26:13 - INFO - Arctaris rename_statements.py:2128 - main - Extracted information: <__main__.StatementInfo object at 0x00000191A5FE59D0>
+2025-04-03 11:26:13 - WARNING - Arctaris rename_statements.py:309 - process_pdf - Limited text extracted from newstatement (2).pdf, attempting filename-based detection
+2025-04-03 11:26:13 - INFO - Arctaris rename_statements.py:339 - process_pdf - Using filename-based detection: Classified as Berkshire
+2025-04-03 11:26:13 - INFO - Arctaris rename_statements.py:2141 - main - Would rename to: Berkshire\2025-04\7076-ARCTARIS INCOME FUND LP-20250403.pdf
+2025-04-03 11:26:13 - INFO - Arctaris rename_statements.py:2121 - main - [31/110] Processing file: NewStatement (3).pdf
+2025-04-03 11:26:13 - WARNING - Arctaris rename_statements.py:309 - process_pdf - Limited text extracted from newstatement (3).pdf, attempting filename-based detection
+2025-04-03 11:26:13 - INFO - Arctaris rename_statements.py:339 - process_pdf - Using filename-based detection: Classified as Berkshire
+2025-04-03 11:26:13 - INFO - Arctaris rename_statements.py:2128 - main - Extracted information: <__main__.StatementInfo object at 0x00000191A7458AD0>
+2025-04-03 11:26:13 - WARNING - Arctaris rename_statements.py:309 - process_pdf - Limited text extracted from newstatement (3).pdf, attempting filename-based detection
+2025-04-03 11:26:13 - INFO - Arctaris rename_statements.py:339 - process_pdf - Using filename-based detection: Classified as Berkshire
+2025-04-03 11:26:13 - INFO - Arctaris rename_statements.py:2141 - main - Would rename to: Berkshire\2025-04\8430-ARCTARIS OPPORTUNITY ZONE FUND 2022, LLC-20250403.pdf
+2025-04-03 11:26:13 - INFO - Arctaris rename_statements.py:2121 - main - [32/110] Processing file: NewStatement.pdf
+2025-04-03 11:26:13 - WARNING - Arctaris rename_statements.py:309 - process_pdf - Limited text extracted from newstatement.pdf, attempting filename-based detection
+2025-04-03 11:26:13 - INFO - Arctaris rename_statements.py:339 - process_pdf - Using filename-based detection: Classified as Berkshire
+2025-04-03 11:26:13 - INFO - Arctaris rename_statements.py:2128 - main - Extracted information: <__main__.StatementInfo object at 0x00000191A74B33B0>
+2025-04-03 11:26:13 - WARNING - Arctaris rename_statements.py:309 - process_pdf - Limited text extracted from newstatement.pdf, attempting filename-based detection
+2025-04-03 11:26:13 - INFO - Arctaris rename_statements.py:339 - process_pdf - Using filename-based detection: Classified as Berkshire
+2025-04-03 11:26:13 - INFO - Arctaris rename_statements.py:2141 - main - Would rename to: Berkshire\2025-04\1396-ARCTARIS OPPORTUNITY ZONE FUND 2019 LLC-20250403.pdf
+2025-04-03 11:26:13 - INFO - Arctaris rename_statements.py:2121 - main - [33/110] Processing file: Online Statements_2025-02-28 (1).pdf
+2025-04-03 11:26:13 - INFO - Arctaris rename_statements.py:170 - process_pdf - Processing Online Statements file as Cambridge: Online Statements_2025-02-28 (1).pdf
+2025-04-03 11:26:13 - INFO - Arctaris rename_statements.py:2128 - main - Extracted information: <__main__.StatementInfo object at 0x00000191A5F1A8A0>
+2025-04-03 11:26:13 - INFO - Arctaris rename_statements.py:170 - process_pdf - Processing Online Statements file as Cambridge: Online Statements_2025-02-28 (1).pdf
+2025-04-03 11:26:13 - INFO - Arctaris rename_statements.py:2141 - main - Would rename to: Cambridge\2025-02\ARCTARIS IMPACT INVESTORS, LLC 3346 Cambridge Savings February 2025.pdf
+2025-04-03 11:26:13 - INFO - Arctaris rename_statements.py:2121 - main - [34/110] Processing file: Online Statements_2025-02-28 (10).pdf
+2025-04-03 11:26:13 - INFO - Arctaris rename_statements.py:170 - process_pdf - Processing Online Statements file as Cambridge: Online Statements_2025-02-28 (10).pdf
+2025-04-03 11:26:13 - INFO - Arctaris rename_statements.py:2128 - main - Extracted information: <__main__.StatementInfo object at 0x00000191A52C5C10>
+2025-04-03 11:26:13 - INFO - Arctaris rename_statements.py:170 - process_pdf - Processing Online Statements file as Cambridge: Online Statements_2025-02-28 (10).pdf
+2025-04-03 11:26:13 - INFO - Arctaris rename_statements.py:2141 - main - Would rename to: Cambridge\2025-02\WEST COAST COMMERCIAL DEVELOPMENT LLC 3495 Cambridge Savings February 2025.pdf
+2025-04-03 11:26:13 - INFO - Arctaris rename_statements.py:2121 - main - [35/110] Processing file: Online Statements_2025-02-28 (11).pdf
+2025-04-03 11:26:13 - INFO - Arctaris rename_statements.py:170 - process_pdf - Processing Online Statements file as Cambridge: Online Statements_2025-02-28 (11).pdf
+2025-04-03 11:26:13 - INFO - Arctaris rename_statements.py:2128 - main - Extracted information: <__main__.StatementInfo object at 0x00000191A5F65CA0>
+2025-04-03 11:26:13 - INFO - Arctaris rename_statements.py:170 - process_pdf - Processing Online Statements file as Cambridge: Online Statements_2025-02-28 (11).pdf
+2025-04-03 11:26:13 - INFO - Arctaris rename_statements.py:2141 - main - Would rename to: Cambridge\2025-02\EAST COAST INDUSTRIAL, LLC 3502 Cambridge Savings February 2025.pdf
+2025-04-03 11:26:13 - INFO - Arctaris rename_statements.py:2121 - main - [36/110] Processing file: Online Statements_2025-02-28 (12).pdf
+2025-04-03 11:26:13 - INFO - Arctaris rename_statements.py:170 - process_pdf - Processing Online Statements file as Cambridge: Online Statements_2025-02-28 (12).pdf
+2025-04-03 11:26:13 - INFO - Arctaris rename_statements.py:2128 - main - Extracted information: <__main__.StatementInfo object at 0x00000191A743B4D0>
+2025-04-03 11:26:13 - INFO - Arctaris rename_statements.py:170 - process_pdf - Processing Online Statements file as Cambridge: Online Statements_2025-02-28 (12).pdf
+2025-04-03 11:26:13 - INFO - Arctaris rename_statements.py:2141 - main - Would rename to: Cambridge\2025-02\EAST COAST INDUSTRIAL, LLC 3510 Cambridge Savings February 2025.pdf
+2025-04-03 11:26:13 - INFO - Arctaris rename_statements.py:2121 - main - [37/110] Processing file: Online Statements_2025-02-28 (13).pdf
+2025-04-03 11:26:13 - INFO - Arctaris rename_statements.py:170 - process_pdf - Processing Online Statements file as Cambridge: Online Statements_2025-02-28 (13).pdf
+2025-04-03 11:26:13 - INFO - Arctaris rename_statements.py:2128 - main - Extracted information: <__main__.StatementInfo object at 0x00000191A743B440>
+2025-04-03 11:26:13 - INFO - Arctaris rename_statements.py:170 - process_pdf - Processing Online Statements file as Cambridge: Online Statements_2025-02-28 (13).pdf
+2025-04-03 11:26:13 - INFO - Arctaris rename_statements.py:2141 - main - Would rename to: Cambridge\2025-02\ARCTARIS OPPORTUNITY ZONE FUND 2024,LLC 3528 Cambridge Savings February 2025.pdf
+2025-04-03 11:26:13 - INFO - Arctaris rename_statements.py:2121 - main - [38/110] Processing file: Online Statements_2025-02-28 (2).pdf
+2025-04-03 11:26:13 - INFO - Arctaris rename_statements.py:170 - process_pdf - Processing Online Statements file as Cambridge: Online Statements_2025-02-28 (2).pdf
+2025-04-03 11:26:13 - INFO - Arctaris rename_statements.py:2128 - main - Extracted information: <__main__.StatementInfo object at 0x00000191A743B560>
+2025-04-03 11:26:13 - INFO - Arctaris rename_statements.py:170 - process_pdf - Processing Online Statements file as Cambridge: Online Statements_2025-02-28 (2).pdf
+2025-04-03 11:26:13 - INFO - Arctaris rename_statements.py:2141 - main - Would rename to: Cambridge\2025-02\ARCTARIS IMPACT FUND, LP 3354 Cambridge Savings February 2025.pdf
+2025-04-03 11:26:13 - INFO - Arctaris rename_statements.py:2121 - main - [39/110] Processing file: Online Statements_2025-02-28 (3).pdf
+2025-04-03 11:26:13 - INFO - Arctaris rename_statements.py:170 - process_pdf - Processing Online Statements file as Cambridge: Online Statements_2025-02-28 (3).pdf
+2025-04-03 11:26:13 - INFO - Arctaris rename_statements.py:2128 - main - Extracted information: <__main__.StatementInfo object at 0x00000191A743B4A0>
+2025-04-03 11:26:13 - INFO - Arctaris rename_statements.py:170 - process_pdf - Processing Online Statements file as Cambridge: Online Statements_2025-02-28 (3).pdf
+2025-04-03 11:26:13 - INFO - Arctaris rename_statements.py:2141 - main - Would rename to: Cambridge\2025-02\ARCTARIS IMPACT FUND, LP 3362 Cambridge Savings February 2025.pdf
+2025-04-03 11:26:13 - INFO - Arctaris rename_statements.py:2121 - main - [40/110] Processing file: Online Statements_2025-02-28 (4).pdf
+2025-04-03 11:26:13 - INFO - Arctaris rename_statements.py:170 - process_pdf - Processing Online Statements file as Cambridge: Online Statements_2025-02-28 (4).pdf
+2025-04-03 11:26:13 - INFO - Arctaris rename_statements.py:2128 - main - Extracted information: <__main__.StatementInfo object at 0x00000191A743AAE0>
+2025-04-03 11:26:13 - INFO - Arctaris rename_statements.py:170 - process_pdf - Processing Online Statements file as Cambridge: Online Statements_2025-02-28 (4).pdf
+2025-04-03 11:26:13 - INFO - Arctaris rename_statements.py:2141 - main - Would rename to: Cambridge\2025-02\ARCTARIS OPPORTUNITY ZONE 2022, LLC 3396 Cambridge Savings February 2025.pdf
+2025-04-03 11:26:13 - INFO - Arctaris rename_statements.py:2116 - main - 
+Processing batch 3 (41-60 of 110)
+2025-04-03 11:26:13 - INFO - Arctaris rename_statements.py:2121 - main - [41/110] Processing file: Online Statements_2025-02-28 (5).pdf
+2025-04-03 11:26:13 - INFO - Arctaris rename_statements.py:170 - process_pdf - Processing Online Statements file as Cambridge: Online Statements_2025-02-28 (5).pdf
+2025-04-03 11:26:13 - INFO - Arctaris rename_statements.py:2128 - main - Extracted information: <__main__.StatementInfo object at 0x00000191A743ABA0>
+2025-04-03 11:26:13 - INFO - Arctaris rename_statements.py:170 - process_pdf - Processing Online Statements file as Cambridge: Online Statements_2025-02-28 (5).pdf
+2025-04-03 11:26:13 - INFO - Arctaris rename_statements.py:2141 - main - Would rename to: Cambridge\2025-02\ARCTARIS OPPORTUNITY ZONE 2022, LLC 3403 Cambridge Savings February 2025.pdf
+2025-04-03 11:26:13 - INFO - Arctaris rename_statements.py:2121 - main - [42/110] Processing file: Online Statements_2025-02-28 (6).pdf
+2025-04-03 11:26:13 - INFO - Arctaris rename_statements.py:170 - process_pdf - Processing Online Statements file as Cambridge: Online Statements_2025-02-28 (6).pdf
+2025-04-03 11:26:13 - INFO - Arctaris rename_statements.py:2128 - main - Extracted information: <__main__.StatementInfo object at 0x00000191A743AD20>
+2025-04-03 11:26:13 - INFO - Arctaris rename_statements.py:170 - process_pdf - Processing Online Statements file as Cambridge: Online Statements_2025-02-28 (6).pdf
+2025-04-03 11:26:13 - INFO - Arctaris rename_statements.py:2141 - main - Would rename to: Cambridge\2025-02\OHIO INCLUSIVE HOUSING, LLC 3445 Cambridge Savings February 2025.pdf
+2025-04-03 11:26:13 - INFO - Arctaris rename_statements.py:2121 - main - [43/110] Processing file: Online Statements_2025-02-28 (7).pdf
+2025-04-03 11:26:13 - INFO - Arctaris rename_statements.py:170 - process_pdf - Processing Online Statements file as Cambridge: Online Statements_2025-02-28 (7).pdf
+2025-04-03 11:26:13 - INFO - Arctaris rename_statements.py:2128 - main - Extracted information: <__main__.StatementInfo object at 0x00000191A743AC90>
+2025-04-03 11:26:13 - INFO - Arctaris rename_statements.py:170 - process_pdf - Processing Online Statements file as Cambridge: Online Statements_2025-02-28 (7).pdf
+2025-04-03 11:26:13 - INFO - Arctaris rename_statements.py:2141 - main - Would rename to: Cambridge\2025-02\OHIO INCLUSIVE HOUSING, LLC 3453 Cambridge Savings February 2025.pdf
+2025-04-03 11:26:13 - INFO - Arctaris rename_statements.py:2121 - main - [44/110] Processing file: Online Statements_2025-02-28 (8).pdf
+2025-04-03 11:26:13 - INFO - Arctaris rename_statements.py:170 - process_pdf - Processing Online Statements file as Cambridge: Online Statements_2025-02-28 (8).pdf
+2025-04-03 11:26:13 - INFO - Arctaris rename_statements.py:2128 - main - Extracted information: <__main__.StatementInfo object at 0x00000191A743AC00>
+2025-04-03 11:26:13 - INFO - Arctaris rename_statements.py:170 - process_pdf - Processing Online Statements file as Cambridge: Online Statements_2025-02-28 (8).pdf
+2025-04-03 11:26:13 - INFO - Arctaris rename_statements.py:2141 - main - Would rename to: Cambridge\2025-02\MIDWEST COMMERCIAL DEVELOPMENT, LLC 3479 Cambridge Savings February 2025.pdf
+2025-04-03 11:26:13 - INFO - Arctaris rename_statements.py:2121 - main - [45/110] Processing file: Online Statements_2025-02-28 (9).pdf
+2025-04-03 11:26:13 - INFO - Arctaris rename_statements.py:170 - process_pdf - Processing Online Statements file as Cambridge: Online Statements_2025-02-28 (9).pdf
+2025-04-03 11:26:13 - INFO - Arctaris rename_statements.py:2128 - main - Extracted information: <__main__.StatementInfo object at 0x00000191A743AB70>
+2025-04-03 11:26:13 - INFO - Arctaris rename_statements.py:170 - process_pdf - Processing Online Statements file as Cambridge: Online Statements_2025-02-28 (9).pdf
+2025-04-03 11:26:13 - INFO - Arctaris rename_statements.py:2141 - main - Would rename to: Cambridge\2025-02\WEST COAST COMMERCIAL DEVELOPMENT LLC 3487 Cambridge Savings February 2025.pdf
+2025-04-03 11:26:13 - INFO - Arctaris rename_statements.py:2121 - main - [46/110] Processing file: Online Statements_2025-02-28.pdf
+2025-04-03 11:26:13 - INFO - Arctaris rename_statements.py:170 - process_pdf - Processing Online Statements file as Cambridge: Online Statements_2025-02-28.pdf
+2025-04-03 11:26:13 - INFO - Arctaris rename_statements.py:2128 - main - Extracted information: <__main__.StatementInfo object at 0x00000191A743AA50>
+2025-04-03 11:26:13 - INFO - Arctaris rename_statements.py:170 - process_pdf - Processing Online Statements file as Cambridge: Online Statements_2025-02-28.pdf
+2025-04-03 11:26:13 - INFO - Arctaris rename_statements.py:2141 - main - Would rename to: Cambridge\2025-02\ARCTARIS IMPACT INVESTORS, LLC 3346 Cambridge Savings February 2025.pdf
+2025-04-03 11:26:13 - INFO - Arctaris rename_statements.py:2121 - main - [47/110] Processing file: Online Statements_2025-03-31 (1).pdf
+2025-04-03 11:26:13 - INFO - Arctaris rename_statements.py:170 - process_pdf - Processing Online Statements file as Cambridge: Online Statements_2025-03-31 (1).pdf
+2025-04-03 11:26:13 - INFO - Arctaris rename_statements.py:2128 - main - Extracted information: <__main__.StatementInfo object at 0x00000191A743A660>
+2025-04-03 11:26:13 - INFO - Arctaris rename_statements.py:170 - process_pdf - Processing Online Statements file as Cambridge: Online Statements_2025-03-31 (1).pdf
+2025-04-03 11:26:13 - INFO - Arctaris rename_statements.py:2141 - main - Would rename to: Cambridge\2025-03\ARCTARIS IMPACT INVESTORS, LLC 3346 Cambridge Savings March 2025.pdf
+2025-04-03 11:26:13 - INFO - Arctaris rename_statements.py:2121 - main - [48/110] Processing file: Online Statements_2025-03-31 (10).pdf
+2025-04-03 11:26:13 - INFO - Arctaris rename_statements.py:170 - process_pdf - Processing Online Statements file as Cambridge: Online Statements_2025-03-31 (10).pdf
+2025-04-03 11:26:13 - INFO - Arctaris rename_statements.py:2128 - main - Extracted information: <__main__.StatementInfo object at 0x00000191A743A810>
+2025-04-03 11:26:13 - INFO - Arctaris rename_statements.py:170 - process_pdf - Processing Online Statements file as Cambridge: Online Statements_2025-03-31 (10).pdf
+2025-04-03 11:26:13 - INFO - Arctaris rename_statements.py:2141 - main - Would rename to: Cambridge\2025-03\WEST COAST COMMERCIAL DEVELOPMENT LLC 3495 Cambridge Savings March 2025.pdf
+2025-04-03 11:26:13 - INFO - Arctaris rename_statements.py:2121 - main - [49/110] Processing file: Online Statements_2025-03-31 (11).pdf
+2025-04-03 11:26:13 - INFO - Arctaris rename_statements.py:170 - process_pdf - Processing Online Statements file as Cambridge: Online Statements_2025-03-31 (11).pdf
+2025-04-03 11:26:13 - INFO - Arctaris rename_statements.py:2128 - main - Extracted information: <__main__.StatementInfo object at 0x00000191A743A6F0>
+2025-04-03 11:26:13 - INFO - Arctaris rename_statements.py:170 - process_pdf - Processing Online Statements file as Cambridge: Online Statements_2025-03-31 (11).pdf
+2025-04-03 11:26:13 - INFO - Arctaris rename_statements.py:2141 - main - Would rename to: Cambridge\2025-03\EAST COAST INDUSTRIAL, LLC 3502 Cambridge Savings March 2025.pdf
+2025-04-03 11:26:13 - INFO - Arctaris rename_statements.py:2121 - main - [50/110] Processing file: Online Statements_2025-03-31 (12).pdf
+2025-04-03 11:26:13 - INFO - Arctaris rename_statements.py:170 - process_pdf - Processing Online Statements file as Cambridge: Online Statements_2025-03-31 (12).pdf
+2025-04-03 11:26:13 - INFO - Arctaris rename_statements.py:2128 - main - Extracted information: <__main__.StatementInfo object at 0x00000191A743A930>
+2025-04-03 11:26:13 - INFO - Arctaris rename_statements.py:170 - process_pdf - Processing Online Statements file as Cambridge: Online Statements_2025-03-31 (12).pdf
+2025-04-03 11:26:13 - INFO - Arctaris rename_statements.py:2141 - main - Would rename to: Cambridge\2025-03\EAST COAST INDUSTRIAL, LLC 3510 Cambridge Savings March 2025.pdf
+2025-04-03 11:26:13 - INFO - Arctaris rename_statements.py:2121 - main - [51/110] Processing file: Online Statements_2025-03-31 (13).pdf
+2025-04-03 11:26:13 - INFO - Arctaris rename_statements.py:170 - process_pdf - Processing Online Statements file as Cambridge: Online Statements_2025-03-31 (13).pdf
+2025-04-03 11:26:13 - INFO - Arctaris rename_statements.py:2128 - main - Extracted information: <__main__.StatementInfo object at 0x00000191A743A8A0>
+2025-04-03 11:26:13 - INFO - Arctaris rename_statements.py:170 - process_pdf - Processing Online Statements file as Cambridge: Online Statements_2025-03-31 (13).pdf
+2025-04-03 11:26:13 - INFO - Arctaris rename_statements.py:2141 - main - Would rename to: Cambridge\2025-03\ARCTARIS OPPORTUNITY ZONE FUND 2024,LLC 3528 Cambridge Savings March 2025.pdf
+2025-04-03 11:26:13 - INFO - Arctaris rename_statements.py:2121 - main - [52/110] Processing file: Online Statements_2025-03-31 (2).pdf
+2025-04-03 11:26:13 - INFO - Arctaris rename_statements.py:170 - process_pdf - Processing Online Statements file as Cambridge: Online Statements_2025-03-31 (2).pdf
+2025-04-03 11:26:13 - INFO - Arctaris rename_statements.py:2128 - main - Extracted information: <__main__.StatementInfo object at 0x00000191A743A570>
+2025-04-03 11:26:13 - INFO - Arctaris rename_statements.py:170 - process_pdf - Processing Online Statements file as Cambridge: Online Statements_2025-03-31 (2).pdf
+2025-04-03 11:26:13 - INFO - Arctaris rename_statements.py:2141 - main - Would rename to: Cambridge\2025-03\ARCTARIS IMPACT FUND, LP 3354 Cambridge Savings March 2025.pdf
+2025-04-03 11:26:13 - INFO - Arctaris rename_statements.py:2121 - main - [53/110] Processing file: Online Statements_2025-03-31 (3).pdf
+2025-04-03 11:26:13 - INFO - Arctaris rename_statements.py:170 - process_pdf - Processing Online Statements file as Cambridge: Online Statements_2025-03-31 (3).pdf
+2025-04-03 11:26:13 - INFO - Arctaris rename_statements.py:2128 - main - Extracted information: <__main__.StatementInfo object at 0x00000191A743A5D0>
+2025-04-03 11:26:13 - INFO - Arctaris rename_statements.py:170 - process_pdf - Processing Online Statements file as Cambridge: Online Statements_2025-03-31 (3).pdf
+2025-04-03 11:26:13 - INFO - Arctaris rename_statements.py:2141 - main - Would rename to: Cambridge\2025-03\ARCTARIS IMPACT FUND, LP 3362 Cambridge Savings March 2025.pdf
+2025-04-03 11:26:13 - INFO - Arctaris rename_statements.py:2121 - main - [54/110] Processing file: Online Statements_2025-03-31 (4).pdf
+2025-04-03 11:26:13 - INFO - Arctaris rename_statements.py:170 - process_pdf - Processing Online Statements file as Cambridge: Online Statements_2025-03-31 (4).pdf
+2025-04-03 11:26:13 - INFO - Arctaris rename_statements.py:2128 - main - Extracted information: <__main__.StatementInfo object at 0x00000191A743A720>
+2025-04-03 11:26:13 - INFO - Arctaris rename_statements.py:170 - process_pdf - Processing Online Statements file as Cambridge: Online Statements_2025-03-31 (4).pdf
+2025-04-03 11:26:13 - INFO - Arctaris rename_statements.py:2141 - main - Would rename to: Cambridge\2025-03\ARCTARIS OPPORTUNITY ZONE 2022, LLC 3396 Cambridge Savings March 2025.pdf
+2025-04-03 11:26:13 - INFO - Arctaris rename_statements.py:2121 - main - [55/110] Processing file: Online Statements_2025-03-31 (5).pdf
+2025-04-03 11:26:13 - INFO - Arctaris rename_statements.py:170 - process_pdf - Processing Online Statements file as Cambridge: Online Statements_2025-03-31 (5).pdf
+2025-04-03 11:26:13 - INFO - Arctaris rename_statements.py:2128 - main - Extracted information: <__main__.StatementInfo object at 0x00000191A743A960>
+2025-04-03 11:26:13 - INFO - Arctaris rename_statements.py:170 - process_pdf - Processing Online Statements file as Cambridge: Online Statements_2025-03-31 (5).pdf
+2025-04-03 11:26:13 - INFO - Arctaris rename_statements.py:2141 - main - Would rename to: Cambridge\2025-03\ARCTARIS OPPORTUNITY ZONE 2022, LLC 3403 Cambridge Savings March 2025.pdf
+2025-04-03 11:26:13 - INFO - Arctaris rename_statements.py:2121 - main - [56/110] Processing file: Online Statements_2025-03-31 (6).pdf
+2025-04-03 11:26:13 - INFO - Arctaris rename_statements.py:170 - process_pdf - Processing Online Statements file as Cambridge: Online Statements_2025-03-31 (6).pdf
+2025-04-03 11:26:13 - INFO - Arctaris rename_statements.py:2128 - main - Extracted information: <__main__.StatementInfo object at 0x00000191A743A3C0>
+2025-04-03 11:26:13 - INFO - Arctaris rename_statements.py:170 - process_pdf - Processing Online Statements file as Cambridge: Online Statements_2025-03-31 (6).pdf
+2025-04-03 11:26:13 - INFO - Arctaris rename_statements.py:2141 - main - Would rename to: Cambridge\2025-03\OHIO INCLUSIVE HOUSING, LLC 3445 Cambridge Savings March 2025.pdf
+2025-04-03 11:26:13 - INFO - Arctaris rename_statements.py:2121 - main - [57/110] Processing file: Online Statements_2025-03-31 (7).pdf
+2025-04-03 11:26:13 - INFO - Arctaris rename_statements.py:170 - process_pdf - Processing Online Statements file as Cambridge: Online Statements_2025-03-31 (7).pdf
+2025-04-03 11:26:13 - INFO - Arctaris rename_statements.py:2128 - main - Extracted information: <__main__.StatementInfo object at 0x00000191A743A540>
+2025-04-03 11:26:13 - INFO - Arctaris rename_statements.py:170 - process_pdf - Processing Online Statements file as Cambridge: Online Statements_2025-03-31 (7).pdf
+2025-04-03 11:26:13 - INFO - Arctaris rename_statements.py:2141 - main - Would rename to: Cambridge\2025-03\OHIO INCLUSIVE HOUSING, LLC 3453 Cambridge Savings March 2025.pdf
+2025-04-03 11:26:13 - INFO - Arctaris rename_statements.py:2121 - main - [58/110] Processing file: Online Statements_2025-03-31 (8).pdf
+2025-04-03 11:26:13 - INFO - Arctaris rename_statements.py:170 - process_pdf - Processing Online Statements file as Cambridge: Online Statements_2025-03-31 (8).pdf
+2025-04-03 11:26:13 - INFO - Arctaris rename_statements.py:2128 - main - Extracted information: <__main__.StatementInfo object at 0x00000191A74390D0>
+2025-04-03 11:26:13 - INFO - Arctaris rename_statements.py:170 - process_pdf - Processing Online Statements file as Cambridge: Online Statements_2025-03-31 (8).pdf
+2025-04-03 11:26:13 - INFO - Arctaris rename_statements.py:2141 - main - Would rename to: Cambridge\2025-03\MIDWEST COMMERCIAL DEVELOPMENT, LLC 3479 Cambridge Savings March 2025.pdf
+2025-04-03 11:26:13 - INFO - Arctaris rename_statements.py:2121 - main - [59/110] Processing file: Online Statements_2025-03-31 (9).pdf
+2025-04-03 11:26:13 - INFO - Arctaris rename_statements.py:170 - process_pdf - Processing Online Statements file as Cambridge: Online Statements_2025-03-31 (9).pdf
+2025-04-03 11:26:13 - INFO - Arctaris rename_statements.py:2128 - main - Extracted information: <__main__.StatementInfo object at 0x00000191A7439280>
+2025-04-03 11:26:13 - INFO - Arctaris rename_statements.py:170 - process_pdf - Processing Online Statements file as Cambridge: Online Statements_2025-03-31 (9).pdf
+2025-04-03 11:26:13 - INFO - Arctaris rename_statements.py:2141 - main - Would rename to: Cambridge\2025-03\WEST COAST COMMERCIAL DEVELOPMENT LLC 3487 Cambridge Savings March 2025.pdf
+2025-04-03 11:26:13 - INFO - Arctaris rename_statements.py:2121 - main - [60/110] Processing file: Online Statements_2025-03-31.pdf
+2025-04-03 11:26:13 - INFO - Arctaris rename_statements.py:170 - process_pdf - Processing Online Statements file as Cambridge: Online Statements_2025-03-31.pdf
+2025-04-03 11:26:13 - INFO - Arctaris rename_statements.py:2128 - main - Extracted information: <__main__.StatementInfo object at 0x00000191A7439430>
+2025-04-03 11:26:13 - INFO - Arctaris rename_statements.py:170 - process_pdf - Processing Online Statements file as Cambridge: Online Statements_2025-03-31.pdf
+2025-04-03 11:26:13 - INFO - Arctaris rename_statements.py:2141 - main - Would rename to: Cambridge\2025-03\ARCTARIS IMPACT INVESTORS, LLC 3346 Cambridge Savings March 2025.pdf
+2025-04-03 11:26:13 - INFO - Arctaris rename_statements.py:2116 - main - 
+Processing batch 4 (61-80 of 110)
+2025-04-03 11:26:13 - INFO - Arctaris rename_statements.py:2121 - main - [61/110] Processing file: statement_1092246474_2025-03-31.pdf
+2025-04-03 11:26:13 - INFO - Arctaris rename_statements.py:390 - process_pdf - Successfully identified bank type: PNC
+2025-04-03 11:26:13 - INFO - Arctaris rename_statements.py:2128 - main - Extracted information: <__main__.StatementInfo object at 0x00000191A5EA7F50>
+2025-04-03 11:26:13 - INFO - Arctaris rename_statements.py:390 - process_pdf - Successfully identified bank type: PNC
+2025-04-03 11:26:13 - INFO - Arctaris rename_statements.py:2141 - main - Would rename to: PNC\2025-03\ARCTARIS IMPACT SUB-CDE 2 LLC statement_1092246474_2025-03-31.pdf
+2025-04-03 11:26:13 - INFO - Arctaris rename_statements.py:2121 - main - [62/110] Processing file: statement_4116465916_2025-03-31.pdf
+2025-04-03 11:26:13 - INFO - Arctaris rename_statements.py:390 - process_pdf - Successfully identified bank type: PNC
+2025-04-03 11:26:13 - INFO - Arctaris rename_statements.py:2128 - main - Extracted information: <__main__.StatementInfo object at 0x00000191A5E79A30>
+2025-04-03 11:26:13 - INFO - Arctaris rename_statements.py:390 - process_pdf - Successfully identified bank type: PNC
+2025-04-03 11:26:13 - INFO - Arctaris rename_statements.py:2141 - main - Would rename to: PNC\2025-03\MICHIGAN INCOME PRINCIPAL PR statement_4116465916_2025-03-31.pdf
+2025-04-03 11:26:13 - INFO - Arctaris rename_statements.py:2121 - main - [63/110] Processing file: statement_4116465932_2025-03-31.pdf
+2025-04-03 11:26:13 - INFO - Arctaris rename_statements.py:390 - process_pdf - Successfully identified bank type: PNC
+2025-04-03 11:26:13 - INFO - Arctaris rename_statements.py:2128 - main - Extracted information: <__main__.StatementInfo object at 0x00000191A528B170>
+2025-04-03 11:26:13 - INFO - Arctaris rename_statements.py:390 - process_pdf - Successfully identified bank type: PNC
+2025-04-03 11:26:13 - INFO - Arctaris rename_statements.py:2141 - main - Would rename to: PNC\2025-03\ARCTARIS MICHIGAN MANAGE statement_4116465932_2025-03-31.pdf
+2025-04-03 11:26:13 - INFO - Arctaris rename_statements.py:2121 - main - [64/110] Processing file: statement_4116465959_2025-03-31.pdf
+2025-04-03 11:26:13 - INFO - Arctaris rename_statements.py:390 - process_pdf - Successfully identified bank type: PNC
+2025-04-03 11:26:13 - INFO - Arctaris rename_statements.py:2128 - main - Extracted information: <__main__.StatementInfo object at 0x00000191A528B020>
+2025-04-03 11:26:13 - INFO - Arctaris rename_statements.py:390 - process_pdf - Successfully identified bank type: PNC
+2025-04-03 11:26:13 - INFO - Arctaris rename_statements.py:2141 - main - Would rename to: PNC\2025-03\ARCTARIS ROYALTY VENTURES CO-I statement_4116465959_2025-03-31.pdf
+2025-04-03 11:26:13 - INFO - Arctaris rename_statements.py:2121 - main - [65/110] Processing file: statement_4130261135_2025-03-31.pdf
+2025-04-03 11:26:13 - INFO - Arctaris rename_statements.py:390 - process_pdf - Successfully identified bank type: PNC
+2025-04-03 11:26:13 - INFO - Arctaris rename_statements.py:2128 - main - Extracted information: <__main__.StatementInfo object at 0x00000191A5A349E0>
+2025-04-03 11:26:13 - INFO - Arctaris rename_statements.py:390 - process_pdf - Successfully identified bank type: PNC
+2025-04-03 11:26:13 - INFO - Arctaris rename_statements.py:2141 - main - Would rename to: PNC\2025-03\ARCTARIS IMPACT FUND statement_4130261135_2025-03-31.pdf
+2025-04-03 11:26:13 - INFO - Arctaris rename_statements.py:2121 - main - [66/110] Processing file: statement_4130263798_2025-03-31.pdf
+2025-04-03 11:26:13 - INFO - Arctaris rename_statements.py:390 - process_pdf - Successfully identified bank type: PNC
+2025-04-03 11:26:13 - INFO - Arctaris rename_statements.py:2128 - main - Extracted information: <__main__.StatementInfo object at 0x00000191A5EBCAD0>
+2025-04-03 11:26:13 - INFO - Arctaris rename_statements.py:390 - process_pdf - Successfully identified bank type: PNC
+2025-04-03 11:26:13 - INFO - Arctaris rename_statements.py:2141 - main - Would rename to: PNC\2025-03\ARP MANAGEMENT statement_4130263798_2025-03-31.pdf
+2025-04-03 11:26:13 - INFO - Arctaris rename_statements.py:2121 - main - [67/110] Processing file: statement_4130272854_2025-03-31.pdf
+2025-04-03 11:26:13 - INFO - Arctaris rename_statements.py:390 - process_pdf - Successfully identified bank type: PNC
+2025-04-03 11:26:13 - INFO - Arctaris rename_statements.py:2128 - main - Extracted information: <__main__.StatementInfo object at 0x00000191A5FE4EC0>
+2025-04-03 11:26:13 - INFO - Arctaris rename_statements.py:390 - process_pdf - Successfully identified bank type: PNC
+2025-04-03 11:26:13 - INFO - Arctaris rename_statements.py:2141 - main - Would rename to: PNC\2025-04\ARCTARIS OZ MAN statement_4130272854_2025-03-31.pdf
+2025-04-03 11:26:13 - INFO - Arctaris rename_statements.py:2121 - main - [68/110] Processing file: statement_4130275895_2025-03-31.pdf
+2025-04-03 11:26:13 - INFO - Arctaris rename_statements.py:390 - process_pdf - Successfully identified bank type: PNC
+2025-04-03 11:26:13 - INFO - Arctaris rename_statements.py:2128 - main - Extracted information: <__main__.StatementInfo object at 0x00000191A5F8A9F0>
+2025-04-03 11:26:13 - INFO - Arctaris rename_statements.py:390 - process_pdf - Successfully identified bank type: PNC
+2025-04-03 11:26:13 - INFO - Arctaris rename_statements.py:2141 - main - Would rename to: PNC\2025-03\ARCTARIS SADDLEBACK SKI OPERAT statement_4130275895_2025-03-31.pdf
+2025-04-03 11:26:13 - INFO - Arctaris rename_statements.py:2121 - main - [69/110] Processing file: statement_4130279968_2025-03-31.pdf
+2025-04-03 11:26:13 - INFO - Arctaris rename_statements.py:390 - process_pdf - Successfully identified bank type: PNC
+2025-04-03 11:26:13 - INFO - Arctaris rename_statements.py:2128 - main - Extracted information: <__main__.StatementInfo object at 0x00000191A7439A60>
+2025-04-03 11:26:13 - INFO - Arctaris rename_statements.py:390 - process_pdf - Successfully identified bank type: PNC
+2025-04-03 11:26:13 - INFO - Arctaris rename_statements.py:2141 - main - Would rename to: PNC\2025-03\ARC-IMPACT PROGRAM ERIE LLC statement_4130279968_2025-03-31.pdf
+2025-04-03 11:26:13 - INFO - Arctaris rename_statements.py:2121 - main - [70/110] Processing file: statement_4130281339_2025-03-31.pdf
+2025-04-03 11:26:13 - INFO - Arctaris rename_statements.py:390 - process_pdf - Successfully identified bank type: PNC
+2025-04-03 11:26:13 - INFO - Arctaris rename_statements.py:2128 - main - Extracted information: <__main__.StatementInfo object at 0x00000191A5F668D0>
+2025-04-03 11:26:13 - INFO - Arctaris rename_statements.py:390 - process_pdf - Successfully identified bank type: PNC
+2025-04-03 11:26:13 - INFO - Arctaris rename_statements.py:2141 - main - Would rename to: PNC\2025-03\ARCTARIS BROADBAND statement_4130281339_2025-03-31.pdf
+2025-04-03 11:26:13 - INFO - Arctaris rename_statements.py:2121 - main - [71/110] Processing file: statement_4130281355_2025-03-31.pdf
+2025-04-03 11:26:13 - INFO - Arctaris rename_statements.py:390 - process_pdf - Successfully identified bank type: PNC
+2025-04-03 11:26:13 - INFO - Arctaris rename_statements.py:2128 - main - Extracted information: <__main__.StatementInfo object at 0x00000191A5F67E00>
+2025-04-03 11:26:13 - INFO - Arctaris rename_statements.py:390 - process_pdf - Successfully identified bank type: PNC
+2025-04-03 11:26:13 - INFO - Arctaris rename_statements.py:2141 - main - Would rename to: PNC\2025-03\ARCTARIS OZ FUND 2020 statement_4130281355_2025-03-31.pdf
+2025-04-03 11:26:13 - INFO - Arctaris rename_statements.py:2121 - main - [72/110] Processing file: statement_4130283078_2025-03-31.pdf
+2025-04-03 11:26:13 - INFO - Arctaris rename_statements.py:390 - process_pdf - Successfully identified bank type: PNC
+2025-04-03 11:26:13 - INFO - Arctaris rename_statements.py:2128 - main - Extracted information: <__main__.StatementInfo object at 0x00000191A743A630>
+2025-04-03 11:26:13 - INFO - Arctaris rename_statements.py:390 - process_pdf - Successfully identified bank type: PNC
+2025-04-03 11:26:13 - INFO - Arctaris rename_statements.py:2141 - main - Would rename to: PNC\2025-03\ARCTARIS IMPACT INVESTORS LLC statement_4130283078_2025-03-31.pdf
+2025-04-03 11:26:13 - INFO - Arctaris rename_statements.py:2121 - main - [73/110] Processing file: statement_4130283369_2025-03-31.pdf
+2025-04-03 11:26:13 - INFO - Arctaris rename_statements.py:390 - process_pdf - Successfully identified bank type: PNC
+2025-04-03 11:26:13 - INFO - Arctaris rename_statements.py:2128 - main - Extracted information: <__main__.StatementInfo object at 0x00000191A743BFE0>
+2025-04-03 11:26:13 - INFO - Arctaris rename_statements.py:390 - process_pdf - Successfully identified bank type: PNC
+2025-04-03 11:26:13 - INFO - Arctaris rename_statements.py:2141 - main - Would rename to: PNC\2025-03\ARC-IMPACT-PROGRAM SWPA LLC statement_4130283369_2025-03-31.pdf
+2025-04-03 11:26:13 - INFO - Arctaris rename_statements.py:2121 - main - [74/110] Processing file: statement_4130283633_2025-03-31.pdf
+2025-04-03 11:26:14 - INFO - Arctaris rename_statements.py:390 - process_pdf - Successfully identified bank type: PNC
+2025-04-03 11:26:14 - INFO - Arctaris rename_statements.py:2128 - main - Extracted information: <__main__.StatementInfo object at 0x00000191A5FB1580>
+2025-04-03 11:26:14 - INFO - Arctaris rename_statements.py:390 - process_pdf - Successfully identified bank type: PNC
+2025-04-03 11:26:14 - INFO - Arctaris rename_statements.py:2141 - main - Would rename to: PNC\2025-03\ARC-IMPACT PROGRAM CUYAHOGA LLC statement_4130283633_2025-03-31.pdf
+2025-04-03 11:26:14 - INFO - Arctaris rename_statements.py:2121 - main - [75/110] Processing file: statement_4130290884_2025-03-31.pdf
+2025-04-03 11:26:14 - INFO - Arctaris rename_statements.py:390 - process_pdf - Successfully identified bank type: PNC
+2025-04-03 11:26:14 - INFO - Arctaris rename_statements.py:2128 - main - Extracted information: <__main__.StatementInfo object at 0x00000191A5DDD8E0>
+2025-04-03 11:26:14 - INFO - Arctaris rename_statements.py:390 - process_pdf - Successfully identified bank type: PNC
+2025-04-03 11:26:14 - INFO - Arctaris rename_statements.py:2141 - main - Would rename to: PNC\2025-03\ARCTARIS INCOME FUND LP statement_4130290884_2025-03-31.pdf
+2025-04-03 11:26:14 - INFO - Arctaris rename_statements.py:2121 - main - [76/110] Processing file: statement_4130293022_2025-03-31.pdf
+2025-04-03 11:26:14 - INFO - Arctaris rename_statements.py:390 - process_pdf - Successfully identified bank type: PNC
+2025-04-03 11:26:14 - INFO - Arctaris rename_statements.py:2128 - main - Extracted information: <__main__.StatementInfo object at 0x00000191A5B13E60>
+2025-04-03 11:26:14 - INFO - Arctaris rename_statements.py:390 - process_pdf - Successfully identified bank type: PNC
+2025-04-03 11:26:14 - INFO - Arctaris rename_statements.py:2141 - main - Would rename to: PNC\2025-03\OZ 2022 FUND statement_4130293022_2025-03-31.pdf
+2025-04-03 11:26:14 - INFO - Arctaris rename_statements.py:2121 - main - [77/110] Processing file: statement_4130294324_2025-03-31.pdf
+2025-04-03 11:26:14 - INFO - Arctaris rename_statements.py:390 - process_pdf - Successfully identified bank type: PNC
+2025-04-03 11:26:14 - INFO - Arctaris rename_statements.py:2128 - main - Extracted information: <__main__.StatementInfo object at 0x00000191A5289BE0>
+2025-04-03 11:26:14 - INFO - Arctaris rename_statements.py:390 - process_pdf - Successfully identified bank type: PNC
+2025-04-03 11:26:14 - INFO - Arctaris rename_statements.py:2141 - main - Would rename to: PNC\2025-03\ARC-IMPACT-PROGRAM BUFFALO LLC statement_4130294324_2025-03-31.pdf
+2025-04-03 11:26:14 - INFO - Arctaris rename_statements.py:2121 - main - [78/110] Processing file: statement_4130294332_2025-03-31.pdf
+2025-04-03 11:26:14 - INFO - Arctaris rename_statements.py:390 - process_pdf - Successfully identified bank type: PNC
+2025-04-03 11:26:14 - INFO - Arctaris rename_statements.py:2128 - main - Extracted information: <__main__.StatementInfo object at 0x00000191A5F187A0>
+2025-04-03 11:26:14 - INFO - Arctaris rename_statements.py:390 - process_pdf - Successfully identified bank type: PNC
+2025-04-03 11:26:14 - INFO - Arctaris rename_statements.py:2141 - main - Would rename to: PNC\2025-03\ARC-IMPACT-PROGRAM HARTFORD LL statement_4130294332_2025-03-31.pdf
+2025-04-03 11:26:14 - INFO - Arctaris rename_statements.py:2121 - main - [79/110] Processing file: statement_4130294359_2025-03-31.pdf
+2025-04-03 11:26:14 - INFO - Arctaris rename_statements.py:390 - process_pdf - Successfully identified bank type: PNC
+2025-04-03 11:26:14 - INFO - Arctaris rename_statements.py:2128 - main - Extracted information: <__main__.StatementInfo object at 0x00000191A74380E0>
+2025-04-03 11:26:14 - INFO - Arctaris rename_statements.py:390 - process_pdf - Successfully identified bank type: PNC
+2025-04-03 11:26:14 - INFO - Arctaris rename_statements.py:2141 - main - Would rename to: PNC\2025-04\ARC-IMPACT-PROGRAM LIMA LLC statement_4130294359_2025-03-31.pdf
+2025-04-03 11:26:14 - INFO - Arctaris rename_statements.py:2121 - main - [80/110] Processing file: statement_4130294367_2025-03-31.pdf
+2025-04-03 11:26:14 - INFO - Arctaris rename_statements.py:390 - process_pdf - Successfully identified bank type: PNC
+2025-04-03 11:26:14 - INFO - Arctaris rename_statements.py:2128 - main - Extracted information: <__main__.StatementInfo object at 0x00000191A5F19850>
+2025-04-03 11:26:14 - INFO - Arctaris rename_statements.py:390 - process_pdf - Successfully identified bank type: PNC
+2025-04-03 11:26:14 - INFO - Arctaris rename_statements.py:2141 - main - Would rename to: PNC\2025-03\ARC-IMPACT-PROGRAM PITTSBURGH statement_4130294367_2025-03-31.pdf
+2025-04-03 11:26:14 - INFO - Arctaris rename_statements.py:2116 - main - 
+Processing batch 5 (81-100 of 110)
+2025-04-03 11:26:14 - INFO - Arctaris rename_statements.py:2121 - main - [81/110] Processing file: statement_4130294383_2025-03-31.pdf
+2025-04-03 11:26:14 - INFO - Arctaris rename_statements.py:390 - process_pdf - Successfully identified bank type: PNC
+2025-04-03 11:26:14 - INFO - Arctaris rename_statements.py:2128 - main - Extracted information: <__main__.StatementInfo object at 0x00000191A7439CA0>
+2025-04-03 11:26:14 - INFO - Arctaris rename_statements.py:390 - process_pdf - Successfully identified bank type: PNC
+2025-04-03 11:26:14 - INFO - Arctaris rename_statements.py:2141 - main - Would rename to: PNC\2025-03\PHASE 1B HOLDINGS statement_4130294383_2025-03-31.pdf
+2025-04-03 11:26:14 - INFO - Arctaris rename_statements.py:2121 - main - [82/110] Processing file: statement_4130294412_2025-03-31.pdf
+2025-04-03 11:26:14 - INFO - Arctaris rename_statements.py:390 - process_pdf - Successfully identified bank type: PNC
+2025-04-03 11:26:14 - INFO - Arctaris rename_statements.py:2128 - main - Extracted information: <__main__.StatementInfo object at 0x00000191A5F8A840>
+2025-04-03 11:26:14 - INFO - Arctaris rename_statements.py:390 - process_pdf - Successfully identified bank type: PNC
+2025-04-03 11:26:14 - INFO - Arctaris rename_statements.py:2141 - main - Would rename to: PNC\2025-03\ARCTARIS PRODUCT DEV IV statement_4130294412_2025-03-31.pdf
+2025-04-03 11:26:14 - INFO - Arctaris rename_statements.py:2121 - main - [83/110] Processing file: statement_4130294447_2025-03-31.pdf
+2025-04-03 11:26:14 - INFO - Arctaris rename_statements.py:390 - process_pdf - Successfully identified bank type: PNC
+2025-04-03 11:26:14 - INFO - Arctaris rename_statements.py:2128 - main - Extracted information: <__main__.StatementInfo object at 0x00000191A5FB09E0>
+2025-04-03 11:26:14 - INFO - Arctaris rename_statements.py:390 - process_pdf - Successfully identified bank type: PNC
+2025-04-03 11:26:14 - INFO - Arctaris rename_statements.py:2141 - main - Would rename to: PNC\2025-03\ARCTARIS PRODUCT DEV VI statement_4130294447_2025-03-31.pdf
+2025-04-03 11:26:14 - INFO - Arctaris rename_statements.py:2121 - main - [84/110] Processing file: statement_4130294455_2025-03-31.pdf
+2025-04-03 11:26:14 - INFO - Arctaris rename_statements.py:390 - process_pdf - Successfully identified bank type: PNC
+2025-04-03 11:26:14 - INFO - Arctaris rename_statements.py:2128 - main - Extracted information: <__main__.StatementInfo object at 0x00000191A5F66F00>
+2025-04-03 11:26:14 - INFO - Arctaris rename_statements.py:390 - process_pdf - Successfully identified bank type: PNC
+2025-04-03 11:26:14 - INFO - Arctaris rename_statements.py:2141 - main - Would rename to: PNC\2025-04\ARCTARIS PRODUCT DEV VII statement_4130294455_2025-03-31.pdf
+2025-04-03 11:26:14 - INFO - Arctaris rename_statements.py:2121 - main - [85/110] Processing file: statement_4130297058_2025-03-31.pdf
+2025-04-03 11:26:14 - INFO - Arctaris rename_statements.py:390 - process_pdf - Successfully identified bank type: PNC
+2025-04-03 11:26:14 - INFO - Arctaris rename_statements.py:2128 - main - Extracted information: <__main__.StatementInfo object at 0x00000191A5A557F0>
+2025-04-03 11:26:14 - INFO - Arctaris rename_statements.py:390 - process_pdf - Successfully identified bank type: PNC
+2025-04-03 11:26:14 - INFO - Arctaris rename_statements.py:2141 - main - Would rename to: PNC\2025-03\NORTHEAST REAL ESTATE statement_4130297058_2025-03-31.pdf
+2025-04-03 11:26:14 - INFO - Arctaris rename_statements.py:2121 - main - [86/110] Processing file: statement_4130297779_2025-03-31.pdf
+2025-04-03 11:26:14 - INFO - Arctaris rename_statements.py:390 - process_pdf - Successfully identified bank type: PNC
+2025-04-03 11:26:14 - INFO - Arctaris rename_statements.py:2128 - main - Extracted information: <__main__.StatementInfo object at 0x00000191A5E45010>
+2025-04-03 11:26:14 - INFO - Arctaris rename_statements.py:390 - process_pdf - Successfully identified bank type: PNC
+2025-04-03 11:26:14 - INFO - Arctaris rename_statements.py:2141 - main - Would rename to: PNC\2025-03\ARCTARIS IMPACT CDC LLC statement_4130297779_2025-03-31.pdf
+2025-04-03 11:26:14 - INFO - Arctaris rename_statements.py:2121 - main - [87/110] Processing file: statement_4130300931_2025-03-31.pdf
+2025-04-03 11:26:14 - INFO - Arctaris rename_statements.py:390 - process_pdf - Successfully identified bank type: PNC
+2025-04-03 11:26:14 - INFO - Arctaris rename_statements.py:2128 - main - Extracted information: <__main__.StatementInfo object at 0x00000191A5EA6BA0>
+2025-04-03 11:26:14 - INFO - Arctaris rename_statements.py:390 - process_pdf - Successfully identified bank type: PNC
+2025-04-03 11:26:14 - INFO - Arctaris rename_statements.py:2141 - main - Would rename to: PNC\2025-03\ARCTARIS ROYALTY PARTNERS LLC statement_4130300931_2025-03-31.pdf
+2025-04-03 11:26:14 - INFO - Arctaris rename_statements.py:2121 - main - [88/110] Processing file: statement_4130301336_2025-03-31.pdf
+2025-04-03 11:26:14 - INFO - Arctaris rename_statements.py:390 - process_pdf - Successfully identified bank type: PNC
+2025-04-03 11:26:14 - INFO - Arctaris rename_statements.py:2128 - main - Extracted information: <__main__.StatementInfo object at 0x00000191A5FE5520>
+2025-04-03 11:26:14 - INFO - Arctaris rename_statements.py:390 - process_pdf - Successfully identified bank type: PNC
+2025-04-03 11:26:14 - INFO - Arctaris rename_statements.py:2141 - main - Would rename to: PNC\2025-03\DETROIT AFFORDABLE HOUSING statement_4130301336_2025-03-31.pdf
+2025-04-03 11:26:14 - INFO - Arctaris rename_statements.py:2121 - main - [89/110] Processing file: statement_4130301344_2025-03-31.pdf
+2025-04-03 11:26:14 - INFO - Arctaris rename_statements.py:390 - process_pdf - Successfully identified bank type: PNC
+2025-04-03 11:26:14 - INFO - Arctaris rename_statements.py:2128 - main - Extracted information: <__main__.StatementInfo object at 0x00000191A743BA70>
+2025-04-03 11:26:14 - INFO - Arctaris rename_statements.py:390 - process_pdf - Successfully identified bank type: PNC
+2025-04-03 11:26:14 - INFO - Arctaris rename_statements.py:2141 - main - Would rename to: PNC\2025-03\BRADDOCK FLEX statement_4130301344_2025-03-31.pdf
+2025-04-03 11:26:14 - INFO - Arctaris rename_statements.py:2121 - main - [90/110] Processing file: statement_4130301694_2025-03-31.pdf
+2025-04-03 11:26:14 - INFO - Arctaris rename_statements.py:390 - process_pdf - Successfully identified bank type: PNC
+2025-04-03 11:26:14 - INFO - Arctaris rename_statements.py:2128 - main - Extracted information: <__main__.StatementInfo object at 0x00000191A5F661E0>
+2025-04-03 11:26:14 - INFO - Arctaris rename_statements.py:390 - process_pdf - Successfully identified bank type: PNC
+2025-04-03 11:26:14 - INFO - Arctaris rename_statements.py:2141 - main - Would rename to: PNC\2025-03\SADDLEBACK SERVICES LLC statement_4130301694_2025-03-31.pdf
+2025-04-03 11:26:14 - INFO - Arctaris rename_statements.py:2121 - main - [91/110] Processing file: statement_4130301889_2025-03-31.pdf
+2025-04-03 11:26:14 - INFO - Arctaris rename_statements.py:390 - process_pdf - Successfully identified bank type: PNC
+2025-04-03 11:26:14 - INFO - Arctaris rename_statements.py:2128 - main - Extracted information: <__main__.StatementInfo object at 0x00000191A5F67080>
+2025-04-03 11:26:14 - INFO - Arctaris rename_statements.py:390 - process_pdf - Successfully identified bank type: PNC
+2025-04-03 11:26:14 - INFO - Arctaris rename_statements.py:2141 - main - Would rename to: PNC\2025-03\NEW ENGLAND INCLUSIVE HOUSING statement_4130301889_2025-03-31.pdf
+2025-04-03 11:26:14 - INFO - Arctaris rename_statements.py:2121 - main - [92/110] Processing file: statement_4130301897_2025-03-31.pdf
+2025-04-03 11:26:14 - INFO - Arctaris rename_statements.py:390 - process_pdf - Successfully identified bank type: PNC
+2025-04-03 11:26:14 - INFO - Arctaris rename_statements.py:2128 - main - Extracted information: <__main__.StatementInfo object at 0x00000191A5F65FD0>
+2025-04-03 11:26:14 - INFO - Arctaris rename_statements.py:390 - process_pdf - Successfully identified bank type: PNC
+2025-04-03 11:26:14 - INFO - Arctaris rename_statements.py:2141 - main - Would rename to: PNC\2025-03\MIDWESTERN DEVELOPMENT I statement_4130301897_2025-03-31.pdf
+2025-04-03 11:26:14 - INFO - Arctaris rename_statements.py:2121 - main - [93/110] Processing file: statement_4130301918_2025-03-31.pdf
+2025-04-03 11:26:14 - INFO - Arctaris rename_statements.py:390 - process_pdf - Successfully identified bank type: PNC
+2025-04-03 11:26:14 - INFO - Arctaris rename_statements.py:2128 - main - Extracted information: <__main__.StatementInfo object at 0x00000191A5F89730>
+2025-04-03 11:26:14 - INFO - Arctaris rename_statements.py:390 - process_pdf - Successfully identified bank type: PNC
+2025-04-03 11:26:14 - INFO - Arctaris rename_statements.py:2141 - main - Would rename to: PNC\2025-03\MID ATLANTIC INCLUSIVE HOUSING statement_4130301918_2025-03-31.pdf
+2025-04-03 11:26:14 - INFO - Arctaris rename_statements.py:2121 - main - [94/110] Processing file: statement_4130301926_2025-03-31.pdf
+2025-04-03 11:26:14 - INFO - Arctaris rename_statements.py:390 - process_pdf - Successfully identified bank type: PNC
+2025-04-03 11:26:14 - INFO - Arctaris rename_statements.py:2128 - main - Extracted information: <__main__.StatementInfo object at 0x00000191A5FE7530>
+2025-04-03 11:26:14 - INFO - Arctaris rename_statements.py:390 - process_pdf - Successfully identified bank type: PNC
+2025-04-03 11:26:14 - INFO - Arctaris rename_statements.py:2141 - main - Would rename to: PNC\2025-03\SOUTH EAST DEVELOPMENT statement_4130301926_2025-03-31.pdf
+2025-04-03 11:26:14 - INFO - Arctaris rename_statements.py:2121 - main - [95/110] Processing file: statement_4130301934_2025-03-31.pdf
+2025-04-03 11:26:14 - INFO - Arctaris rename_statements.py:390 - process_pdf - Successfully identified bank type: PNC
+2025-04-03 11:26:14 - INFO - Arctaris rename_statements.py:2128 - main - Extracted information: <__main__.StatementInfo object at 0x00000191A743AF60>
+2025-04-03 11:26:14 - INFO - Arctaris rename_statements.py:390 - process_pdf - Successfully identified bank type: PNC
+2025-04-03 11:26:14 - INFO - Arctaris rename_statements.py:2141 - main - Would rename to: PNC\2025-03\PENN INCLUSIVE HOUSING statement_4130301934_2025-03-31.pdf
+2025-04-03 11:26:14 - INFO - Arctaris rename_statements.py:2121 - main - [96/110] Processing file: statement_4130302128_2025-03-31.pdf
+2025-04-03 11:26:14 - INFO - Arctaris rename_statements.py:390 - process_pdf - Successfully identified bank type: PNC
+2025-04-03 11:26:14 - INFO - Arctaris rename_statements.py:2128 - main - Extracted information: <__main__.StatementInfo object at 0x00000191A5F659D0>
+2025-04-03 11:26:14 - INFO - Arctaris rename_statements.py:390 - process_pdf - Successfully identified bank type: PNC
+2025-04-03 11:26:14 - INFO - Arctaris rename_statements.py:2141 - main - Would rename to: PNC\2025-03\EASTERN DEVELOPMENT HOUSING statement_4130302128_2025-03-31.pdf
+2025-04-03 11:26:14 - INFO - Arctaris rename_statements.py:2121 - main - [97/110] Processing file: statement_4175623128_2025-03-31.pdf
+2025-04-03 11:26:14 - INFO - Arctaris rename_statements.py:390 - process_pdf - Successfully identified bank type: PNC
+2025-04-03 11:26:14 - INFO - Arctaris rename_statements.py:2128 - main - Extracted information: <__main__.StatementInfo object at 0x00000191A74D8920>
+2025-04-03 11:26:14 - INFO - Arctaris rename_statements.py:390 - process_pdf - Successfully identified bank type: PNC
+2025-04-03 11:26:14 - INFO - Arctaris rename_statements.py:2141 - main - Would rename to: PNC\2025-03\ARCTARIS OZ FUND 2024 statement_4175623128_2025-03-31.pdf
+2025-04-03 11:26:14 - INFO - Arctaris rename_statements.py:2121 - main - [98/110] Processing file: statement_4176547892_2025-03-31.pdf
+2025-04-03 11:26:14 - INFO - Arctaris rename_statements.py:390 - process_pdf - Successfully identified bank type: PNC
+2025-04-03 11:26:14 - INFO - Arctaris rename_statements.py:2128 - main - Extracted information: <__main__.StatementInfo object at 0x00000191A743B9E0>
+2025-04-03 11:26:14 - INFO - Arctaris rename_statements.py:390 - process_pdf - Successfully identified bank type: PNC
+2025-04-03 11:26:14 - INFO - Arctaris rename_statements.py:2141 - main - Would rename to: PNC\2025-03\SSP HOLDCO LLC statement_4176547892_2025-03-31.pdf
+2025-04-03 11:26:14 - INFO - Arctaris rename_statements.py:2121 - main - [99/110] Processing file: statement_4176565548_2025-03-31.pdf
+2025-04-03 11:26:14 - INFO - Arctaris rename_statements.py:390 - process_pdf - Successfully identified bank type: PNC
+2025-04-03 11:26:14 - INFO - Arctaris rename_statements.py:2128 - main - Extracted information: <__main__.StatementInfo object at 0x00000191A7439E50>
+2025-04-03 11:26:14 - INFO - Arctaris rename_statements.py:390 - process_pdf - Successfully identified bank type: PNC
+2025-04-03 11:26:14 - INFO - Arctaris rename_statements.py:2141 - main - Would rename to: PNC\2025-03\ARCTARIS EAST COAST DEVELOPMEN statement_4176565548_2025-03-31.pdf
+2025-04-03 11:26:14 - INFO - Arctaris rename_statements.py:2121 - main - [100/110] Processing file: statement_4176641344_2025-03-31.pdf
+2025-04-03 11:26:14 - INFO - Arctaris rename_statements.py:390 - process_pdf - Successfully identified bank type: PNC
+2025-04-03 11:26:14 - INFO - Arctaris rename_statements.py:2128 - main - Extracted information: <__main__.StatementInfo object at 0x00000191A4D3B290>
+2025-04-03 11:26:14 - INFO - Arctaris rename_statements.py:390 - process_pdf - Successfully identified bank type: PNC
+2025-04-03 11:26:14 - INFO - Arctaris rename_statements.py:2141 - main - Would rename to: PNC\2025-03\GREATER ERIE STRATEGIC INVESTM statement_4176641344_2025-03-31.pdf
+2025-04-03 11:26:14 - INFO - Arctaris rename_statements.py:2116 - main - 
+Processing batch 6 (101-110 of 110)
+2025-04-03 11:26:14 - INFO - Arctaris rename_statements.py:2121 - main - [101/110] Processing file: statement_4176706259_2025-03-31.pdf
+2025-04-03 11:26:14 - INFO - Arctaris rename_statements.py:390 - process_pdf - Successfully identified bank type: PNC
+2025-04-03 11:26:14 - INFO - Arctaris rename_statements.py:2128 - main - Extracted information: <__main__.StatementInfo object at 0x00000191A743B710>
+2025-04-03 11:26:14 - INFO - Arctaris rename_statements.py:390 - process_pdf - Successfully identified bank type: PNC
+2025-04-03 11:26:14 - INFO - Arctaris rename_statements.py:2141 - main - Would rename to: PNC\2025-03\ARCTARIS ADVISORY HOLDING LLC statement_4176706259_2025-03-31.pdf
+2025-04-03 11:26:14 - INFO - Arctaris rename_statements.py:2121 - main - [102/110] Processing file: statement_4176786746_2025-03-31.pdf
+2025-04-03 11:26:14 - INFO - Arctaris rename_statements.py:390 - process_pdf - Successfully identified bank type: PNC
+2025-04-03 11:26:14 - INFO - Arctaris rename_statements.py:2128 - main - Extracted information: <__main__.StatementInfo object at 0x00000191A521AAE0>
+2025-04-03 11:26:14 - INFO - Arctaris rename_statements.py:390 - process_pdf - Successfully identified bank type: PNC
+2025-04-03 11:26:14 - INFO - Arctaris rename_statements.py:2141 - main - Would rename to: PNC\2025-03\ARC-IMPACT PROGRAM CT LLC statement_4176786746_2025-03-31.pdf
+2025-04-03 11:26:14 - INFO - Arctaris rename_statements.py:2121 - main - [103/110] Processing file: statement_4176790542_2025-03-31.pdf
+2025-04-03 11:26:14 - INFO - Arctaris rename_statements.py:390 - process_pdf - Successfully identified bank type: PNC
+2025-04-03 11:26:14 - INFO - Arctaris rename_statements.py:2128 - main - Extracted information: <__main__.StatementInfo object at 0x00000191A5F8A720>
+2025-04-03 11:26:14 - INFO - Arctaris rename_statements.py:390 - process_pdf - Successfully identified bank type: PNC
+2025-04-03 11:26:14 - INFO - Arctaris rename_statements.py:2141 - main - Would rename to: PNC\2025-03\ARCTARIS HOLDCO LLC statement_4176790542_2025-03-31.pdf
+2025-04-03 11:26:14 - INFO - Arctaris rename_statements.py:2121 - main - [104/110] Processing file: statement_4176790577_2025-03-31.pdf
+2025-04-03 11:26:14 - INFO - Arctaris rename_statements.py:390 - process_pdf - Successfully identified bank type: PNC
+2025-04-03 11:26:14 - INFO - Arctaris rename_statements.py:2128 - main - Extracted information: <__main__.StatementInfo object at 0x00000191A5FE51F0>
+2025-04-03 11:26:14 - INFO - Arctaris rename_statements.py:390 - process_pdf - Successfully identified bank type: PNC
+2025-04-03 11:26:14 - INFO - Arctaris rename_statements.py:2141 - main - Would rename to: PNC\2025-03\TOWER PERSONAL SERVICES LLC statement_4176790577_2025-03-31.pdf
+2025-04-03 11:26:14 - INFO - Arctaris rename_statements.py:2121 - main - [105/110] Processing file: statement_4176790593_2025-03-31.pdf
+2025-04-03 11:26:14 - INFO - Arctaris rename_statements.py:390 - process_pdf - Successfully identified bank type: PNC
+2025-04-03 11:26:14 - INFO - Arctaris rename_statements.py:2128 - main - Extracted information: <__main__.StatementInfo object at 0x00000191A7439E80>
+2025-04-03 11:26:14 - INFO - Arctaris rename_statements.py:390 - process_pdf - Successfully identified bank type: PNC
+2025-04-03 11:26:14 - INFO - Arctaris rename_statements.py:2141 - main - Would rename to: PNC\2025-03\ARCTARIS MANAGEMENT CO LLC statement_4176790593_2025-03-31.pdf
+2025-04-03 11:26:14 - INFO - Arctaris rename_statements.py:2121 - main - [106/110] Processing file: statement_4179447491_2025-03-31.pdf
+2025-04-03 11:26:15 - INFO - Arctaris rename_statements.py:390 - process_pdf - Successfully identified bank type: PNC
+2025-04-03 11:26:15 - INFO - Arctaris rename_statements.py:2128 - main - Extracted information: <__main__.StatementInfo object at 0x00000191A5FE5400>
+2025-04-03 11:26:15 - INFO - Arctaris rename_statements.py:390 - process_pdf - Successfully identified bank type: PNC
+2025-04-03 11:26:15 - INFO - Arctaris rename_statements.py:2141 - main - Would rename to: PNC\2025-03\ARCTARIS MICHIGAN PARTNERS LLC statement_4179447491_2025-03-31.pdf
+2025-04-03 11:26:15 - INFO - Arctaris rename_statements.py:2121 - main - [107/110] Processing file: statement_4179559231_2025-03-31.pdf
+2025-04-03 11:26:15 - INFO - Arctaris rename_statements.py:390 - process_pdf - Successfully identified bank type: PNC
+2025-04-03 11:26:15 - INFO - Arctaris rename_statements.py:2128 - main - Extracted information: <__main__.StatementInfo object at 0x00000191A5FB1430>
+2025-04-03 11:26:15 - INFO - Arctaris rename_statements.py:390 - process_pdf - Successfully identified bank type: PNC
+2025-04-03 11:26:15 - INFO - Arctaris rename_statements.py:2141 - main - Would rename to: PNC\2025-03\ARCTARIS REAL ESTATE MANAGEMEN statement_4179559231_2025-03-31.pdf
+2025-04-03 11:26:15 - INFO - Arctaris rename_statements.py:2121 - main - [108/110] Processing file: statement_4179559338_2025-03-31.pdf
+2025-04-03 11:26:15 - INFO - Arctaris rename_statements.py:390 - process_pdf - Successfully identified bank type: PNC
+2025-04-03 11:26:15 - INFO - Arctaris rename_statements.py:2128 - main - Extracted information: <__main__.StatementInfo object at 0x00000191A5F665D0>
+2025-04-03 11:26:15 - INFO - Arctaris rename_statements.py:390 - process_pdf - Successfully identified bank type: PNC
+2025-04-03 11:26:15 - INFO - Arctaris rename_statements.py:2141 - main - Would rename to: PNC\2025-03\ARCTARIS HOUSING CO LLC statement_4179559338_2025-03-31.pdf
+2025-04-03 11:26:15 - INFO - Arctaris rename_statements.py:2121 - main - [109/110] Processing file: statement_4179667988_2025-03-31.pdf
+2025-04-03 11:26:15 - INFO - Arctaris rename_statements.py:390 - process_pdf - Successfully identified bank type: PNC
+2025-04-03 11:26:15 - INFO - Arctaris rename_statements.py:2128 - main - Extracted information: <__main__.StatementInfo object at 0x00000191A5FE6300>
+2025-04-03 11:26:15 - INFO - Arctaris rename_statements.py:390 - process_pdf - Successfully identified bank type: PNC
+2025-04-03 11:26:15 - INFO - Arctaris rename_statements.py:2141 - main - Would rename to: PNC\2025-03\ARCTARIS MIDWEST DEV II statement_4179667988_2025-03-31.pdf
+2025-04-03 11:26:15 - INFO - Arctaris rename_statements.py:2121 - main - [110/110] Processing file: statement_4698117603_2025-03-31.pdf
+2025-04-03 11:26:15 - INFO - Arctaris rename_statements.py:390 - process_pdf - Successfully identified bank type: PNC
+2025-04-03 11:26:15 - INFO - Arctaris rename_statements.py:2128 - main - Extracted information: <__main__.StatementInfo object at 0x00000191A7439B80>
+2025-04-03 11:26:15 - INFO - Arctaris rename_statements.py:390 - process_pdf - Successfully identified bank type: PNC
+2025-04-03 11:26:15 - INFO - Arctaris rename_statements.py:2141 - main - Would rename to: PNC\2025-03\ARCTARIS OZ FUND 2019 statement_4698117603_2025-03-31.pdf
+2025-04-03 11:26:15 - INFO - Arctaris rename_statements.py:2197 - main - 
+Dry run completed in 2.79 seconds.
+2025-04-03 11:26:15 - INFO - Arctaris rename_statements.py:2201 - main - Preview checklist saved to: checklists\preview_checklist_20250403_112615.csv
+2025-04-03 11:26:15 - INFO - Arctaris rename_statements.py:2205 - main - 110 files would be processed.

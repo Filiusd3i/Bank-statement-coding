@@ -1,0 +1,379 @@
+# c:\Users\Christian\OneDrive - Arctaris Michigan Partners, LLC\Desktop\Bank Automation\Codes\Bank Statements\main.py
+import os
+import sys
+import time
+import logging
+from typing import List, Dict, Tuple, Any
+import concurrent.futures # Keep for potential future parallelization
+import argparse
+from config_manager import ConfigManager
+from pdf_processor import PDFProcessor
+from file_manager import FileManager
+from utils import setup_logging, parse_arguments, PDFVerifier, ErrorRecovery, EnhancedJSONEncoder
+from bank_strategies import BankStrategy, UnlabeledStrategy
+from statement_info import StatementInfo
+import json
+from collections import defaultdict
+
+# --- Main Application Logic ---
+
+class PdfRenamerApp:
+    """Orchestrates the PDF renaming process."""
+
+    def __init__(self):
+        self.args = parse_arguments()
+        self.config_manager = ConfigManager(self.args.config)
+
+        # Override config log settings if CLI args provided
+        log_level = self.args.log_level or self.config_manager.get("log_level", "INFO")
+        log_file = setup_logging(log_level, self.args.log_file) # Setup logging early
+
+        # Initialize core components
+        self.pdf_verifier = PDFVerifier()
+        self.error_recovery = ErrorRecovery(self.config_manager) # Pass config
+        self.pdf_processor = PDFProcessor(self.config_manager)
+        self.file_manager = FileManager(self.config_manager)
+
+        # Determine effective input/output paths
+        self.input_folder = self.args.input or self.config_manager.get("input_folder")
+        self.processed_folder = self.args.output or self.config_manager.get("processed_folder")
+        self.checklist_dir = self.args.checklist_dir
+
+        # Validate paths
+        if not self.input_folder or not os.path.isdir(self.input_folder):
+            logging.critical(f"Invalid or missing input folder: {self.input_folder}")
+            sys.exit(1) # Exit if input is invalid
+
+        logging.info("=" * 40)
+        logging.info(f"PDF Renamer Initialized (Dry Run: {self.args.dry_run})")
+        logging.info(f"Input Folder: {self.input_folder}")
+        logging.info(f"Output Folder: {self.processed_folder}")
+        logging.info(f"Config File: {self.args.config}")
+        logging.info(f"Log File: {log_file}")
+        logging.info("=" * 40)
+
+        self.files_to_process: List[str] = []
+        self.processing_results: Dict[str, Any] = {"success": 0, "skipped": 0, "error": 0}
+
+
+    def _collect_files(self) -> List[str]:
+        """Collects and filters initial PDF files from the input folder."""
+        try:
+            all_files = [
+                f for f in os.listdir(self.input_folder)
+                if os.path.isfile(os.path.join(self.input_folder, f)) and f.lower().endswith('.pdf')
+            ]
+            # Filter out already repaired files to avoid processing them directly
+            original_files = [f for f in all_files if not f.lower().endswith('.repaired.pdf')]
+            repaired_files_count = len(all_files) - len(original_files)
+            if repaired_files_count > 0:
+                 logging.info(f"Ignoring {repaired_files_count} existing '.repaired.pdf' file(s).")
+
+            pdf_files = [os.path.join(self.input_folder, f) for f in original_files]
+            logging.info(f"Found {len(pdf_files)} PDF file(s) in input folder.")
+            return pdf_files
+        except Exception as e:
+            logging.critical(f"Error reading input directory '{self.input_folder}': {e}", exc_info=True)
+            sys.exit(1)
+
+
+    def _handle_duplicates(self, pdf_files: List[str]) -> List[str]:
+        """Identifies duplicates and filters list if not processing them."""
+        if not self.config_manager.get("check_duplicates", True):
+            return pdf_files
+
+        logging.info("Checking for duplicate files...")
+        duplicate_groups = self.pdf_verifier.find_duplicate_files(pdf_files)
+
+        if not duplicate_groups:
+            logging.info("No duplicate files found.")
+            return pdf_files
+
+        logging.warning(f"Found {len(duplicate_groups)} group(s) of duplicate files:")
+        files_to_skip = set()
+        for i, (hash_val, paths) in enumerate(duplicate_groups.items()):
+            logging.warning(f"  Duplicate Group {i+1} (Hash: {hash_val[:8]}..., {len(paths)} files):")
+            # Log all files in the group
+            for p in paths: logging.warning(f"    - {os.path.basename(p)}")
+            # Mark all but the first one for skipping (unless --process-duplicates is set)
+            if not self.args.process_duplicates:
+                files_to_skip.update(paths[1:])
+
+        if files_to_skip:
+             logging.warning(f"Skipping {len(files_to_skip)} duplicate file(s). Use --process-duplicates to process all.")
+             return [f for f in pdf_files if f not in files_to_skip]
+        else:
+             logging.info("Processing all files including duplicates (--process-duplicates specified or only one file per hash).")
+             return pdf_files
+
+
+    def _verify_and_repair_files(self, pdf_files: List[str]) -> List[str]:
+        """Verifies files and attempts repair if enabled."""
+        if not self.config_manager.get("file_verification", True):
+            return pdf_files
+
+        logging.info("Verifying PDF files...")
+        verified_files = []
+        failed_verification: List[Tuple[str, str]] = [] # (filepath, message)
+
+        for file_path in pdf_files:
+            is_valid, message = self.pdf_verifier.verify_pdf(file_path)
+            if is_valid:
+                verified_files.append(file_path)
+            else:
+                logging.warning(f"Verification failed for {os.path.basename(file_path)}: {message}")
+                failed_verification.append((file_path, message))
+                self.error_recovery.record_error("verification_failed", os.path.basename(file_path))
+
+        if not failed_verification:
+             logging.info("All files passed verification.")
+             return verified_files
+
+        logging.warning(f"{len(failed_verification)} file(s) failed verification.")
+
+        # Attempt repair if enabled
+        if self.config_manager.get("auto_recovery", True):
+            logging.info("Attempting repairs for failed files...")
+            repaired_count = 0
+            for file_path, reason in failed_verification:
+                 success, repaired_path = self.error_recovery.attempt_pdf_repair(file_path)
+                 if success and repaired_path:
+                      # Verify the *repaired* file before adding it
+                      is_repaired_valid, msg = self.pdf_verifier.verify_pdf(repaired_path)
+                      if is_repaired_valid:
+                           logging.info(f"Successfully repaired and verified: {os.path.basename(repaired_path)}")
+                           # Replace original with repaired path in the list to process
+                           verified_files.append(repaired_path)
+                           repaired_count += 1
+                           # Should we remove the original bad file now? Configurable?
+                           # os.remove(file_path)
+                      else:
+                           logging.error(f"Repaired file {os.path.basename(repaired_path)} failed verification: {msg}. Skipping.")
+                           self.error_recovery.record_error("repair_verification_failed", os.path.basename(repaired_path))
+                 else:
+                     logging.error(f"Repair failed for {os.path.basename(file_path)}.")
+                     self.error_recovery.record_error("repair_failed", os.path.basename(file_path))
+
+            if repaired_count > 0:
+                logging.info(f"Added {repaired_count} successfully repaired file(s) to the processing list.")
+        else:
+             logging.info("Auto-recovery disabled, skipping repair attempts.")
+
+
+        logging.info(f"Proceeding with {len(verified_files)} verified/repaired file(s).")
+        return verified_files
+
+
+    def _run_preview(self, files_to_process: List[str]):
+        """Runs the processing logic in dry-run mode and gathers results."""
+        logging.info("\n=== DRY RUN PREVIEW ===")
+        preview_data = [] # Store tuples of (original_path, statement_info, strategy, message)
+
+        total_files = len(files_to_process)
+        for i, file_path in enumerate(files_to_process):
+            filename = os.path.basename(file_path)
+            logging.info(f"[{i+1}/{total_files}] Previewing: {filename}")
+
+            # Process PDF returns both info and the instantiated strategy
+            statement_info, strategy = self.pdf_processor.process_pdf(file_path)
+
+            if statement_info and strategy:
+                 # Strategy is now directly returned by process_pdf
+                 # No need to determine/instantiate it here.
+
+                 # Call file manager in dry-run to get the message
+                 success, message = self.file_manager.process_file(
+                      file_path, self.processed_folder, statement_info, strategy, dry_run=True
+                 )
+                 if success:
+                      preview_data.append((file_path, statement_info, strategy, message))
+                 else:
+                      # Log error during preview simulation
+                      logging.error(f"Dry run simulation failed for {filename}: {message}")
+                      self.processing_results["error"] += 1
+            else:
+                 logging.warning(f"Skipping preview for {filename}: Failed to extract info or determine strategy.")
+                 self.file_manager._log_processed_file(file_path, "N/A", "Unknown", "Skipped (Extraction/Strategy Fail)", True)
+                 self.processing_results["skipped"] += 1
+
+        # Display detailed preview if requested
+        if self.args.show_preview:
+            logging.info("\n--- Detailed Preview by Bank ---")
+            preview_by_bank = defaultdict(list)
+            for _, info, _, msg in preview_data:
+                 bank_type = info.bank_type if info else "Unknown"
+                 original_file = info.original_filename if info else "N/A"
+                 dest_path = msg.split("Would copy")[-1].split("to")[-1].strip().replace("'", "") if "Would copy" in msg else "Error"
+                 preview_by_bank[bank_type].append(f"  From: {original_file} -> To: {dest_path}")
+
+            if not preview_by_bank:
+                 print("PREVIEW_SUMMARY: No files would be processed.")
+            else:
+                print(f"PREVIEW_SUMMARY: Found statements from {len(preview_by_bank)} bank type(s).")
+                for bank, files in sorted(preview_by_bank.items()):
+                    print(f"BANK_COUNT: {bank} {len(files)}") # Marker for batch file
+                    for file_info in files:
+                         print(file_info)
+            print("-" * 30) # End of preview marker for batch
+
+        # Generate preview checklist
+        checklist_path = self.file_manager.generate_checklist(self.checklist_dir, dry_run=True)
+        if checklist_path:
+            logging.info(f"Preview checklist saved to: {checklist_path}")
+            print(f"CHECKLIST_PATH: {checklist_path}") # Marker for batch file
+
+        num_processed = len(preview_data)
+        logging.info(f"\nDry run complete. {num_processed} file(s) would be processed.")
+        print(f"PROCESSED_COUNT: {num_processed}") # Marker for batch file
+
+        return preview_data
+
+
+    def _run_processing(self, preview_data: List[Tuple[str, StatementInfo, BankStrategy, str]]):
+        """Runs the actual file processing based on previewed data."""
+        if not preview_data:
+             logging.warning("No files to process.")
+             return
+
+        total_to_process = len(preview_data)
+        logging.info(f"\n=== PROCESSING {total_to_process} FILES ===")
+
+        if not self.args.auto_confirm:
+            try:
+                confirm = input(f"Proceed with processing {total_to_process} file(s)? (y/n): ").strip().lower()
+                if confirm not in ['y', 'yes']:
+                    logging.warning("Operation cancelled by user.")
+                    # Log skipped files for checklist consistency?
+                    for file_path, info, _, _ in preview_data:
+                         self.file_manager._log_processed_file(file_path, "N/A", info.bank_type, "Cancelled", False)
+                    return # Exit processing
+            except EOFError: # Handle case where input stream is closed (e.g., piped)
+                 logging.warning("No interactive input detected. Use --auto-confirm to run non-interactively. Aborting.")
+                 return
+
+        logging.info("Starting file processing...")
+        # Reset results for actual run
+        self.processing_results = {"success": 0, "skipped": 0, "error": 0}
+
+        # --- Optional: Parallel Processing ---
+        # max_workers = self.config_manager.get("max_workers", 1)
+        # if max_workers > 1:
+        #     logging.info(f"Using parallel processing with {max_workers} workers.")
+        #     with concurrent.futures.ThreadPoolExecutor(max_workers=max_workers) as executor:
+        #         futures = [
+        #             executor.submit(self._process_single_file, file_path, info, strategy)
+        #             for file_path, info, strategy, _ in preview_data
+        #         ]
+        #         for future in concurrent.futures.as_completed(futures):
+        #             # Handle results/exceptions if needed, logging is done in the worker
+        #             try: future.result()
+        #             except Exception as exc: logging.error(f"Error in parallel task: {exc}")
+        # else: # Sequential processing
+        #     logging.info("Using sequential processing.")
+        #     for i, (file_path, info, strategy, _) in enumerate(preview_data):
+        #          logging.info(f"[{i+1}/{total_to_process}] Processing: {os.path.basename(file_path)}")
+        #          self._process_single_file(file_path, info, strategy)
+        # --- End Optional Parallel ---
+
+        # --- Start Sequential Processing (Simpler for now) ---
+        logging.info("Using sequential processing.")
+        # The preview_data now contains the already instantiated strategy
+        for i, (file_path, info, strategy, _) in enumerate(preview_data):
+            logging.info(f"[{i+1}/{total_to_process}] Processing: {os.path.basename(file_path)}")
+            # We already have the statement_info and strategy from the preview_data tuple
+            if info and strategy:
+                 self._process_single_file(file_path, info, strategy)
+            else:
+                # This case should ideally not happen if preview_data was filtered correctly
+                logging.error(f"Skipping processing for {os.path.basename(file_path)} due to missing info/strategy from preview phase.")
+                self.processing_results["skipped"] += 1 # Or maybe error?
+        # --- End Sequential Processing ---
+
+        # Generate final checklist
+        checklist_path = self.file_manager.generate_checklist(self.checklist_dir, dry_run=False)
+        if checklist_path:
+             print(f"CHECKLIST_PATH: {checklist_path}") # Marker for batch file
+
+        logging.info(f"\nProcessing Summary: Success={self.processing_results['success']}, Skipped={self.processing_results['skipped']}, Error={self.processing_results['error']}")
+        # Log detailed error summary
+        error_summary = self.error_recovery.get_summary()
+        if error_summary["total_errors_recorded"] > 0:
+             logging.info(f"Error Details: {error_summary}")
+
+
+    def _process_single_file(self, file_path: str, statement_info: StatementInfo, strategy: BankStrategy):
+        """Wrapper to process a single file (used by sequential/parallel execution)."""
+        try:
+            success, message = self.file_manager.process_file(
+                file_path, self.processed_folder, statement_info, strategy, dry_run=False
+            )
+            if success:
+                 self.processing_results["success"] += 1
+            else:
+                 self.processing_results["error"] += 1
+                 self.error_recovery.record_error("file_manager_error", os.path.basename(file_path))
+
+        except Exception as e:
+            logging.error(f"Critical error processing {os.path.basename(file_path)}: {e}", exc_info=True)
+            self.processing_results["error"] += 1
+            self.error_recovery.record_error("critical_processing_error", os.path.basename(file_path))
+            # Ensure it's logged for checklist even on critical failure
+            # Check if already logged by file_manager before adding again
+            is_logged = any(item['Original File'] == os.path.basename(file_path) for item in self.file_manager.processed_files_log)
+            if not is_logged:
+                self.file_manager._log_processed_file(
+                    file_path, "Error", statement_info.bank_type, "Error (Critical)", False
+                )
+
+    def run(self):
+        """Execute the main application workflow."""
+        start_time = time.time()
+
+        # 1. Collect files
+        pdf_files = self._collect_files()
+        if not pdf_files:
+            logging.warning("No PDF files found to process.")
+            return 0 # Success exit code if no files
+
+        # 2. Handle duplicates
+        unique_files = self._handle_duplicates(pdf_files)
+        if not unique_files:
+             logging.warning("No unique files left to process after duplicate removal.")
+             return 0
+
+        # 3. Verify and repair
+        self.files_to_process = self._verify_and_repair_files(unique_files)
+        if not self.files_to_process:
+             logging.warning("No files remaining after verification and repair attempts.")
+             return 0
+
+        # 4. Run Preview (always runs internally, displays based on args)
+        preview_data = self._run_preview(self.files_to_process)
+
+        # 5. Process Files (if not dry run)
+        if not self.args.dry_run:
+             self._run_processing(preview_data)
+
+        # 6. Finish
+        elapsed_time = time.time() - start_time
+        logging.info(f"\nApplication finished in {elapsed_time:.2f} seconds.")
+        logging.info("=" * 40)
+
+        # Return exit code based on errors? (0 for success, 1 for errors)
+        return 1 if self.processing_results["error"] > 0 else 0
+
+
+# --- Script Entry Point ---
+
+if __name__ == "__main__":
+    try:
+        app = PdfRenamerApp()
+        exit_code = app.run()
+        sys.exit(exit_code)
+    except KeyboardInterrupt:
+        logging.warning("\nOperation interrupted by user (Ctrl+C).")
+        sys.exit(130) # Standard exit code for Ctrl+C
+    except Exception as e:
+        # Catch-all for unexpected errors during initialization or run
+        logging.critical(f"Unhandled exception occurred: {e}", exc_info=True)
+        sys.exit(1) 

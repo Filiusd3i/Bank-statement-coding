@@ -1,0 +1,498 @@
+2025-04-02 15:41:24 - INFO - Arctaris rename_statements.py:1295 - setup_logging - Logging initialized at level INFO
+2025-04-02 15:41:24 - INFO - Arctaris rename_statements.py:1296 - setup_logging - Log file: C:\Users\Christian\OneDrive - Arctaris Michigan Partners, LLC\Desktop\Bank Automation\Codes\Bank Statements\logs\pdf_processor_20250402_154124.log
+2025-04-02 15:41:24 - INFO - Arctaris rename_statements.py:1361 - main - Starting PDF rename script (version 2.0)
+2025-04-02 15:41:24 - INFO - Arctaris rename_statements.py:1362 - main - Input folder: C:\Users\Christian\OneDrive - Arctaris Michigan Partners, LLC\Desktop\Bank Automation\input_statements
+2025-04-02 15:41:24 - INFO - Arctaris rename_statements.py:1363 - main - Output folder: C:\Users\Christian\OneDrive - Arctaris Michigan Partners, LLC\Desktop\Bank Automation\processed_statements
+2025-04-02 15:41:24 - INFO - Arctaris rename_statements.py:1396 - main - Found 110 PDF file(s) to process
+2025-04-02 15:41:24 - INFO - Arctaris rename_statements.py:1031 - find_duplicate_files - Duplicate group - Original: dxweb (26).pdf, Duplicates: dxweb (27).pdf
+2025-04-02 15:41:24 - INFO - Arctaris rename_statements.py:1031 - find_duplicate_files - Duplicate group - Original: dxweb (32).pdf, Duplicates: dxweb (33).pdf
+2025-04-02 15:41:24 - WARNING - Arctaris rename_statements.py:1404 - main - Found 2 groups of duplicate files:
+2025-04-02 15:41:24 - WARNING - Arctaris rename_statements.py:1406 - main -   Duplicate group (2 files):
+2025-04-02 15:41:24 - WARNING - Arctaris rename_statements.py:1409 - main -     - dxweb (26).pdf
+2025-04-02 15:41:24 - WARNING - Arctaris rename_statements.py:1409 - main -     - dxweb (27).pdf
+2025-04-02 15:41:24 - INFO - Arctaris rename_statements.py:1414 - main -   Original: dxweb (26).pdf, Duplicates: dxweb (27).pdf
+2025-04-02 15:41:24 - WARNING - Arctaris rename_statements.py:1406 - main -   Duplicate group (2 files):
+2025-04-02 15:41:24 - WARNING - Arctaris rename_statements.py:1409 - main -     - dxweb (32).pdf
+2025-04-02 15:41:24 - WARNING - Arctaris rename_statements.py:1409 - main -     - dxweb (33).pdf
+2025-04-02 15:41:24 - INFO - Arctaris rename_statements.py:1414 - main -   Original: dxweb (32).pdf, Duplicates: dxweb (33).pdf
+2025-04-02 15:41:24 - INFO - Arctaris rename_statements.py:1433 - main - 
+=== PREVIEW MODE ===
+2025-04-02 15:41:24 - INFO - Arctaris rename_statements.py:1441 - main - Verifying PDF files...
+2025-04-02 15:41:25 - WARNING - Arctaris rename_statements.py:1452 - main - File verification failed for NewStatement (1).pdf: Could not extract text (possible scan/image PDF)
+2025-04-02 15:41:25 - WARNING - Arctaris rename_statements.py:1452 - main - File verification failed for NewStatement (2).pdf: Could not extract text (possible scan/image PDF)
+2025-04-02 15:41:25 - WARNING - Arctaris rename_statements.py:1452 - main - File verification failed for NewStatement (3).pdf: Could not extract text (possible scan/image PDF)
+2025-04-02 15:41:25 - WARNING - Arctaris rename_statements.py:1452 - main - File verification failed for NewStatement.pdf: Could not extract text (possible scan/image PDF)
+2025-04-02 15:41:25 - WARNING - Arctaris rename_statements.py:1456 - main - 4 files failed verification
+2025-04-02 15:41:25 - INFO - Arctaris rename_statements.py:1464 - main - Attempting to repair NewStatement (1).pdf
+2025-04-02 15:41:25 - INFO - Arctaris rename_statements.py:1469 - main - Successfully repaired NewStatement (1).pdf
+2025-04-02 15:41:25 - INFO - Arctaris rename_statements.py:1464 - main - Attempting to repair NewStatement (2).pdf
+2025-04-02 15:41:25 - INFO - Arctaris rename_statements.py:1469 - main - Successfully repaired NewStatement (2).pdf
+2025-04-02 15:41:25 - INFO - Arctaris rename_statements.py:1464 - main - Attempting to repair NewStatement (3).pdf
+2025-04-02 15:41:25 - INFO - Arctaris rename_statements.py:1469 - main - Successfully repaired NewStatement (3).pdf
+2025-04-02 15:41:25 - INFO - Arctaris rename_statements.py:1464 - main - Attempting to repair NewStatement.pdf
+2025-04-02 15:41:25 - INFO - Arctaris rename_statements.py:1469 - main - Successfully repaired NewStatement.pdf
+2025-04-02 15:41:25 - INFO - Arctaris rename_statements.py:1474 - main - Added repaired file NewStatement (1).pdf to processing queue
+2025-04-02 15:41:25 - INFO - Arctaris rename_statements.py:1474 - main - Added repaired file NewStatement (2).pdf to processing queue
+2025-04-02 15:41:25 - INFO - Arctaris rename_statements.py:1474 - main - Added repaired file NewStatement (3).pdf to processing queue
+2025-04-02 15:41:25 - INFO - Arctaris rename_statements.py:1474 - main - Added repaired file NewStatement.pdf to processing queue
+2025-04-02 15:41:25 - INFO - Arctaris rename_statements.py:1478 - main - 110 files verified and ready for processing
+2025-04-02 15:41:25 - INFO - Arctaris rename_statements.py:1487 - main - 
+Processing batch 1 (1-20 of 110)
+2025-04-02 15:41:25 - INFO - Arctaris rename_statements.py:1492 - main - [1/110] Processing file: dxweb (10).pdf
+2025-04-02 15:41:25 - INFO - Arctaris rename_statements.py:202 - process_pdf - Processing dxweb file as BankUnited: dxweb (10).pdf
+2025-04-02 15:41:25 - INFO - Arctaris rename_statements.py:1499 - main - Extracted information: <__main__.StatementInfo object at 0x000001C0D938E900>
+2025-04-02 15:41:25 - ERROR - Arctaris rename_statements.py:1517 - main - Error processing dxweb (10).pdf: 'FileManager' object has no attribute '_extract_statement_info'
+2025-04-02 15:41:25 - INFO - Arctaris rename_statements.py:1492 - main - [2/110] Processing file: dxweb (11).pdf
+2025-04-02 15:41:25 - INFO - Arctaris rename_statements.py:202 - process_pdf - Processing dxweb file as BankUnited: dxweb (11).pdf
+2025-04-02 15:41:25 - INFO - Arctaris rename_statements.py:1499 - main - Extracted information: <__main__.StatementInfo object at 0x000001C0D92D33B0>
+2025-04-02 15:41:25 - ERROR - Arctaris rename_statements.py:1517 - main - Error processing dxweb (11).pdf: 'FileManager' object has no attribute '_extract_statement_info'
+2025-04-02 15:41:25 - INFO - Arctaris rename_statements.py:1492 - main - [3/110] Processing file: dxweb (12).pdf
+2025-04-02 15:41:25 - INFO - Arctaris rename_statements.py:202 - process_pdf - Processing dxweb file as BankUnited: dxweb (12).pdf
+2025-04-02 15:41:25 - INFO - Arctaris rename_statements.py:1499 - main - Extracted information: <__main__.StatementInfo object at 0x000001C0D938E900>
+2025-04-02 15:41:25 - ERROR - Arctaris rename_statements.py:1517 - main - Error processing dxweb (12).pdf: 'FileManager' object has no attribute '_extract_statement_info'
+2025-04-02 15:41:25 - INFO - Arctaris rename_statements.py:1492 - main - [4/110] Processing file: dxweb (13).pdf
+2025-04-02 15:41:25 - INFO - Arctaris rename_statements.py:202 - process_pdf - Processing dxweb file as BankUnited: dxweb (13).pdf
+2025-04-02 15:41:25 - INFO - Arctaris rename_statements.py:1499 - main - Extracted information: <__main__.StatementInfo object at 0x000001C0D92D33B0>
+2025-04-02 15:41:25 - ERROR - Arctaris rename_statements.py:1517 - main - Error processing dxweb (13).pdf: 'FileManager' object has no attribute '_extract_statement_info'
+2025-04-02 15:41:25 - INFO - Arctaris rename_statements.py:1492 - main - [5/110] Processing file: dxweb (14).pdf
+2025-04-02 15:41:25 - INFO - Arctaris rename_statements.py:202 - process_pdf - Processing dxweb file as BankUnited: dxweb (14).pdf
+2025-04-02 15:41:25 - INFO - Arctaris rename_statements.py:1499 - main - Extracted information: <__main__.StatementInfo object at 0x000001C0D938E900>
+2025-04-02 15:41:25 - ERROR - Arctaris rename_statements.py:1517 - main - Error processing dxweb (14).pdf: 'FileManager' object has no attribute '_extract_statement_info'
+2025-04-02 15:41:25 - INFO - Arctaris rename_statements.py:1492 - main - [6/110] Processing file: dxweb (15).pdf
+2025-04-02 15:41:25 - INFO - Arctaris rename_statements.py:202 - process_pdf - Processing dxweb file as BankUnited: dxweb (15).pdf
+2025-04-02 15:41:25 - INFO - Arctaris rename_statements.py:1499 - main - Extracted information: <__main__.StatementInfo object at 0x000001C0D92D33B0>
+2025-04-02 15:41:25 - ERROR - Arctaris rename_statements.py:1517 - main - Error processing dxweb (15).pdf: 'FileManager' object has no attribute '_extract_statement_info'
+2025-04-02 15:41:25 - INFO - Arctaris rename_statements.py:1492 - main - [7/110] Processing file: dxweb (16).pdf
+2025-04-02 15:41:25 - INFO - Arctaris rename_statements.py:202 - process_pdf - Processing dxweb file as BankUnited: dxweb (16).pdf
+2025-04-02 15:41:25 - INFO - Arctaris rename_statements.py:1499 - main - Extracted information: <__main__.StatementInfo object at 0x000001C0D938E900>
+2025-04-02 15:41:25 - ERROR - Arctaris rename_statements.py:1517 - main - Error processing dxweb (16).pdf: 'FileManager' object has no attribute '_extract_statement_info'
+2025-04-02 15:41:25 - INFO - Arctaris rename_statements.py:1492 - main - [8/110] Processing file: dxweb (17).pdf
+2025-04-02 15:41:25 - INFO - Arctaris rename_statements.py:202 - process_pdf - Processing dxweb file as BankUnited: dxweb (17).pdf
+2025-04-02 15:41:25 - INFO - Arctaris rename_statements.py:1499 - main - Extracted information: <__main__.StatementInfo object at 0x000001C0D92D33B0>
+2025-04-02 15:41:25 - ERROR - Arctaris rename_statements.py:1517 - main - Error processing dxweb (17).pdf: 'FileManager' object has no attribute '_extract_statement_info'
+2025-04-02 15:41:25 - INFO - Arctaris rename_statements.py:1492 - main - [9/110] Processing file: dxweb (18).pdf
+2025-04-02 15:41:25 - INFO - Arctaris rename_statements.py:202 - process_pdf - Processing dxweb file as BankUnited: dxweb (18).pdf
+2025-04-02 15:41:25 - INFO - Arctaris rename_statements.py:1499 - main - Extracted information: <__main__.StatementInfo object at 0x000001C0D938E900>
+2025-04-02 15:41:25 - ERROR - Arctaris rename_statements.py:1517 - main - Error processing dxweb (18).pdf: 'FileManager' object has no attribute '_extract_statement_info'
+2025-04-02 15:41:25 - INFO - Arctaris rename_statements.py:1492 - main - [10/110] Processing file: dxweb (19).pdf
+2025-04-02 15:41:25 - INFO - Arctaris rename_statements.py:202 - process_pdf - Processing dxweb file as BankUnited: dxweb (19).pdf
+2025-04-02 15:41:25 - INFO - Arctaris rename_statements.py:1499 - main - Extracted information: <__main__.StatementInfo object at 0x000001C0D92D33B0>
+2025-04-02 15:41:25 - ERROR - Arctaris rename_statements.py:1517 - main - Error processing dxweb (19).pdf: 'FileManager' object has no attribute '_extract_statement_info'
+2025-04-02 15:41:25 - INFO - Arctaris rename_statements.py:1492 - main - [11/110] Processing file: dxweb (20).pdf
+2025-04-02 15:41:25 - INFO - Arctaris rename_statements.py:202 - process_pdf - Processing dxweb file as BankUnited: dxweb (20).pdf
+2025-04-02 15:41:25 - INFO - Arctaris rename_statements.py:1499 - main - Extracted information: <__main__.StatementInfo object at 0x000001C0D938E900>
+2025-04-02 15:41:25 - ERROR - Arctaris rename_statements.py:1517 - main - Error processing dxweb (20).pdf: 'FileManager' object has no attribute '_extract_statement_info'
+2025-04-02 15:41:25 - INFO - Arctaris rename_statements.py:1492 - main - [12/110] Processing file: dxweb (21).pdf
+2025-04-02 15:41:25 - INFO - Arctaris rename_statements.py:202 - process_pdf - Processing dxweb file as BankUnited: dxweb (21).pdf
+2025-04-02 15:41:25 - INFO - Arctaris rename_statements.py:1499 - main - Extracted information: <__main__.StatementInfo object at 0x000001C0D92D33B0>
+2025-04-02 15:41:25 - ERROR - Arctaris rename_statements.py:1517 - main - Error processing dxweb (21).pdf: 'FileManager' object has no attribute '_extract_statement_info'
+2025-04-02 15:41:25 - INFO - Arctaris rename_statements.py:1492 - main - [13/110] Processing file: dxweb (22).pdf
+2025-04-02 15:41:25 - INFO - Arctaris rename_statements.py:202 - process_pdf - Processing dxweb file as BankUnited: dxweb (22).pdf
+2025-04-02 15:41:25 - INFO - Arctaris rename_statements.py:1499 - main - Extracted information: <__main__.StatementInfo object at 0x000001C0D938E900>
+2025-04-02 15:41:25 - ERROR - Arctaris rename_statements.py:1517 - main - Error processing dxweb (22).pdf: 'FileManager' object has no attribute '_extract_statement_info'
+2025-04-02 15:41:25 - INFO - Arctaris rename_statements.py:1492 - main - [14/110] Processing file: dxweb (23).pdf
+2025-04-02 15:41:25 - INFO - Arctaris rename_statements.py:202 - process_pdf - Processing dxweb file as BankUnited: dxweb (23).pdf
+2025-04-02 15:41:25 - INFO - Arctaris rename_statements.py:1499 - main - Extracted information: <__main__.StatementInfo object at 0x000001C0D92D33B0>
+2025-04-02 15:41:25 - ERROR - Arctaris rename_statements.py:1517 - main - Error processing dxweb (23).pdf: 'FileManager' object has no attribute '_extract_statement_info'
+2025-04-02 15:41:25 - INFO - Arctaris rename_statements.py:1492 - main - [15/110] Processing file: dxweb (24).pdf
+2025-04-02 15:41:25 - INFO - Arctaris rename_statements.py:202 - process_pdf - Processing dxweb file as BankUnited: dxweb (24).pdf
+2025-04-02 15:41:25 - INFO - Arctaris rename_statements.py:1499 - main - Extracted information: <__main__.StatementInfo object at 0x000001C0D938E900>
+2025-04-02 15:41:25 - ERROR - Arctaris rename_statements.py:1517 - main - Error processing dxweb (24).pdf: 'FileManager' object has no attribute '_extract_statement_info'
+2025-04-02 15:41:25 - INFO - Arctaris rename_statements.py:1492 - main - [16/110] Processing file: dxweb (25).pdf
+2025-04-02 15:41:25 - INFO - Arctaris rename_statements.py:202 - process_pdf - Processing dxweb file as BankUnited: dxweb (25).pdf
+2025-04-02 15:41:25 - INFO - Arctaris rename_statements.py:1499 - main - Extracted information: <__main__.StatementInfo object at 0x000001C0D92D33B0>
+2025-04-02 15:41:25 - ERROR - Arctaris rename_statements.py:1517 - main - Error processing dxweb (25).pdf: 'FileManager' object has no attribute '_extract_statement_info'
+2025-04-02 15:41:25 - INFO - Arctaris rename_statements.py:1492 - main - [17/110] Processing file: dxweb (26).pdf
+2025-04-02 15:41:25 - INFO - Arctaris rename_statements.py:202 - process_pdf - Processing dxweb file as BankUnited: dxweb (26).pdf
+2025-04-02 15:41:25 - INFO - Arctaris rename_statements.py:1499 - main - Extracted information: <__main__.StatementInfo object at 0x000001C0D938E900>
+2025-04-02 15:41:25 - ERROR - Arctaris rename_statements.py:1517 - main - Error processing dxweb (26).pdf: 'FileManager' object has no attribute '_extract_statement_info'
+2025-04-02 15:41:25 - INFO - Arctaris rename_statements.py:1492 - main - [18/110] Processing file: dxweb (27).pdf
+2025-04-02 15:41:25 - INFO - Arctaris rename_statements.py:202 - process_pdf - Processing dxweb file as BankUnited: dxweb (27).pdf
+2025-04-02 15:41:25 - INFO - Arctaris rename_statements.py:1499 - main - Extracted information: <__main__.StatementInfo object at 0x000001C0D92D33B0>
+2025-04-02 15:41:25 - ERROR - Arctaris rename_statements.py:1517 - main - Error processing dxweb (27).pdf: 'FileManager' object has no attribute '_extract_statement_info'
+2025-04-02 15:41:25 - INFO - Arctaris rename_statements.py:1492 - main - [19/110] Processing file: dxweb (28).pdf
+2025-04-02 15:41:25 - INFO - Arctaris rename_statements.py:202 - process_pdf - Processing dxweb file as BankUnited: dxweb (28).pdf
+2025-04-02 15:41:25 - INFO - Arctaris rename_statements.py:1499 - main - Extracted information: <__main__.StatementInfo object at 0x000001C0D938E900>
+2025-04-02 15:41:25 - ERROR - Arctaris rename_statements.py:1517 - main - Error processing dxweb (28).pdf: 'FileManager' object has no attribute '_extract_statement_info'
+2025-04-02 15:41:25 - INFO - Arctaris rename_statements.py:1492 - main - [20/110] Processing file: dxweb (29).pdf
+2025-04-02 15:41:25 - INFO - Arctaris rename_statements.py:202 - process_pdf - Processing dxweb file as BankUnited: dxweb (29).pdf
+2025-04-02 15:41:25 - INFO - Arctaris rename_statements.py:1499 - main - Extracted information: <__main__.StatementInfo object at 0x000001C0D92D33B0>
+2025-04-02 15:41:25 - ERROR - Arctaris rename_statements.py:1517 - main - Error processing dxweb (29).pdf: 'FileManager' object has no attribute '_extract_statement_info'
+2025-04-02 15:41:25 - INFO - Arctaris rename_statements.py:1487 - main - 
+Processing batch 2 (21-40 of 110)
+2025-04-02 15:41:25 - INFO - Arctaris rename_statements.py:1492 - main - [21/110] Processing file: dxweb (30).pdf
+2025-04-02 15:41:25 - INFO - Arctaris rename_statements.py:202 - process_pdf - Processing dxweb file as BankUnited: dxweb (30).pdf
+2025-04-02 15:41:25 - INFO - Arctaris rename_statements.py:1499 - main - Extracted information: <__main__.StatementInfo object at 0x000001C0D938E900>
+2025-04-02 15:41:25 - ERROR - Arctaris rename_statements.py:1517 - main - Error processing dxweb (30).pdf: 'FileManager' object has no attribute '_extract_statement_info'
+2025-04-02 15:41:25 - INFO - Arctaris rename_statements.py:1492 - main - [22/110] Processing file: dxweb (31).pdf
+2025-04-02 15:41:25 - INFO - Arctaris rename_statements.py:202 - process_pdf - Processing dxweb file as BankUnited: dxweb (31).pdf
+2025-04-02 15:41:25 - INFO - Arctaris rename_statements.py:1499 - main - Extracted information: <__main__.StatementInfo object at 0x000001C0D92D33B0>
+2025-04-02 15:41:25 - ERROR - Arctaris rename_statements.py:1517 - main - Error processing dxweb (31).pdf: 'FileManager' object has no attribute '_extract_statement_info'
+2025-04-02 15:41:25 - INFO - Arctaris rename_statements.py:1492 - main - [23/110] Processing file: dxweb (32).pdf
+2025-04-02 15:41:25 - INFO - Arctaris rename_statements.py:202 - process_pdf - Processing dxweb file as BankUnited: dxweb (32).pdf
+2025-04-02 15:41:25 - INFO - Arctaris rename_statements.py:1499 - main - Extracted information: <__main__.StatementInfo object at 0x000001C0D938E900>
+2025-04-02 15:41:25 - ERROR - Arctaris rename_statements.py:1517 - main - Error processing dxweb (32).pdf: 'FileManager' object has no attribute '_extract_statement_info'
+2025-04-02 15:41:25 - INFO - Arctaris rename_statements.py:1492 - main - [24/110] Processing file: dxweb (33).pdf
+2025-04-02 15:41:25 - INFO - Arctaris rename_statements.py:202 - process_pdf - Processing dxweb file as BankUnited: dxweb (33).pdf
+2025-04-02 15:41:25 - INFO - Arctaris rename_statements.py:1499 - main - Extracted information: <__main__.StatementInfo object at 0x000001C0D92D33B0>
+2025-04-02 15:41:25 - ERROR - Arctaris rename_statements.py:1517 - main - Error processing dxweb (33).pdf: 'FileManager' object has no attribute '_extract_statement_info'
+2025-04-02 15:41:25 - INFO - Arctaris rename_statements.py:1492 - main - [25/110] Processing file: dxweb (34).pdf
+2025-04-02 15:41:25 - INFO - Arctaris rename_statements.py:202 - process_pdf - Processing dxweb file as BankUnited: dxweb (34).pdf
+2025-04-02 15:41:25 - INFO - Arctaris rename_statements.py:1499 - main - Extracted information: <__main__.StatementInfo object at 0x000001C0D938E900>
+2025-04-02 15:41:25 - ERROR - Arctaris rename_statements.py:1517 - main - Error processing dxweb (34).pdf: 'FileManager' object has no attribute '_extract_statement_info'
+2025-04-02 15:41:25 - INFO - Arctaris rename_statements.py:1492 - main - [26/110] Processing file: dxweb (35).pdf
+2025-04-02 15:41:25 - INFO - Arctaris rename_statements.py:202 - process_pdf - Processing dxweb file as BankUnited: dxweb (35).pdf
+2025-04-02 15:41:25 - INFO - Arctaris rename_statements.py:1499 - main - Extracted information: <__main__.StatementInfo object at 0x000001C0D92D33B0>
+2025-04-02 15:41:25 - ERROR - Arctaris rename_statements.py:1517 - main - Error processing dxweb (35).pdf: 'FileManager' object has no attribute '_extract_statement_info'
+2025-04-02 15:41:25 - INFO - Arctaris rename_statements.py:1492 - main - [27/110] Processing file: dxweb (8).pdf
+2025-04-02 15:41:25 - INFO - Arctaris rename_statements.py:202 - process_pdf - Processing dxweb file as BankUnited: dxweb (8).pdf
+2025-04-02 15:41:25 - INFO - Arctaris rename_statements.py:1499 - main - Extracted information: <__main__.StatementInfo object at 0x000001C0D938E900>
+2025-04-02 15:41:25 - ERROR - Arctaris rename_statements.py:1517 - main - Error processing dxweb (8).pdf: 'FileManager' object has no attribute '_extract_statement_info'
+2025-04-02 15:41:25 - INFO - Arctaris rename_statements.py:1492 - main - [28/110] Processing file: dxweb (9).pdf
+2025-04-02 15:41:25 - INFO - Arctaris rename_statements.py:202 - process_pdf - Processing dxweb file as BankUnited: dxweb (9).pdf
+2025-04-02 15:41:25 - INFO - Arctaris rename_statements.py:1499 - main - Extracted information: <__main__.StatementInfo object at 0x000001C0D92D33B0>
+2025-04-02 15:41:25 - ERROR - Arctaris rename_statements.py:1517 - main - Error processing dxweb (9).pdf: 'FileManager' object has no attribute '_extract_statement_info'
+2025-04-02 15:41:25 - INFO - Arctaris rename_statements.py:1492 - main - [29/110] Processing file: Online Statements_2025-02-28 (1).pdf
+2025-04-02 15:41:25 - INFO - Arctaris rename_statements.py:170 - process_pdf - Processing Online Statements file as Cambridge: Online Statements_2025-02-28 (1).pdf
+2025-04-02 15:41:25 - INFO - Arctaris rename_statements.py:1499 - main - Extracted information: <__main__.StatementInfo object at 0x000001C0D938E900>
+2025-04-02 15:41:25 - ERROR - Arctaris rename_statements.py:1517 - main - Error processing Online Statements_2025-02-28 (1).pdf: 'FileManager' object has no attribute '_extract_statement_info'
+2025-04-02 15:41:25 - INFO - Arctaris rename_statements.py:1492 - main - [30/110] Processing file: Online Statements_2025-02-28 (10).pdf
+2025-04-02 15:41:25 - INFO - Arctaris rename_statements.py:170 - process_pdf - Processing Online Statements file as Cambridge: Online Statements_2025-02-28 (10).pdf
+2025-04-02 15:41:25 - INFO - Arctaris rename_statements.py:1499 - main - Extracted information: <__main__.StatementInfo object at 0x000001C0D92D33B0>
+2025-04-02 15:41:25 - ERROR - Arctaris rename_statements.py:1517 - main - Error processing Online Statements_2025-02-28 (10).pdf: 'FileManager' object has no attribute '_extract_statement_info'
+2025-04-02 15:41:25 - INFO - Arctaris rename_statements.py:1492 - main - [31/110] Processing file: Online Statements_2025-02-28 (11).pdf
+2025-04-02 15:41:25 - INFO - Arctaris rename_statements.py:170 - process_pdf - Processing Online Statements file as Cambridge: Online Statements_2025-02-28 (11).pdf
+2025-04-02 15:41:25 - INFO - Arctaris rename_statements.py:1499 - main - Extracted information: <__main__.StatementInfo object at 0x000001C0D938E900>
+2025-04-02 15:41:25 - ERROR - Arctaris rename_statements.py:1517 - main - Error processing Online Statements_2025-02-28 (11).pdf: 'FileManager' object has no attribute '_extract_statement_info'
+2025-04-02 15:41:25 - INFO - Arctaris rename_statements.py:1492 - main - [32/110] Processing file: Online Statements_2025-02-28 (12).pdf
+2025-04-02 15:41:25 - INFO - Arctaris rename_statements.py:170 - process_pdf - Processing Online Statements file as Cambridge: Online Statements_2025-02-28 (12).pdf
+2025-04-02 15:41:25 - INFO - Arctaris rename_statements.py:1499 - main - Extracted information: <__main__.StatementInfo object at 0x000001C0D92D33B0>
+2025-04-02 15:41:25 - ERROR - Arctaris rename_statements.py:1517 - main - Error processing Online Statements_2025-02-28 (12).pdf: 'FileManager' object has no attribute '_extract_statement_info'
+2025-04-02 15:41:25 - INFO - Arctaris rename_statements.py:1492 - main - [33/110] Processing file: Online Statements_2025-02-28 (13).pdf
+2025-04-02 15:41:25 - INFO - Arctaris rename_statements.py:170 - process_pdf - Processing Online Statements file as Cambridge: Online Statements_2025-02-28 (13).pdf
+2025-04-02 15:41:25 - INFO - Arctaris rename_statements.py:1499 - main - Extracted information: <__main__.StatementInfo object at 0x000001C0D938E900>
+2025-04-02 15:41:25 - ERROR - Arctaris rename_statements.py:1517 - main - Error processing Online Statements_2025-02-28 (13).pdf: 'FileManager' object has no attribute '_extract_statement_info'
+2025-04-02 15:41:25 - INFO - Arctaris rename_statements.py:1492 - main - [34/110] Processing file: Online Statements_2025-02-28 (2).pdf
+2025-04-02 15:41:25 - INFO - Arctaris rename_statements.py:170 - process_pdf - Processing Online Statements file as Cambridge: Online Statements_2025-02-28 (2).pdf
+2025-04-02 15:41:25 - INFO - Arctaris rename_statements.py:1499 - main - Extracted information: <__main__.StatementInfo object at 0x000001C0D92D33B0>
+2025-04-02 15:41:25 - ERROR - Arctaris rename_statements.py:1517 - main - Error processing Online Statements_2025-02-28 (2).pdf: 'FileManager' object has no attribute '_extract_statement_info'
+2025-04-02 15:41:25 - INFO - Arctaris rename_statements.py:1492 - main - [35/110] Processing file: Online Statements_2025-02-28 (3).pdf
+2025-04-02 15:41:25 - INFO - Arctaris rename_statements.py:170 - process_pdf - Processing Online Statements file as Cambridge: Online Statements_2025-02-28 (3).pdf
+2025-04-02 15:41:25 - INFO - Arctaris rename_statements.py:1499 - main - Extracted information: <__main__.StatementInfo object at 0x000001C0D938E900>
+2025-04-02 15:41:25 - ERROR - Arctaris rename_statements.py:1517 - main - Error processing Online Statements_2025-02-28 (3).pdf: 'FileManager' object has no attribute '_extract_statement_info'
+2025-04-02 15:41:25 - INFO - Arctaris rename_statements.py:1492 - main - [36/110] Processing file: Online Statements_2025-02-28 (4).pdf
+2025-04-02 15:41:25 - INFO - Arctaris rename_statements.py:170 - process_pdf - Processing Online Statements file as Cambridge: Online Statements_2025-02-28 (4).pdf
+2025-04-02 15:41:25 - INFO - Arctaris rename_statements.py:1499 - main - Extracted information: <__main__.StatementInfo object at 0x000001C0D92D33B0>
+2025-04-02 15:41:25 - ERROR - Arctaris rename_statements.py:1517 - main - Error processing Online Statements_2025-02-28 (4).pdf: 'FileManager' object has no attribute '_extract_statement_info'
+2025-04-02 15:41:25 - INFO - Arctaris rename_statements.py:1492 - main - [37/110] Processing file: Online Statements_2025-02-28 (5).pdf
+2025-04-02 15:41:25 - INFO - Arctaris rename_statements.py:170 - process_pdf - Processing Online Statements file as Cambridge: Online Statements_2025-02-28 (5).pdf
+2025-04-02 15:41:25 - INFO - Arctaris rename_statements.py:1499 - main - Extracted information: <__main__.StatementInfo object at 0x000001C0D938E900>
+2025-04-02 15:41:25 - ERROR - Arctaris rename_statements.py:1517 - main - Error processing Online Statements_2025-02-28 (5).pdf: 'FileManager' object has no attribute '_extract_statement_info'
+2025-04-02 15:41:25 - INFO - Arctaris rename_statements.py:1492 - main - [38/110] Processing file: Online Statements_2025-02-28 (6).pdf
+2025-04-02 15:41:25 - INFO - Arctaris rename_statements.py:170 - process_pdf - Processing Online Statements file as Cambridge: Online Statements_2025-02-28 (6).pdf
+2025-04-02 15:41:25 - INFO - Arctaris rename_statements.py:1499 - main - Extracted information: <__main__.StatementInfo object at 0x000001C0D92D33B0>
+2025-04-02 15:41:25 - ERROR - Arctaris rename_statements.py:1517 - main - Error processing Online Statements_2025-02-28 (6).pdf: 'FileManager' object has no attribute '_extract_statement_info'
+2025-04-02 15:41:25 - INFO - Arctaris rename_statements.py:1492 - main - [39/110] Processing file: Online Statements_2025-02-28 (7).pdf
+2025-04-02 15:41:25 - INFO - Arctaris rename_statements.py:170 - process_pdf - Processing Online Statements file as Cambridge: Online Statements_2025-02-28 (7).pdf
+2025-04-02 15:41:25 - INFO - Arctaris rename_statements.py:1499 - main - Extracted information: <__main__.StatementInfo object at 0x000001C0D938E900>
+2025-04-02 15:41:25 - ERROR - Arctaris rename_statements.py:1517 - main - Error processing Online Statements_2025-02-28 (7).pdf: 'FileManager' object has no attribute '_extract_statement_info'
+2025-04-02 15:41:25 - INFO - Arctaris rename_statements.py:1492 - main - [40/110] Processing file: Online Statements_2025-02-28 (8).pdf
+2025-04-02 15:41:25 - INFO - Arctaris rename_statements.py:170 - process_pdf - Processing Online Statements file as Cambridge: Online Statements_2025-02-28 (8).pdf
+2025-04-02 15:41:25 - INFO - Arctaris rename_statements.py:1499 - main - Extracted information: <__main__.StatementInfo object at 0x000001C0D92D33B0>
+2025-04-02 15:41:25 - ERROR - Arctaris rename_statements.py:1517 - main - Error processing Online Statements_2025-02-28 (8).pdf: 'FileManager' object has no attribute '_extract_statement_info'
+2025-04-02 15:41:25 - INFO - Arctaris rename_statements.py:1487 - main - 
+Processing batch 3 (41-60 of 110)
+2025-04-02 15:41:25 - INFO - Arctaris rename_statements.py:1492 - main - [41/110] Processing file: Online Statements_2025-02-28 (9).pdf
+2025-04-02 15:41:25 - INFO - Arctaris rename_statements.py:170 - process_pdf - Processing Online Statements file as Cambridge: Online Statements_2025-02-28 (9).pdf
+2025-04-02 15:41:25 - INFO - Arctaris rename_statements.py:1499 - main - Extracted information: <__main__.StatementInfo object at 0x000001C0D938E900>
+2025-04-02 15:41:25 - ERROR - Arctaris rename_statements.py:1517 - main - Error processing Online Statements_2025-02-28 (9).pdf: 'FileManager' object has no attribute '_extract_statement_info'
+2025-04-02 15:41:25 - INFO - Arctaris rename_statements.py:1492 - main - [42/110] Processing file: Online Statements_2025-02-28.pdf
+2025-04-02 15:41:25 - INFO - Arctaris rename_statements.py:170 - process_pdf - Processing Online Statements file as Cambridge: Online Statements_2025-02-28.pdf
+2025-04-02 15:41:25 - INFO - Arctaris rename_statements.py:1499 - main - Extracted information: <__main__.StatementInfo object at 0x000001C0D92D33B0>
+2025-04-02 15:41:25 - ERROR - Arctaris rename_statements.py:1517 - main - Error processing Online Statements_2025-02-28.pdf: 'FileManager' object has no attribute '_extract_statement_info'
+2025-04-02 15:41:25 - INFO - Arctaris rename_statements.py:1492 - main - [43/110] Processing file: Online Statements_2025-03-31 (1).pdf
+2025-04-02 15:41:25 - INFO - Arctaris rename_statements.py:170 - process_pdf - Processing Online Statements file as Cambridge: Online Statements_2025-03-31 (1).pdf
+2025-04-02 15:41:25 - INFO - Arctaris rename_statements.py:1499 - main - Extracted information: <__main__.StatementInfo object at 0x000001C0D938E900>
+2025-04-02 15:41:25 - ERROR - Arctaris rename_statements.py:1517 - main - Error processing Online Statements_2025-03-31 (1).pdf: 'FileManager' object has no attribute '_extract_statement_info'
+2025-04-02 15:41:25 - INFO - Arctaris rename_statements.py:1492 - main - [44/110] Processing file: Online Statements_2025-03-31 (10).pdf
+2025-04-02 15:41:25 - INFO - Arctaris rename_statements.py:170 - process_pdf - Processing Online Statements file as Cambridge: Online Statements_2025-03-31 (10).pdf
+2025-04-02 15:41:25 - INFO - Arctaris rename_statements.py:1499 - main - Extracted information: <__main__.StatementInfo object at 0x000001C0D92D33B0>
+2025-04-02 15:41:25 - ERROR - Arctaris rename_statements.py:1517 - main - Error processing Online Statements_2025-03-31 (10).pdf: 'FileManager' object has no attribute '_extract_statement_info'
+2025-04-02 15:41:25 - INFO - Arctaris rename_statements.py:1492 - main - [45/110] Processing file: Online Statements_2025-03-31 (11).pdf
+2025-04-02 15:41:25 - INFO - Arctaris rename_statements.py:170 - process_pdf - Processing Online Statements file as Cambridge: Online Statements_2025-03-31 (11).pdf
+2025-04-02 15:41:25 - INFO - Arctaris rename_statements.py:1499 - main - Extracted information: <__main__.StatementInfo object at 0x000001C0D938E900>
+2025-04-02 15:41:25 - ERROR - Arctaris rename_statements.py:1517 - main - Error processing Online Statements_2025-03-31 (11).pdf: 'FileManager' object has no attribute '_extract_statement_info'
+2025-04-02 15:41:25 - INFO - Arctaris rename_statements.py:1492 - main - [46/110] Processing file: Online Statements_2025-03-31 (12).pdf
+2025-04-02 15:41:25 - INFO - Arctaris rename_statements.py:170 - process_pdf - Processing Online Statements file as Cambridge: Online Statements_2025-03-31 (12).pdf
+2025-04-02 15:41:25 - INFO - Arctaris rename_statements.py:1499 - main - Extracted information: <__main__.StatementInfo object at 0x000001C0D92D33B0>
+2025-04-02 15:41:25 - ERROR - Arctaris rename_statements.py:1517 - main - Error processing Online Statements_2025-03-31 (12).pdf: 'FileManager' object has no attribute '_extract_statement_info'
+2025-04-02 15:41:25 - INFO - Arctaris rename_statements.py:1492 - main - [47/110] Processing file: Online Statements_2025-03-31 (13).pdf
+2025-04-02 15:41:25 - INFO - Arctaris rename_statements.py:170 - process_pdf - Processing Online Statements file as Cambridge: Online Statements_2025-03-31 (13).pdf
+2025-04-02 15:41:25 - INFO - Arctaris rename_statements.py:1499 - main - Extracted information: <__main__.StatementInfo object at 0x000001C0D938E900>
+2025-04-02 15:41:25 - ERROR - Arctaris rename_statements.py:1517 - main - Error processing Online Statements_2025-03-31 (13).pdf: 'FileManager' object has no attribute '_extract_statement_info'
+2025-04-02 15:41:25 - INFO - Arctaris rename_statements.py:1492 - main - [48/110] Processing file: Online Statements_2025-03-31 (2).pdf
+2025-04-02 15:41:25 - INFO - Arctaris rename_statements.py:170 - process_pdf - Processing Online Statements file as Cambridge: Online Statements_2025-03-31 (2).pdf
+2025-04-02 15:41:25 - INFO - Arctaris rename_statements.py:1499 - main - Extracted information: <__main__.StatementInfo object at 0x000001C0D92D33B0>
+2025-04-02 15:41:25 - ERROR - Arctaris rename_statements.py:1517 - main - Error processing Online Statements_2025-03-31 (2).pdf: 'FileManager' object has no attribute '_extract_statement_info'
+2025-04-02 15:41:25 - INFO - Arctaris rename_statements.py:1492 - main - [49/110] Processing file: Online Statements_2025-03-31 (3).pdf
+2025-04-02 15:41:25 - INFO - Arctaris rename_statements.py:170 - process_pdf - Processing Online Statements file as Cambridge: Online Statements_2025-03-31 (3).pdf
+2025-04-02 15:41:25 - INFO - Arctaris rename_statements.py:1499 - main - Extracted information: <__main__.StatementInfo object at 0x000001C0D938E900>
+2025-04-02 15:41:25 - ERROR - Arctaris rename_statements.py:1517 - main - Error processing Online Statements_2025-03-31 (3).pdf: 'FileManager' object has no attribute '_extract_statement_info'
+2025-04-02 15:41:25 - INFO - Arctaris rename_statements.py:1492 - main - [50/110] Processing file: Online Statements_2025-03-31 (4).pdf
+2025-04-02 15:41:25 - INFO - Arctaris rename_statements.py:170 - process_pdf - Processing Online Statements file as Cambridge: Online Statements_2025-03-31 (4).pdf
+2025-04-02 15:41:25 - INFO - Arctaris rename_statements.py:1499 - main - Extracted information: <__main__.StatementInfo object at 0x000001C0D92D33B0>
+2025-04-02 15:41:25 - ERROR - Arctaris rename_statements.py:1517 - main - Error processing Online Statements_2025-03-31 (4).pdf: 'FileManager' object has no attribute '_extract_statement_info'
+2025-04-02 15:41:25 - INFO - Arctaris rename_statements.py:1492 - main - [51/110] Processing file: Online Statements_2025-03-31 (5).pdf
+2025-04-02 15:41:25 - INFO - Arctaris rename_statements.py:170 - process_pdf - Processing Online Statements file as Cambridge: Online Statements_2025-03-31 (5).pdf
+2025-04-02 15:41:25 - INFO - Arctaris rename_statements.py:1499 - main - Extracted information: <__main__.StatementInfo object at 0x000001C0D938E900>
+2025-04-02 15:41:25 - ERROR - Arctaris rename_statements.py:1517 - main - Error processing Online Statements_2025-03-31 (5).pdf: 'FileManager' object has no attribute '_extract_statement_info'
+2025-04-02 15:41:25 - INFO - Arctaris rename_statements.py:1492 - main - [52/110] Processing file: Online Statements_2025-03-31 (6).pdf
+2025-04-02 15:41:25 - INFO - Arctaris rename_statements.py:170 - process_pdf - Processing Online Statements file as Cambridge: Online Statements_2025-03-31 (6).pdf
+2025-04-02 15:41:25 - INFO - Arctaris rename_statements.py:1499 - main - Extracted information: <__main__.StatementInfo object at 0x000001C0D92D33B0>
+2025-04-02 15:41:25 - ERROR - Arctaris rename_statements.py:1517 - main - Error processing Online Statements_2025-03-31 (6).pdf: 'FileManager' object has no attribute '_extract_statement_info'
+2025-04-02 15:41:25 - INFO - Arctaris rename_statements.py:1492 - main - [53/110] Processing file: Online Statements_2025-03-31 (7).pdf
+2025-04-02 15:41:25 - INFO - Arctaris rename_statements.py:170 - process_pdf - Processing Online Statements file as Cambridge: Online Statements_2025-03-31 (7).pdf
+2025-04-02 15:41:25 - INFO - Arctaris rename_statements.py:1499 - main - Extracted information: <__main__.StatementInfo object at 0x000001C0D938E900>
+2025-04-02 15:41:25 - ERROR - Arctaris rename_statements.py:1517 - main - Error processing Online Statements_2025-03-31 (7).pdf: 'FileManager' object has no attribute '_extract_statement_info'
+2025-04-02 15:41:25 - INFO - Arctaris rename_statements.py:1492 - main - [54/110] Processing file: Online Statements_2025-03-31 (8).pdf
+2025-04-02 15:41:25 - INFO - Arctaris rename_statements.py:170 - process_pdf - Processing Online Statements file as Cambridge: Online Statements_2025-03-31 (8).pdf
+2025-04-02 15:41:25 - INFO - Arctaris rename_statements.py:1499 - main - Extracted information: <__main__.StatementInfo object at 0x000001C0D92D33B0>
+2025-04-02 15:41:25 - ERROR - Arctaris rename_statements.py:1517 - main - Error processing Online Statements_2025-03-31 (8).pdf: 'FileManager' object has no attribute '_extract_statement_info'
+2025-04-02 15:41:25 - INFO - Arctaris rename_statements.py:1492 - main - [55/110] Processing file: Online Statements_2025-03-31 (9).pdf
+2025-04-02 15:41:25 - INFO - Arctaris rename_statements.py:170 - process_pdf - Processing Online Statements file as Cambridge: Online Statements_2025-03-31 (9).pdf
+2025-04-02 15:41:25 - INFO - Arctaris rename_statements.py:1499 - main - Extracted information: <__main__.StatementInfo object at 0x000001C0D938E900>
+2025-04-02 15:41:25 - ERROR - Arctaris rename_statements.py:1517 - main - Error processing Online Statements_2025-03-31 (9).pdf: 'FileManager' object has no attribute '_extract_statement_info'
+2025-04-02 15:41:25 - INFO - Arctaris rename_statements.py:1492 - main - [56/110] Processing file: Online Statements_2025-03-31.pdf
+2025-04-02 15:41:25 - INFO - Arctaris rename_statements.py:170 - process_pdf - Processing Online Statements file as Cambridge: Online Statements_2025-03-31.pdf
+2025-04-02 15:41:25 - INFO - Arctaris rename_statements.py:1499 - main - Extracted information: <__main__.StatementInfo object at 0x000001C0D92D33B0>
+2025-04-02 15:41:25 - ERROR - Arctaris rename_statements.py:1517 - main - Error processing Online Statements_2025-03-31.pdf: 'FileManager' object has no attribute '_extract_statement_info'
+2025-04-02 15:41:25 - INFO - Arctaris rename_statements.py:1492 - main - [57/110] Processing file: statement_1092246474_2025-03-31.pdf
+2025-04-02 15:41:25 - INFO - Arctaris rename_statements.py:303 - process_pdf - Successfully identified bank type: PNC
+2025-04-02 15:41:25 - INFO - Arctaris rename_statements.py:1499 - main - Extracted information: <__main__.StatementInfo object at 0x000001C0D7FDB7D0>
+2025-04-02 15:41:25 - ERROR - Arctaris rename_statements.py:1517 - main - Error processing statement_1092246474_2025-03-31.pdf: 'FileManager' object has no attribute '_extract_statement_info'
+2025-04-02 15:41:25 - INFO - Arctaris rename_statements.py:1492 - main - [58/110] Processing file: statement_4116465916_2025-03-31.pdf
+2025-04-02 15:41:25 - INFO - Arctaris rename_statements.py:303 - process_pdf - Successfully identified bank type: PNC
+2025-04-02 15:41:25 - INFO - Arctaris rename_statements.py:1499 - main - Extracted information: <__main__.StatementInfo object at 0x000001C0D92095B0>
+2025-04-02 15:41:25 - ERROR - Arctaris rename_statements.py:1517 - main - Error processing statement_4116465916_2025-03-31.pdf: 'FileManager' object has no attribute '_extract_statement_info'
+2025-04-02 15:41:25 - INFO - Arctaris rename_statements.py:1492 - main - [59/110] Processing file: statement_4116465932_2025-03-31.pdf
+2025-04-02 15:41:26 - INFO - Arctaris rename_statements.py:303 - process_pdf - Successfully identified bank type: PNC
+2025-04-02 15:41:26 - INFO - Arctaris rename_statements.py:1499 - main - Extracted information: <__main__.StatementInfo object at 0x000001C0D92FECC0>
+2025-04-02 15:41:26 - ERROR - Arctaris rename_statements.py:1517 - main - Error processing statement_4116465932_2025-03-31.pdf: 'FileManager' object has no attribute '_extract_statement_info'
+2025-04-02 15:41:26 - INFO - Arctaris rename_statements.py:1492 - main - [60/110] Processing file: statement_4116465959_2025-03-31.pdf
+2025-04-02 15:41:26 - INFO - Arctaris rename_statements.py:303 - process_pdf - Successfully identified bank type: PNC
+2025-04-02 15:41:26 - INFO - Arctaris rename_statements.py:1499 - main - Extracted information: <__main__.StatementInfo object at 0x000001C0D92FD010>
+2025-04-02 15:41:26 - ERROR - Arctaris rename_statements.py:1517 - main - Error processing statement_4116465959_2025-03-31.pdf: 'FileManager' object has no attribute '_extract_statement_info'
+2025-04-02 15:41:26 - INFO - Arctaris rename_statements.py:1487 - main - 
+Processing batch 4 (61-80 of 110)
+2025-04-02 15:41:26 - INFO - Arctaris rename_statements.py:1492 - main - [61/110] Processing file: statement_4130261135_2025-03-31.pdf
+2025-04-02 15:41:26 - INFO - Arctaris rename_statements.py:303 - process_pdf - Successfully identified bank type: PNC
+2025-04-02 15:41:26 - INFO - Arctaris rename_statements.py:1499 - main - Extracted information: <__main__.StatementInfo object at 0x000001C0D7666D80>
+2025-04-02 15:41:26 - ERROR - Arctaris rename_statements.py:1517 - main - Error processing statement_4130261135_2025-03-31.pdf: 'FileManager' object has no attribute '_extract_statement_info'
+2025-04-02 15:41:26 - INFO - Arctaris rename_statements.py:1492 - main - [62/110] Processing file: statement_4130263798_2025-03-31.pdf
+2025-04-02 15:41:26 - INFO - Arctaris rename_statements.py:303 - process_pdf - Successfully identified bank type: PNC
+2025-04-02 15:41:26 - INFO - Arctaris rename_statements.py:1499 - main - Extracted information: <__main__.StatementInfo object at 0x000001C0D92D34D0>
+2025-04-02 15:41:26 - ERROR - Arctaris rename_statements.py:1517 - main - Error processing statement_4130263798_2025-03-31.pdf: 'FileManager' object has no attribute '_extract_statement_info'
+2025-04-02 15:41:26 - INFO - Arctaris rename_statements.py:1492 - main - [63/110] Processing file: statement_4130272854_2025-03-31.pdf
+2025-04-02 15:41:26 - INFO - Arctaris rename_statements.py:303 - process_pdf - Successfully identified bank type: PNC
+2025-04-02 15:41:26 - INFO - Arctaris rename_statements.py:1499 - main - Extracted information: <__main__.StatementInfo object at 0x000001C0D92FECC0>
+2025-04-02 15:41:26 - ERROR - Arctaris rename_statements.py:1517 - main - Error processing statement_4130272854_2025-03-31.pdf: 'FileManager' object has no attribute '_extract_statement_info'
+2025-04-02 15:41:26 - INFO - Arctaris rename_statements.py:1492 - main - [64/110] Processing file: statement_4130275895_2025-03-31.pdf
+2025-04-02 15:41:26 - INFO - Arctaris rename_statements.py:303 - process_pdf - Successfully identified bank type: PNC
+2025-04-02 15:41:26 - INFO - Arctaris rename_statements.py:1499 - main - Extracted information: <__main__.StatementInfo object at 0x000001C0D96C1280>
+2025-04-02 15:41:26 - ERROR - Arctaris rename_statements.py:1517 - main - Error processing statement_4130275895_2025-03-31.pdf: 'FileManager' object has no attribute '_extract_statement_info'
+2025-04-02 15:41:26 - INFO - Arctaris rename_statements.py:1492 - main - [65/110] Processing file: statement_4130279968_2025-03-31.pdf
+2025-04-02 15:41:26 - INFO - Arctaris rename_statements.py:303 - process_pdf - Successfully identified bank type: PNC
+2025-04-02 15:41:26 - INFO - Arctaris rename_statements.py:1499 - main - Extracted information: <__main__.StatementInfo object at 0x000001C0D961BC80>
+2025-04-02 15:41:26 - ERROR - Arctaris rename_statements.py:1517 - main - Error processing statement_4130279968_2025-03-31.pdf: 'FileManager' object has no attribute '_extract_statement_info'
+2025-04-02 15:41:26 - INFO - Arctaris rename_statements.py:1492 - main - [66/110] Processing file: statement_4130281339_2025-03-31.pdf
+2025-04-02 15:41:26 - INFO - Arctaris rename_statements.py:303 - process_pdf - Successfully identified bank type: PNC
+2025-04-02 15:41:26 - INFO - Arctaris rename_statements.py:1499 - main - Extracted information: <__main__.StatementInfo object at 0x000001C0D961B2F0>
+2025-04-02 15:41:26 - ERROR - Arctaris rename_statements.py:1517 - main - Error processing statement_4130281339_2025-03-31.pdf: 'FileManager' object has no attribute '_extract_statement_info'
+2025-04-02 15:41:26 - INFO - Arctaris rename_statements.py:1492 - main - [67/110] Processing file: statement_4130281355_2025-03-31.pdf
+2025-04-02 15:41:26 - INFO - Arctaris rename_statements.py:303 - process_pdf - Successfully identified bank type: PNC
+2025-04-02 15:41:26 - INFO - Arctaris rename_statements.py:1499 - main - Extracted information: <__main__.StatementInfo object at 0x000001C0D961B050>
+2025-04-02 15:41:26 - ERROR - Arctaris rename_statements.py:1517 - main - Error processing statement_4130281355_2025-03-31.pdf: 'FileManager' object has no attribute '_extract_statement_info'
+2025-04-02 15:41:26 - INFO - Arctaris rename_statements.py:1492 - main - [68/110] Processing file: statement_4130283078_2025-03-31.pdf
+2025-04-02 15:41:26 - INFO - Arctaris rename_statements.py:303 - process_pdf - Successfully identified bank type: PNC
+2025-04-02 15:41:26 - INFO - Arctaris rename_statements.py:1499 - main - Extracted information: <__main__.StatementInfo object at 0x000001C0D9324E30>
+2025-04-02 15:41:26 - ERROR - Arctaris rename_statements.py:1517 - main - Error processing statement_4130283078_2025-03-31.pdf: 'FileManager' object has no attribute '_extract_statement_info'
+2025-04-02 15:41:26 - INFO - Arctaris rename_statements.py:1492 - main - [69/110] Processing file: statement_4130283369_2025-03-31.pdf
+2025-04-02 15:41:26 - INFO - Arctaris rename_statements.py:303 - process_pdf - Successfully identified bank type: PNC
+2025-04-02 15:41:26 - INFO - Arctaris rename_statements.py:1499 - main - Extracted information: <__main__.StatementInfo object at 0x000001C0D9324E60>
+2025-04-02 15:41:26 - ERROR - Arctaris rename_statements.py:1517 - main - Error processing statement_4130283369_2025-03-31.pdf: 'FileManager' object has no attribute '_extract_statement_info'
+2025-04-02 15:41:26 - INFO - Arctaris rename_statements.py:1492 - main - [70/110] Processing file: statement_4130283633_2025-03-31.pdf
+2025-04-02 15:41:26 - INFO - Arctaris rename_statements.py:303 - process_pdf - Successfully identified bank type: PNC
+2025-04-02 15:41:26 - INFO - Arctaris rename_statements.py:1499 - main - Extracted information: <__main__.StatementInfo object at 0x000001C0D961B050>
+2025-04-02 15:41:26 - ERROR - Arctaris rename_statements.py:1517 - main - Error processing statement_4130283633_2025-03-31.pdf: 'FileManager' object has no attribute '_extract_statement_info'
+2025-04-02 15:41:26 - INFO - Arctaris rename_statements.py:1492 - main - [71/110] Processing file: statement_4130290884_2025-03-31.pdf
+2025-04-02 15:41:26 - INFO - Arctaris rename_statements.py:303 - process_pdf - Successfully identified bank type: PNC
+2025-04-02 15:41:26 - INFO - Arctaris rename_statements.py:1499 - main - Extracted information: <__main__.StatementInfo object at 0x000001C0D961BFE0>
+2025-04-02 15:41:26 - ERROR - Arctaris rename_statements.py:1517 - main - Error processing statement_4130290884_2025-03-31.pdf: 'FileManager' object has no attribute '_extract_statement_info'
+2025-04-02 15:41:26 - INFO - Arctaris rename_statements.py:1492 - main - [72/110] Processing file: statement_4130293022_2025-03-31.pdf
+2025-04-02 15:41:26 - INFO - Arctaris rename_statements.py:303 - process_pdf - Successfully identified bank type: PNC
+2025-04-02 15:41:26 - INFO - Arctaris rename_statements.py:1499 - main - Extracted information: <__main__.StatementInfo object at 0x000001C0D9365040>
+2025-04-02 15:41:26 - ERROR - Arctaris rename_statements.py:1517 - main - Error processing statement_4130293022_2025-03-31.pdf: 'FileManager' object has no attribute '_extract_statement_info'
+2025-04-02 15:41:26 - INFO - Arctaris rename_statements.py:1492 - main - [73/110] Processing file: statement_4130294324_2025-03-31.pdf
+2025-04-02 15:41:26 - INFO - Arctaris rename_statements.py:303 - process_pdf - Successfully identified bank type: PNC
+2025-04-02 15:41:26 - INFO - Arctaris rename_statements.py:1499 - main - Extracted information: <__main__.StatementInfo object at 0x000001C0D9367A40>
+2025-04-02 15:41:26 - ERROR - Arctaris rename_statements.py:1517 - main - Error processing statement_4130294324_2025-03-31.pdf: 'FileManager' object has no attribute '_extract_statement_info'
+2025-04-02 15:41:26 - INFO - Arctaris rename_statements.py:1492 - main - [74/110] Processing file: statement_4130294332_2025-03-31.pdf
+2025-04-02 15:41:26 - INFO - Arctaris rename_statements.py:303 - process_pdf - Successfully identified bank type: PNC
+2025-04-02 15:41:26 - INFO - Arctaris rename_statements.py:1499 - main - Extracted information: <__main__.StatementInfo object at 0x000001C0D9367620>
+2025-04-02 15:41:26 - ERROR - Arctaris rename_statements.py:1517 - main - Error processing statement_4130294332_2025-03-31.pdf: 'FileManager' object has no attribute '_extract_statement_info'
+2025-04-02 15:41:26 - INFO - Arctaris rename_statements.py:1492 - main - [75/110] Processing file: statement_4130294359_2025-03-31.pdf
+2025-04-02 15:41:26 - INFO - Arctaris rename_statements.py:303 - process_pdf - Successfully identified bank type: PNC
+2025-04-02 15:41:26 - INFO - Arctaris rename_statements.py:1499 - main - Extracted information: <__main__.StatementInfo object at 0x000001C0D9325C10>
+2025-04-02 15:41:26 - ERROR - Arctaris rename_statements.py:1517 - main - Error processing statement_4130294359_2025-03-31.pdf: 'FileManager' object has no attribute '_extract_statement_info'
+2025-04-02 15:41:26 - INFO - Arctaris rename_statements.py:1492 - main - [76/110] Processing file: statement_4130294367_2025-03-31.pdf
+2025-04-02 15:41:26 - INFO - Arctaris rename_statements.py:303 - process_pdf - Successfully identified bank type: PNC
+2025-04-02 15:41:26 - INFO - Arctaris rename_statements.py:1499 - main - Extracted information: <__main__.StatementInfo object at 0x000001C0D96C08F0>
+2025-04-02 15:41:26 - ERROR - Arctaris rename_statements.py:1517 - main - Error processing statement_4130294367_2025-03-31.pdf: 'FileManager' object has no attribute '_extract_statement_info'
+2025-04-02 15:41:26 - INFO - Arctaris rename_statements.py:1492 - main - [77/110] Processing file: statement_4130294383_2025-03-31.pdf
+2025-04-02 15:41:26 - INFO - Arctaris rename_statements.py:303 - process_pdf - Successfully identified bank type: PNC
+2025-04-02 15:41:26 - INFO - Arctaris rename_statements.py:1499 - main - Extracted information: <__main__.StatementInfo object at 0x000001C0D92D34D0>
+2025-04-02 15:41:26 - ERROR - Arctaris rename_statements.py:1517 - main - Error processing statement_4130294383_2025-03-31.pdf: 'FileManager' object has no attribute '_extract_statement_info'
+2025-04-02 15:41:26 - INFO - Arctaris rename_statements.py:1492 - main - [78/110] Processing file: statement_4130294412_2025-03-31.pdf
+2025-04-02 15:41:26 - INFO - Arctaris rename_statements.py:303 - process_pdf - Successfully identified bank type: PNC
+2025-04-02 15:41:26 - INFO - Arctaris rename_statements.py:1499 - main - Extracted information: <__main__.StatementInfo object at 0x000001C0D9324E60>
+2025-04-02 15:41:26 - ERROR - Arctaris rename_statements.py:1517 - main - Error processing statement_4130294412_2025-03-31.pdf: 'FileManager' object has no attribute '_extract_statement_info'
+2025-04-02 15:41:26 - INFO - Arctaris rename_statements.py:1492 - main - [79/110] Processing file: statement_4130294447_2025-03-31.pdf
+2025-04-02 15:41:27 - INFO - Arctaris rename_statements.py:303 - process_pdf - Successfully identified bank type: PNC
+2025-04-02 15:41:27 - INFO - Arctaris rename_statements.py:1499 - main - Extracted information: <__main__.StatementInfo object at 0x000001C0D7EE7320>
+2025-04-02 15:41:27 - ERROR - Arctaris rename_statements.py:1517 - main - Error processing statement_4130294447_2025-03-31.pdf: 'FileManager' object has no attribute '_extract_statement_info'
+2025-04-02 15:41:27 - INFO - Arctaris rename_statements.py:1492 - main - [80/110] Processing file: statement_4130294455_2025-03-31.pdf
+2025-04-02 15:41:27 - INFO - Arctaris rename_statements.py:303 - process_pdf - Successfully identified bank type: PNC
+2025-04-02 15:41:27 - INFO - Arctaris rename_statements.py:1499 - main - Extracted information: <__main__.StatementInfo object at 0x000001C0D96C1CD0>
+2025-04-02 15:41:27 - ERROR - Arctaris rename_statements.py:1517 - main - Error processing statement_4130294455_2025-03-31.pdf: 'FileManager' object has no attribute '_extract_statement_info'
+2025-04-02 15:41:27 - INFO - Arctaris rename_statements.py:1487 - main - 
+Processing batch 5 (81-100 of 110)
+2025-04-02 15:41:27 - INFO - Arctaris rename_statements.py:1492 - main - [81/110] Processing file: statement_4130297058_2025-03-31.pdf
+2025-04-02 15:41:27 - INFO - Arctaris rename_statements.py:303 - process_pdf - Successfully identified bank type: PNC
+2025-04-02 15:41:27 - INFO - Arctaris rename_statements.py:1499 - main - Extracted information: <__main__.StatementInfo object at 0x000001C0D96C2900>
+2025-04-02 15:41:27 - ERROR - Arctaris rename_statements.py:1517 - main - Error processing statement_4130297058_2025-03-31.pdf: 'FileManager' object has no attribute '_extract_statement_info'
+2025-04-02 15:41:27 - INFO - Arctaris rename_statements.py:1492 - main - [82/110] Processing file: statement_4130297779_2025-03-31.pdf
+2025-04-02 15:41:27 - INFO - Arctaris rename_statements.py:303 - process_pdf - Successfully identified bank type: PNC
+2025-04-02 15:41:27 - INFO - Arctaris rename_statements.py:1499 - main - Extracted information: <__main__.StatementInfo object at 0x000001C0D7EE7320>
+2025-04-02 15:41:27 - ERROR - Arctaris rename_statements.py:1517 - main - Error processing statement_4130297779_2025-03-31.pdf: 'FileManager' object has no attribute '_extract_statement_info'
+2025-04-02 15:41:27 - INFO - Arctaris rename_statements.py:1492 - main - [83/110] Processing file: statement_4130300931_2025-03-31.pdf
+2025-04-02 15:41:27 - INFO - Arctaris rename_statements.py:303 - process_pdf - Successfully identified bank type: PNC
+2025-04-02 15:41:27 - INFO - Arctaris rename_statements.py:1499 - main - Extracted information: <__main__.StatementInfo object at 0x000001C0D7F7B830>
+2025-04-02 15:41:27 - ERROR - Arctaris rename_statements.py:1517 - main - Error processing statement_4130300931_2025-03-31.pdf: 'FileManager' object has no attribute '_extract_statement_info'
+2025-04-02 15:41:27 - INFO - Arctaris rename_statements.py:1492 - main - [84/110] Processing file: statement_4130301336_2025-03-31.pdf
+2025-04-02 15:41:27 - INFO - Arctaris rename_statements.py:303 - process_pdf - Successfully identified bank type: PNC
+2025-04-02 15:41:27 - INFO - Arctaris rename_statements.py:1499 - main - Extracted information: <__main__.StatementInfo object at 0x000001C0D929CC20>
+2025-04-02 15:41:27 - ERROR - Arctaris rename_statements.py:1517 - main - Error processing statement_4130301336_2025-03-31.pdf: 'FileManager' object has no attribute '_extract_statement_info'
+2025-04-02 15:41:27 - INFO - Arctaris rename_statements.py:1492 - main - [85/110] Processing file: statement_4130301344_2025-03-31.pdf
+2025-04-02 15:41:27 - INFO - Arctaris rename_statements.py:303 - process_pdf - Successfully identified bank type: PNC
+2025-04-02 15:41:27 - INFO - Arctaris rename_statements.py:1499 - main - Extracted information: <__main__.StatementInfo object at 0x000001C0D75FD640>
+2025-04-02 15:41:27 - ERROR - Arctaris rename_statements.py:1517 - main - Error processing statement_4130301344_2025-03-31.pdf: 'FileManager' object has no attribute '_extract_statement_info'
+2025-04-02 15:41:27 - INFO - Arctaris rename_statements.py:1492 - main - [86/110] Processing file: statement_4130301694_2025-03-31.pdf
+2025-04-02 15:41:27 - INFO - Arctaris rename_statements.py:303 - process_pdf - Successfully identified bank type: PNC
+2025-04-02 15:41:27 - INFO - Arctaris rename_statements.py:1499 - main - Extracted information: <__main__.StatementInfo object at 0x000001C0D7F7B830>
+2025-04-02 15:41:27 - ERROR - Arctaris rename_statements.py:1517 - main - Error processing statement_4130301694_2025-03-31.pdf: 'FileManager' object has no attribute '_extract_statement_info'
+2025-04-02 15:41:27 - INFO - Arctaris rename_statements.py:1492 - main - [87/110] Processing file: statement_4130301889_2025-03-31.pdf
+2025-04-02 15:41:27 - INFO - Arctaris rename_statements.py:303 - process_pdf - Successfully identified bank type: PNC
+2025-04-02 15:41:27 - INFO - Arctaris rename_statements.py:1499 - main - Extracted information: <__main__.StatementInfo object at 0x000001C0D96C1D00>
+2025-04-02 15:41:27 - ERROR - Arctaris rename_statements.py:1517 - main - Error processing statement_4130301889_2025-03-31.pdf: 'FileManager' object has no attribute '_extract_statement_info'
+2025-04-02 15:41:27 - INFO - Arctaris rename_statements.py:1492 - main - [88/110] Processing file: statement_4130301897_2025-03-31.pdf
+2025-04-02 15:41:27 - INFO - Arctaris rename_statements.py:303 - process_pdf - Successfully identified bank type: PNC
+2025-04-02 15:41:27 - INFO - Arctaris rename_statements.py:1499 - main - Extracted information: <__main__.StatementInfo object at 0x000001C0D938D070>
+2025-04-02 15:41:27 - ERROR - Arctaris rename_statements.py:1517 - main - Error processing statement_4130301897_2025-03-31.pdf: 'FileManager' object has no attribute '_extract_statement_info'
+2025-04-02 15:41:27 - INFO - Arctaris rename_statements.py:1492 - main - [89/110] Processing file: statement_4130301918_2025-03-31.pdf
+2025-04-02 15:41:27 - INFO - Arctaris rename_statements.py:303 - process_pdf - Successfully identified bank type: PNC
+2025-04-02 15:41:27 - INFO - Arctaris rename_statements.py:1499 - main - Extracted information: <__main__.StatementInfo object at 0x000001C0D70A7FE0>
+2025-04-02 15:41:27 - ERROR - Arctaris rename_statements.py:1517 - main - Error processing statement_4130301918_2025-03-31.pdf: 'FileManager' object has no attribute '_extract_statement_info'
+2025-04-02 15:41:27 - INFO - Arctaris rename_statements.py:1492 - main - [90/110] Processing file: statement_4130301926_2025-03-31.pdf
+2025-04-02 15:41:27 - INFO - Arctaris rename_statements.py:303 - process_pdf - Successfully identified bank type: PNC
+2025-04-02 15:41:27 - INFO - Arctaris rename_statements.py:1499 - main - Extracted information: <__main__.StatementInfo object at 0x000001C0D92FCDD0>
+2025-04-02 15:41:27 - ERROR - Arctaris rename_statements.py:1517 - main - Error processing statement_4130301926_2025-03-31.pdf: 'FileManager' object has no attribute '_extract_statement_info'
+2025-04-02 15:41:27 - INFO - Arctaris rename_statements.py:1492 - main - [91/110] Processing file: statement_4130301934_2025-03-31.pdf
+2025-04-02 15:41:27 - INFO - Arctaris rename_statements.py:303 - process_pdf - Successfully identified bank type: PNC
+2025-04-02 15:41:27 - INFO - Arctaris rename_statements.py:1499 - main - Extracted information: <__main__.StatementInfo object at 0x000001C0D7666D80>
+2025-04-02 15:41:27 - ERROR - Arctaris rename_statements.py:1517 - main - Error processing statement_4130301934_2025-03-31.pdf: 'FileManager' object has no attribute '_extract_statement_info'
+2025-04-02 15:41:27 - INFO - Arctaris rename_statements.py:1492 - main - [92/110] Processing file: statement_4130302128_2025-03-31.pdf
+2025-04-02 15:41:27 - INFO - Arctaris rename_statements.py:303 - process_pdf - Successfully identified bank type: PNC
+2025-04-02 15:41:27 - INFO - Arctaris rename_statements.py:1499 - main - Extracted information: <__main__.StatementInfo object at 0x000001C0D75FD640>
+2025-04-02 15:41:27 - ERROR - Arctaris rename_statements.py:1517 - main - Error processing statement_4130302128_2025-03-31.pdf: 'FileManager' object has no attribute '_extract_statement_info'
+2025-04-02 15:41:27 - INFO - Arctaris rename_statements.py:1492 - main - [93/110] Processing file: statement_4175623128_2025-03-31.pdf
+2025-04-02 15:41:27 - INFO - Arctaris rename_statements.py:303 - process_pdf - Successfully identified bank type: PNC
+2025-04-02 15:41:27 - INFO - Arctaris rename_statements.py:1499 - main - Extracted information: <__main__.StatementInfo object at 0x000001C0D92095B0>
+2025-04-02 15:41:27 - ERROR - Arctaris rename_statements.py:1517 - main - Error processing statement_4175623128_2025-03-31.pdf: 'FileManager' object has no attribute '_extract_statement_info'
+2025-04-02 15:41:27 - INFO - Arctaris rename_statements.py:1492 - main - [94/110] Processing file: statement_4176547892_2025-03-31.pdf
+2025-04-02 15:41:27 - INFO - Arctaris rename_statements.py:303 - process_pdf - Successfully identified bank type: PNC
+2025-04-02 15:41:27 - INFO - Arctaris rename_statements.py:1499 - main - Extracted information: <__main__.StatementInfo object at 0x000001C0D70A7FE0>
+2025-04-02 15:41:27 - ERROR - Arctaris rename_statements.py:1517 - main - Error processing statement_4176547892_2025-03-31.pdf: 'FileManager' object has no attribute '_extract_statement_info'
+2025-04-02 15:41:27 - INFO - Arctaris rename_statements.py:1492 - main - [95/110] Processing file: statement_4176565548_2025-03-31.pdf
+2025-04-02 15:41:27 - INFO - Arctaris rename_statements.py:303 - process_pdf - Successfully identified bank type: PNC
+2025-04-02 15:41:27 - INFO - Arctaris rename_statements.py:1499 - main - Extracted information: <__main__.StatementInfo object at 0x000001C0D9250680>
+2025-04-02 15:41:27 - ERROR - Arctaris rename_statements.py:1517 - main - Error processing statement_4176565548_2025-03-31.pdf: 'FileManager' object has no attribute '_extract_statement_info'
+2025-04-02 15:41:27 - INFO - Arctaris rename_statements.py:1492 - main - [96/110] Processing file: statement_4176641344_2025-03-31.pdf
+2025-04-02 15:41:27 - INFO - Arctaris rename_statements.py:303 - process_pdf - Successfully identified bank type: PNC
+2025-04-02 15:41:27 - INFO - Arctaris rename_statements.py:1499 - main - Extracted information: <__main__.StatementInfo object at 0x000001C0D9250530>
+2025-04-02 15:41:27 - ERROR - Arctaris rename_statements.py:1517 - main - Error processing statement_4176641344_2025-03-31.pdf: 'FileManager' object has no attribute '_extract_statement_info'
+2025-04-02 15:41:27 - INFO - Arctaris rename_statements.py:1492 - main - [97/110] Processing file: statement_4176706259_2025-03-31.pdf
+2025-04-02 15:41:27 - INFO - Arctaris rename_statements.py:303 - process_pdf - Successfully identified bank type: PNC
+2025-04-02 15:41:27 - INFO - Arctaris rename_statements.py:1499 - main - Extracted information: <__main__.StatementInfo object at 0x000001C0D9324FB0>
+2025-04-02 15:41:27 - ERROR - Arctaris rename_statements.py:1517 - main - Error processing statement_4176706259_2025-03-31.pdf: 'FileManager' object has no attribute '_extract_statement_info'
+2025-04-02 15:41:27 - INFO - Arctaris rename_statements.py:1492 - main - [98/110] Processing file: statement_4176786746_2025-03-31.pdf
+2025-04-02 15:41:27 - INFO - Arctaris rename_statements.py:303 - process_pdf - Successfully identified bank type: PNC
+2025-04-02 15:41:27 - INFO - Arctaris rename_statements.py:1499 - main - Extracted information: <__main__.StatementInfo object at 0x000001C0D9324E60>
+2025-04-02 15:41:27 - ERROR - Arctaris rename_statements.py:1517 - main - Error processing statement_4176786746_2025-03-31.pdf: 'FileManager' object has no attribute '_extract_statement_info'
+2025-04-02 15:41:27 - INFO - Arctaris rename_statements.py:1492 - main - [99/110] Processing file: statement_4176790542_2025-03-31.pdf
+2025-04-02 15:41:27 - INFO - Arctaris rename_statements.py:303 - process_pdf - Successfully identified bank type: PNC
+2025-04-02 15:41:27 - INFO - Arctaris rename_statements.py:1499 - main - Extracted information: <__main__.StatementInfo object at 0x000001C0D70A7FE0>
+2025-04-02 15:41:27 - ERROR - Arctaris rename_statements.py:1517 - main - Error processing statement_4176790542_2025-03-31.pdf: 'FileManager' object has no attribute '_extract_statement_info'
+2025-04-02 15:41:27 - INFO - Arctaris rename_statements.py:1492 - main - [100/110] Processing file: statement_4176790577_2025-03-31.pdf
+2025-04-02 15:41:28 - INFO - Arctaris rename_statements.py:303 - process_pdf - Successfully identified bank type: PNC
+2025-04-02 15:41:28 - INFO - Arctaris rename_statements.py:1499 - main - Extracted information: <__main__.StatementInfo object at 0x000001C0D75FD640>
+2025-04-02 15:41:28 - ERROR - Arctaris rename_statements.py:1517 - main - Error processing statement_4176790577_2025-03-31.pdf: 'FileManager' object has no attribute '_extract_statement_info'
+2025-04-02 15:41:28 - INFO - Arctaris rename_statements.py:1487 - main - 
+Processing batch 6 (101-110 of 110)
+2025-04-02 15:41:28 - INFO - Arctaris rename_statements.py:1492 - main - [101/110] Processing file: statement_4176790593_2025-03-31.pdf
+2025-04-02 15:41:28 - INFO - Arctaris rename_statements.py:303 - process_pdf - Successfully identified bank type: PNC
+2025-04-02 15:41:28 - INFO - Arctaris rename_statements.py:1499 - main - Extracted information: <__main__.StatementInfo object at 0x000001C0D7FDB7D0>
+2025-04-02 15:41:28 - ERROR - Arctaris rename_statements.py:1517 - main - Error processing statement_4176790593_2025-03-31.pdf: 'FileManager' object has no attribute '_extract_statement_info'
+2025-04-02 15:41:28 - INFO - Arctaris rename_statements.py:1492 - main - [102/110] Processing file: statement_4179447491_2025-03-31.pdf
+2025-04-02 15:41:28 - INFO - Arctaris rename_statements.py:303 - process_pdf - Successfully identified bank type: PNC
+2025-04-02 15:41:28 - INFO - Arctaris rename_statements.py:1499 - main - Extracted information: <__main__.StatementInfo object at 0x000001C0D7D1E270>
+2025-04-02 15:41:28 - ERROR - Arctaris rename_statements.py:1517 - main - Error processing statement_4179447491_2025-03-31.pdf: 'FileManager' object has no attribute '_extract_statement_info'
+2025-04-02 15:41:28 - INFO - Arctaris rename_statements.py:1492 - main - [103/110] Processing file: statement_4179559231_2025-03-31.pdf
+2025-04-02 15:41:28 - INFO - Arctaris rename_statements.py:303 - process_pdf - Successfully identified bank type: PNC
+2025-04-02 15:41:28 - INFO - Arctaris rename_statements.py:1499 - main - Extracted information: <__main__.StatementInfo object at 0x000001C0D92095B0>
+2025-04-02 15:41:28 - ERROR - Arctaris rename_statements.py:1517 - main - Error processing statement_4179559231_2025-03-31.pdf: 'FileManager' object has no attribute '_extract_statement_info'
+2025-04-02 15:41:28 - INFO - Arctaris rename_statements.py:1492 - main - [104/110] Processing file: statement_4179559338_2025-03-31.pdf
+2025-04-02 15:41:28 - INFO - Arctaris rename_statements.py:303 - process_pdf - Successfully identified bank type: PNC
+2025-04-02 15:41:28 - INFO - Arctaris rename_statements.py:1499 - main - Extracted information: <__main__.StatementInfo object at 0x000001C0D7D1DB20>
+2025-04-02 15:41:28 - ERROR - Arctaris rename_statements.py:1517 - main - Error processing statement_4179559338_2025-03-31.pdf: 'FileManager' object has no attribute '_extract_statement_info'
+2025-04-02 15:41:28 - INFO - Arctaris rename_statements.py:1492 - main - [105/110] Processing file: statement_4179667988_2025-03-31.pdf
+2025-04-02 15:41:28 - INFO - Arctaris rename_statements.py:303 - process_pdf - Successfully identified bank type: PNC
+2025-04-02 15:41:28 - INFO - Arctaris rename_statements.py:1499 - main - Extracted information: <__main__.StatementInfo object at 0x000001C0D92D33B0>
+2025-04-02 15:41:28 - ERROR - Arctaris rename_statements.py:1517 - main - Error processing statement_4179667988_2025-03-31.pdf: 'FileManager' object has no attribute '_extract_statement_info'
+2025-04-02 15:41:28 - INFO - Arctaris rename_statements.py:1492 - main - [106/110] Processing file: statement_4698117603_2025-03-31.pdf
+2025-04-02 15:41:28 - INFO - Arctaris rename_statements.py:303 - process_pdf - Successfully identified bank type: PNC
+2025-04-02 15:41:28 - INFO - Arctaris rename_statements.py:1499 - main - Extracted information: <__main__.StatementInfo object at 0x000001C0D7D1DB20>
+2025-04-02 15:41:28 - ERROR - Arctaris rename_statements.py:1517 - main - Error processing statement_4698117603_2025-03-31.pdf: 'FileManager' object has no attribute '_extract_statement_info'
+2025-04-02 15:41:28 - INFO - Arctaris rename_statements.py:1492 - main - [107/110] Processing file: NewStatement (1).pdf
+2025-04-02 15:41:28 - WARNING - Arctaris rename_statements.py:241 - process_pdf - Limited text extracted from newstatement (1).pdf, attempting filename-based detection
+2025-04-02 15:41:28 - INFO - Arctaris rename_statements.py:252 - process_pdf - Using filename-based detection: Classified as Berkshire
+2025-04-02 15:41:28 - INFO - Arctaris rename_statements.py:1499 - main - Extracted information: <__main__.StatementInfo object at 0x000001C0D92FECC0>
+2025-04-02 15:41:28 - ERROR - Arctaris rename_statements.py:1517 - main - Error processing NewStatement (1).pdf: 'FileManager' object has no attribute '_extract_statement_info'
+2025-04-02 15:41:28 - INFO - Arctaris rename_statements.py:1492 - main - [108/110] Processing file: NewStatement (2).pdf
+2025-04-02 15:41:28 - WARNING - Arctaris rename_statements.py:241 - process_pdf - Limited text extracted from newstatement (2).pdf, attempting filename-based detection
+2025-04-02 15:41:28 - INFO - Arctaris rename_statements.py:252 - process_pdf - Using filename-based detection: Classified as Berkshire
+2025-04-02 15:41:28 - INFO - Arctaris rename_statements.py:1499 - main - Extracted information: <__main__.StatementInfo object at 0x000001C0D92D34D0>
+2025-04-02 15:41:28 - ERROR - Arctaris rename_statements.py:1517 - main - Error processing NewStatement (2).pdf: 'FileManager' object has no attribute '_extract_statement_info'
+2025-04-02 15:41:28 - INFO - Arctaris rename_statements.py:1492 - main - [109/110] Processing file: NewStatement (3).pdf
+2025-04-02 15:41:28 - WARNING - Arctaris rename_statements.py:241 - process_pdf - Limited text extracted from newstatement (3).pdf, attempting filename-based detection
+2025-04-02 15:41:28 - INFO - Arctaris rename_statements.py:252 - process_pdf - Using filename-based detection: Classified as Berkshire
+2025-04-02 15:41:28 - INFO - Arctaris rename_statements.py:1499 - main - Extracted information: <__main__.StatementInfo object at 0x000001C0D938C5F0>
+2025-04-02 15:41:28 - ERROR - Arctaris rename_statements.py:1517 - main - Error processing NewStatement (3).pdf: 'FileManager' object has no attribute '_extract_statement_info'
+2025-04-02 15:41:28 - INFO - Arctaris rename_statements.py:1492 - main - [110/110] Processing file: NewStatement.pdf
+2025-04-02 15:41:28 - WARNING - Arctaris rename_statements.py:241 - process_pdf - Limited text extracted from newstatement.pdf, attempting filename-based detection
+2025-04-02 15:41:28 - INFO - Arctaris rename_statements.py:252 - process_pdf - Using filename-based detection: Classified as Berkshire
+2025-04-02 15:41:28 - INFO - Arctaris rename_statements.py:1499 - main - Extracted information: <__main__.StatementInfo object at 0x000001C0D934F9E0>
+2025-04-02 15:41:28 - ERROR - Arctaris rename_statements.py:1517 - main - Error processing NewStatement.pdf: 'FileManager' object has no attribute '_extract_statement_info'
+2025-04-02 15:41:28 - INFO - Arctaris rename_statements.py:1568 - main - 
+Dry run completed in 4.43 seconds.
+2025-04-02 15:41:28 - INFO - Arctaris rename_statements.py:1572 - main - Preview checklist saved to: checklists\preview_checklist_20250402_154128.csv
+2025-04-02 15:41:28 - INFO - Arctaris rename_statements.py:1576 - main - 0 files would be processed.
