@@ -17,6 +17,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Experimental auto-dependency check on startup in `main.py`.
 
 ### Changed
+- Temporarily limited processing in `main.py` to the first 50 files for testing.
 - Modified `PDFProcessor` (`process_pdf`) to return `None` for `StatementInfo` if `UnlabeledStrategy` is used, preventing renaming/moving.
 - Refactored `main.py` preview logic (`_run_preview`) to use structured data from `file_manager`.
 - Modified `file_manager.py` (`process_file`) to return structured dictionary on dry run success.
@@ -31,9 +32,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Removed redundant `BANK_STRATEGIES` dictionary definition from the end of `bank_strategies.py`.
 
 ### Fixed
+- Prevented incorrect date fallback (`datetime.now()`) in all strategies; uses `None` date with appropriate filename/path fallbacks (`NODATE`/`UnknownDate`) instead.
+- Corrected `config.json` structure and ensured `delete_originals: true` is loaded correctly, fixing issue where originals were not deleted.
+- Removed date requirement from `is_successful` check in `PDFProcessor`, preventing files with failed date parsing from being incorrectly skipped.
 - Prevented `UnlabeledStrategy` files from being moved or renamed; they are now skipped by `FileManager` and left in the input folder.
 - Corrected various `IndentationError` issues within `bank_strategies.py`.
 - Resolved `TypeError` in `pdf_processor.py` caused by incorrect `StatementInfo` initialization (passing `original_filename` to `__init__`).
 - Corrected `AttributeError` typo in `pdf_processor.py` (called `_extract_text_with_plumber` instead of `_extract_text_with_pdfplumber`).
 - Resolved `TypeError` in `pdf_processor.py` by adding the missing `filename` argument to the `_extract_text_with_pdfplumber` call.
-- Improved exception handling in `main.py` (`_collect_files`) to catch specific `FileNotFoundError` and `PermissionError` instead of generic `Exception`. 
+- Improved exception handling in `main.py` (`_collect_files`) to catch specific `FileNotFoundError` and `PermissionError` instead of generic `Exception`.
+
+### Notes
+- Attempting processing run on limited batch (50 files) to verify recent fixes. 
