@@ -485,24 +485,38 @@ class PdfRenamerApp:
              logging.warning("No files remaining after verification and repair attempts.")
              return 0
 
-        # --- Limit files for testing --- 
-        max_files_to_test = 50 # Set the desired number of files for the small batch
-        if len(self.files_to_process) > max_files_to_test:
-             logging.warning(f"Limiting processing to the first {max_files_to_test} files for this run.")
-             self.files_to_process = self.files_to_process[:max_files_to_test]
-        # --- End Limit --- 
+        # --- Process files in batches ---
+        batch_size = 50
+        total_files = len(self.files_to_process)
+        logging.info(f"Processing {total_files} files in batches of {batch_size}...")
 
-        # 4. Run Preview (always runs internally, displays based on args)
-        preview_data = self._run_preview(self.files_to_process)
+        # Accumulate overall results across batches
+        overall_preview_data = []
 
-        # 5. Process Files (if not dry run)
-        if not self.args.dry_run:
-             self._run_processing(preview_data)
+        for i in range(0, total_files, batch_size):
+            batch_files = self.files_to_process[i:min(i + batch_size, total_files)]
+            batch_start_num = i + 1
+            batch_end_num = min(i + batch_size, total_files)
+            logging.info(f"\n--- Processing Batch {batch_start_num}-{batch_end_num}/{total_files} ---")
 
-        # 6. Finish
+            # 4. Run Preview for the current batch
+            batch_preview_data = self._run_preview(batch_files)
+            overall_preview_data.extend(batch_preview_data) # Collect for final summary
+
+            # 5. Process Files for the current batch (if not dry run)
+            if not self.args.dry_run:
+                 # Note: Confirmation prompt (if needed) will happen in the first batch
+                 self._run_processing(batch_preview_data)
+
+            logging.info(f"--- Finished Batch {batch_start_num}-{batch_end_num}/{total_files} ---")
+            # Optional: Add a small delay between batches if needed
+            # time.sleep(1) 
+
+        # --- End Batch Processing ---
+
+        # 6. Finish (Summary generation uses overall state managed by FileManager/PDFProcessor)
         elapsed_time = time.time() - start_time
-        logging.info(f"\nApplication finished in {elapsed_time:.2f} seconds.")
-        logging.info("=" * 40)
+        logging.info(f"\nApplication finished processing all batches in {elapsed_time:.2f} seconds.")
 
         # Return exit code based on errors? (0 for success, 1 for errors)
         return 1 if self.processing_results["error"] > 0 else 0

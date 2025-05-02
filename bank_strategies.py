@@ -176,7 +176,7 @@ class PNCStrategy(BankStrategy):
 
         logging.debug(f"PNC: Starting line processing. Sensitive accounts: {len(sensitive_accounts)}")
         for i, line in enumerate(lines):
-            if not line.strip() or sensitive_match_made: break
+            if not line.strip(): break
             logging.log(logging.DEBUG - 5 , f"PNC Line {i+1}: {line.strip()}")
 
             # 1. Attempt Number Extraction & Sensitive Match
@@ -256,8 +256,7 @@ class PNCStrategy(BankStrategy):
                         statement_info.date = parsed_date
                         date_found = True
                         logging.debug(f"PNC: Found date {parsed_date:%Y-%m-%d}")
-                        continue # Go to next line
-        
+
         # --- Fallback Logic --- (Only run if no definitive sensitive match was made)
         if not sensitive_match_made:
             logging.debug(f"PNC: No definitive sensitive match, running fallback logic.")
@@ -351,9 +350,15 @@ class PNCStrategy(BankStrategy):
         return new_filename
 
     def get_subfolder_path(self, statement_info: StatementInfo) -> str:
-        """ Subfolder: PNC (Simplified based on user request) """
-        # Simply return the bank name to place all PNC files in the base PNC folder.
-        return self.get_bank_name()
+        """ Subfolder: PNC / YYYY / Month """
+        if statement_info.date:
+            month_name = statement_info.date.strftime('%B') # Full month name, e.g., "April"
+            year = statement_info.date.strftime('%Y') # 4-digit year
+            # Construct path: PNC / 2025 / April
+            return os.path.join(self.get_bank_name(), year, month_name)
+        else:
+            # Fallback if date is missing
+            return os.path.join(self.get_bank_name(), "UnknownDate")
 
 
 class BerkshireStrategy(BankStrategy):
