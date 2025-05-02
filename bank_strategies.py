@@ -290,8 +290,7 @@ class PNCStrategy(BankStrategy):
                  statement_info.account_name = "UNKNOWN PNC ACCOUNT"
             logging.warning(f"PNC: Using default name: {statement_info.account_name}")
         # Set default date only if no date was found
-        if not statement_info.date: 
-            statement_info.date = datetime.now()
+        if not statement_info.date:
             logging.warning(f"PNC: Using fallback date.")
 
     def get_filename(self, statement_info: StatementInfo) -> str:
@@ -464,8 +463,7 @@ class BerkshireStrategy(BankStrategy):
             last4 = statement_info.account_number[-4:] if account_found and len(statement_info.account_number) >= 4 else "XXXX"
             statement_info.account_name = f"BERKSHIRE ACCOUNT {last4}"
             logging.warning(f"Berkshire: Using default name: {statement_info.account_name}")
-        if not statement_info.date: 
-            statement_info.date = datetime.now()
+        if not statement_info.date:
             logging.warning(f"Berkshire: Using fallback date.")
 
     def get_filename(self, statement_info: StatementInfo) -> str:
@@ -601,16 +599,15 @@ class CambridgeStrategy(BankStrategy):
             last4 = statement_info.account_number[-4:] if account_found and len(statement_info.account_number) >= 4 else "XXXX"
             statement_info.account_name = f"CAMBRIDGE ACCOUNT {last4}"
             logging.warning(f"Cambridge: Using default name: {statement_info.account_name}")
-        if not statement_info.date: 
-            statement_info.date = datetime.now()
+        if not statement_info.date:
             logging.warning(f"Cambridge: Using fallback date.")
 
     def get_filename(self, statement_info: StatementInfo) -> str:
         """ Filename: [Account Name] [Account Number] Cambridge Savings [Month] [YYYY].pdf """
         account_name = statement_info.account_name or "Unknown Account"
         account_number = statement_info.account_number or "0000"
-        month = statement_info.date.strftime('%B') if statement_info.date else datetime.now().strftime('%B')
-        year = statement_info.date.strftime('%Y') if statement_info.date else datetime.now().strftime('%Y')
+        month = statement_info.date.strftime("%B") if statement_info.date else "NoMonth"
+        year = statement_info.date.strftime("%Y") if statement_info.date else "NoYear"
 
         # Clean name
         clean_name = self._sanitize_filename(account_name.upper())
@@ -620,7 +617,7 @@ class CambridgeStrategy(BankStrategy):
 
     def get_subfolder_path(self, statement_info: StatementInfo) -> str:
         """ Subfolder: Cambridge / YYYY-MM """
-        year_month = statement_info.date.strftime('%Y-%m') if statement_info.date else datetime.now().strftime('%Y-%m')
+        year_month = statement_info.date.strftime("%Y-%m") if statement_info.date else "UnknownDate"
         return os.path.join("Cambridge", year_month)
 
 
@@ -728,8 +725,7 @@ class BankUnitedStrategy(BankStrategy):
             last4 = statement_info.account_number[-4:] if account_found and len(statement_info.account_number) >= 4 else "XXXX"
             statement_info.account_name = f"BANKUNITED ACCOUNT {last4}"
             logging.warning(f"BankUnited: Using default name: {statement_info.account_name}")
-        if not statement_info.date: 
-            statement_info.date = datetime.now()
+        if not statement_info.date:
             logging.warning(f"BankUnited: Using fallback date.")
 
     def get_filename(self, statement_info: StatementInfo) -> str:
