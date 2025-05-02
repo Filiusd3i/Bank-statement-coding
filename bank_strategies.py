@@ -294,39 +294,66 @@ class PNCStrategy(BankStrategy):
             logging.warning(f"PNC: Using fallback date.")
 
     def get_filename(self, statement_info: StatementInfo) -> str:
-        """ PNC Filename: [Account name] statement_[account number]_YYYY_MM_DD.pdf """
+        """ PNC Filename: [Account Name] [Original Filename].pdf (Simplified based on user request) """
         account_name = statement_info.account_name or "Unknown_PNC_Account"
-        # Use full account number if available, sanitize for filename
-        account_number_raw = statement_info.account_number or "UNKNOWN_ACCOUNT_NUM"
-        account_number_clean = re.sub(r'[D-]', '', account_number_raw)
-        account_number_clean = self._sanitize_filename(account_number_clean, allow_spaces=False)
+        original_filename = statement_info.original_filename
 
-        # Sanitize account name
+        if not original_filename:
+            logging.warning("PNCStrategy: Original filename missing in StatementInfo. Using fallback name.")
+            # Fallback: construct something basic, though ideally original_filename is always present
+            account_number_clean = self._sanitize_filename(statement_info.account_number or "UNKNOWN_ACCOUNT_NUM", allow_spaces=False)
+            date_str = "NODATE" # Cannot get date from original if it's missing
+            clean_account_name_fallback = self._sanitize_filename(account_name, allow_spaces=True)
+            return f"{clean_account_name_fallback} statement_{account_number_clean}_{date_str}.pdf" # Fallback to old format attempt
+
+        # Extract the base name from the original filename (e.g., file.pdf from /path/to/file.pdf)
+        original_basename = os.path.basename(original_filename)
+
+        # Sanitize the account name (obtained from extract_info/sensitive matching)
         clean_account_name = self._sanitize_filename(account_name, allow_spaces=True)
 
-        # Format date as YYYY_MM_DD
-        date_str = statement_info.date.strftime("%Y_%m_%d") if statement_info.date else "NODATE"
+        # Construct the new filename by prepending the sanitized name to the original basename
+        # Ensure there's a space between the name and the original filename part
+        new_filename = f"{clean_account_name} {original_basename}"
 
-        # Construct the new filename
-        new_filename = f"{clean_account_name} statement_{account_number_clean}_{date_str}.pdf"
-
-        # Limit length if necessary (optional, can be removed if length is not a concern)
-        max_len = 200 # Example max length
+        # Limit length if necessary
+        max_len = 200
         if len(new_filename) > max_len:
              original_filename_for_log = statement_info.original_filename or "unknown.pdf"
-             base, ext = os.path.splitext(new_filename)
-             cutoff = max_len - len(ext) - 3 # Make space for "..."
-             new_filename = base[:cutoff] + "..." + ext
+             # Ensure the extension is preserved during truncation
+             base, ext = os.path.splitext(new_filename) # Use new_filename here
+             # Check if original_basename already had an extension we need to preserve
+             orig_base, orig_ext = os.path.splitext(original_basename)
+             if not ext and orig_ext: # If new_filename lost extension, use original
+                 ext = orig_ext
+             elif not ext and not orig_ext: # If neither had extension, default to .pdf
+                 ext = ".pdf"
+                 
+             cutoff = max_len - len(ext) - 3 # Make space for "..." and extension
+             # Make sure cutoff doesn't result in negative index
+             cutoff = max(0, cutoff) 
+             # Reconstruct base from the parts we have
+             base_part1 = clean_account_name
+             base_part2 = orig_base # Use original base name without extension
+             full_base = f"{base_part1} {base_part2}"
+             
+             new_filename = full_base[:cutoff] + "..." + ext
              logging.warning(f"PNCStrategy: Truncated filename for {original_filename_for_log} due to length: {new_filename}")
+             
+        # Ensure the final filename has a .pdf extension if it was lost somehow
+        if not new_filename.lower().endswith('.pdf'):
+            base, ext = os.path.splitext(new_filename)
+            if ext: # If there's an extension but it's not pdf
+                new_filename = base + ".pdf"
+            else: # If there's no extension
+                 new_filename = new_filename + ".pdf"
+                 
         return new_filename
 
     def get_subfolder_path(self, statement_info: StatementInfo) -> str:
-        """ Subfolder: PNC / YYYY-MM """
-        year_month = statement_info.date.strftime('%Y-%m') if statement_info.date else "UnknownDate"
-        # Maybe include account name in subfolder?
-        # clean_account_name = self._sanitize_filename(statement_info.account_name or "UnknownAccount")
-        # return os.path.join("PNC", clean_account_name, year_month)
-        return os.path.join(self.get_bank_name(), year_month)
+        """ Subfolder: PNC (Simplified based on user request) """
+        # Simply return the bank name to place all PNC files in the base PNC folder.
+        return self.get_bank_name()
 
 
 class BerkshireStrategy(BankStrategy):

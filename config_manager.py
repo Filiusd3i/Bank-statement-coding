@@ -51,6 +51,7 @@ class ConfigManager:
         self.config_path = config_path
         self.sensitive_config_path = sensitive_config_path
         self.config = self._load_yaml(self.config_path)
+        logging.info(f"Loaded main config from {self.config_path}: {json.dumps(self.config)}")
         self.sensitive_config = self._load_yaml(self.sensitive_config_path)
 
         if self.config is None:
