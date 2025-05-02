@@ -4,7 +4,7 @@ import shutil
 import logging
 import csv
 from datetime import datetime
-from typing import List, Dict, Tuple, Set, Optional
+from typing import List, Dict, Tuple, Set, Optional, Any
 
 # Assuming these are in sibling modules now
 from config_manager import ConfigManager
@@ -64,9 +64,10 @@ class FileManager:
                      statement_info: StatementInfo,
                      strategy: 'BankStrategy', # Forward reference if needed, or import later
                      dry_run: bool = False
-                    ) -> Tuple[bool, str]:
+                    ) -> Tuple[bool, Dict[str, Any] | str]:
         """
         Processes a single file: determines destination, copies/moves, logs.
+        Returns a structured dictionary on dry run success.
 
         Args:
             source_filepath: Full path to the original PDF file.
@@ -76,7 +77,10 @@ class FileManager:
             dry_run: If True, only log actions without moving/copying.
 
         Returns:
-            Tuple (success: bool, message: str)
+            Tuple (success: bool, details: Dict[str, Any] | str).
+            If dry_run is True and successful, details is a dictionary:
+            {'original_filename': str, 'relative_destination': str, 'bank_type': str, 'status': str}
+            Otherwise, details is a message string.
         """
         original_filename = os.path.basename(source_filepath)
 
@@ -84,7 +88,7 @@ class FileManager:
             message = f"Skipping {original_filename}: No statement info extracted."
             logging.warning(message)
             self._log_processed_file(source_filepath, "N/A", "Unknown", "Skipped (No Info)", dry_run)
-            return False, message
+            return False, message # Return message string on failure
 
         try:
             # 1. Get subfolder and filename from strategy
@@ -103,14 +107,22 @@ class FileManager:
             # 4. Check for filename conflicts
             final_filename = self._get_non_conflicting_filename(full_output_folder, desired_filename)
             destination_filepath = os.path.join(full_output_folder, final_filename)
-            relative_destination = os.path.join(relative_subfolder, final_filename) # For logging
+            relative_destination = os.path.join(relative_subfolder, final_filename).replace('\\\\', '/') # For logging and consistency
 
             # 5. Perform action (copy/move or log)
             if dry_run:
+                status = "Would Process"
                 message = f"Dry Run: Would copy '{original_filename}' to '{relative_destination}'"
                 logging.info(message)
-                self._log_processed_file(source_filepath, relative_destination, statement_info.bank_type, "Would Process", dry_run)
-                return True, message
+                self._log_processed_file(source_filepath, relative_destination, statement_info.bank_type, status, dry_run)
+                # Return structured data on dry run success
+                return True, {
+                    "original_filename": original_filename,
+                    "relative_destination": relative_destination,
+                    "bank_type": statement_info.bank_type,
+                    "status": status,
+                    "message": message # Optional: include the log message too
+                }
             else:
                 try:
                     # Use copy2 to preserve metadata
@@ -132,19 +144,19 @@ class FileManager:
                     else:
                          self._log_processed_file(source_filepath, relative_destination, statement_info.bank_type, "Processed", dry_run)
 
-                    return True, message
+                    return True, message # Return message string on actual success
 
                 except Exception as e:
                     message = f"Error copying file {original_filename} to {destination_filepath}: {e}"
                     logging.error(message, exc_info=True)
                     self._log_processed_file(source_filepath, relative_destination, statement_info.bank_type, f"Error (Copy Fail)", dry_run)
-                    return False, message
+                    return False, message # Return message string on failure
 
         except Exception as e:
              message = f"Unexpected error processing file {original_filename}: {e}"
              logging.error(message, exc_info=True)
              self._log_processed_file(source_filepath, "Error", statement_info.bank_type if statement_info else "Unknown", "Error (Unexpected)", dry_run)
-             return False, message
+             return False, message # Return message string on failure
 
     def _log_processed_file(self, original_path: str, dest_path: str, bank_type: str, status: str, dry_run: bool):
         """Adds an entry to the internal log for checklist generation."""

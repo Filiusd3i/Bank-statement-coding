@@ -3,7 +3,7 @@ import os
 import sys
 import time
 import logging
-from typing import List, Dict, Tuple, Any
+from typing import List, Dict, Tuple, Any, Optional
 import concurrent.futures # Keep for potential future parallelization
 import argparse
 from config_manager import ConfigManager
@@ -72,7 +72,13 @@ class PdfRenamerApp:
             pdf_files = [os.path.join(self.input_folder, f) for f in original_files]
             logging.info(f"Found {len(pdf_files)} PDF file(s) in input folder.")
             return pdf_files
-        except Exception as e:
+        except FileNotFoundError:
+            logging.critical(f"Input directory not found: '{self.input_folder}'")
+            sys.exit(1)
+        except PermissionError:
+            logging.critical(f"Permission denied when trying to read directory: '{self.input_folder}'")
+            sys.exit(1)
+        except OSError as e: # Catch other potential OS errors related to reading directory
             logging.critical(f"Error reading input directory '{self.input_folder}': {e}", exc_info=True)
             sys.exit(1)
 
@@ -167,44 +173,50 @@ class PdfRenamerApp:
     def _run_preview(self, files_to_process: List[str]):
         """Runs the processing logic in dry-run mode and gathers results."""
         logging.info("\n=== DRY RUN PREVIEW ===")
-        preview_data = [] # Store tuples of (original_path, statement_info, strategy, message)
+        # Store tuples of (original_path, statement_info, strategy, preview_details_dict)
+        preview_data: List[Tuple[str, Optional[StatementInfo], Optional[BankStrategy], Optional[Dict[str, Any]]]] = []
 
         total_files = len(files_to_process)
         for i, file_path in enumerate(files_to_process):
             filename = os.path.basename(file_path)
             logging.info(f"[{i+1}/{total_files}] Previewing: {filename}")
 
-            # Process PDF returns both info and the instantiated strategy
             statement_info, strategy = self.pdf_processor.process_pdf(file_path)
 
             if statement_info and strategy:
-                 # Strategy is now directly returned by process_pdf
-                 # No need to determine/instantiate it here.
-
-                 # Call file manager in dry-run to get the message
-                 success, message = self.file_manager.process_file(
-                      file_path, self.processed_folder, statement_info, strategy, dry_run=True
-                 )
-                 if success:
-                      preview_data.append((file_path, statement_info, strategy, message))
-                 else:
-                      # Log error during preview simulation
-                      logging.error(f"Dry run simulation failed for {filename}: {message}")
-                      self.processing_results["error"] += 1
+                # Call file manager in dry-run to get structured details
+                success, details = self.file_manager.process_file(
+                     file_path, self.processed_folder, statement_info, strategy, dry_run=True
+                )
+                if success:
+                     # Store the dictionary 'details' instead of the old message string
+                     preview_data.append((file_path, statement_info, strategy, details))
+                else:
+                     # details is the error message string in this case
+                     logging.error(f"Dry run simulation failed for {filename}: {details}")
+                     self.processing_results["error"] += 1
+                     preview_data.append((file_path, statement_info, strategy, None)) # Add entry even on failure for counts?
             else:
                  logging.warning(f"Skipping preview for {filename}: Failed to extract info or determine strategy.")
                  self.file_manager._log_processed_file(file_path, "N/A", "Unknown", "Skipped (Extraction/Strategy Fail)", True)
                  self.processing_results["skipped"] += 1
+                 preview_data.append((file_path, None, None, None)) # Add entry even on failure for counts?
 
         # Display detailed preview if requested
         if self.args.show_preview:
             logging.info("\n--- Detailed Preview by Bank ---")
             preview_by_bank = defaultdict(list)
-            for _, info, _, msg in preview_data:
-                 bank_type = info.bank_type if info else "Unknown"
-                 original_file = info.original_filename if info else "N/A"
-                 dest_path = msg.split("Would copy")[-1].split("to")[-1].strip().replace("'", "") if "Would copy" in msg else "Error"
-                 preview_by_bank[bank_type].append(f"  From: {original_file} -> To: {dest_path}")
+            # Iterate through the updated preview_data structure
+            for _, info, _, details_dict in preview_data:
+                 # Ensure details_dict is not None and contains expected keys
+                 if details_dict and isinstance(details_dict, dict):
+                     bank_type = details_dict.get('bank_type', 'Unknown')
+                     original_file = details_dict.get('original_filename', 'N/A')
+                     dest_path = details_dict.get('relative_destination', 'Error')
+                     preview_by_bank[bank_type].append(f"  From: {original_file} -> To: {dest_path}")
+                 elif info: # Fallback if details dict failed but we have info
+                      preview_by_bank[info.bank_type].append(f"  From: {os.path.basename(_)} -> To: Error/Skipped")
+                 # else: Skip if no info and no details
 
             if not preview_by_bank:
                  print("PREVIEW_SUMMARY: No files would be processed.")
@@ -222,34 +234,34 @@ class PdfRenamerApp:
             logging.info(f"Preview checklist saved to: {checklist_path}")
             print(f"CHECKLIST_PATH: {checklist_path}") # Marker for batch file
 
-        num_processed = len(preview_data)
+        # Calculate count based on successful previews (where details_dict is present)
+        num_processed = sum(1 for _, _, _, d in preview_data if d is not None)
         logging.info(f"\nDry run complete. {num_processed} file(s) would be processed.")
         print(f"PROCESSED_COUNT: {num_processed}") # Marker for batch file
 
         return preview_data
 
 
-    def _run_processing(self, preview_data: List[Tuple[str, StatementInfo, BankStrategy, str]]):
+    def _run_processing(self, preview_data: List[Tuple[str, Optional[StatementInfo], Optional[BankStrategy], Optional[Dict[str, Any]]]]):
         """Runs the actual file processing based on previewed data."""
-        if not preview_data:
-             logging.warning("No files to process.")
+        # Filter out entries where preview failed (details_dict is None)
+        valid_preview_data = [(fp, info, strat, det) for fp, info, strat, det in preview_data if info and strat and det]
+
+        if not valid_preview_data:
+             logging.warning("No files with successful preview data to process.")
              return
 
-        total_to_process = len(preview_data)
+        total_to_process = len(valid_preview_data)
         logging.info(f"\n=== PROCESSING {total_to_process} FILES ===")
 
-        if not self.args.auto_confirm:
-            try:
-                confirm = input(f"Proceed with processing {total_to_process} file(s)? (y/n): ").strip().lower()
-                if confirm not in ['y', 'yes']:
-                    logging.warning("Operation cancelled by user.")
-                    # Log skipped files for checklist consistency?
-                    for file_path, info, _, _ in preview_data:
-                         self.file_manager._log_processed_file(file_path, "N/A", info.bank_type, "Cancelled", False)
-                    return # Exit processing
-            except EOFError: # Handle case where input stream is closed (e.g., piped)
-                 logging.warning("No interactive input detected. Use --auto-confirm to run non-interactively. Aborting.")
-                 return
+        # Confirmation is handled by --auto-confirm argument. If not set and not a dry run, 
+        # the script should ideally have already exited or handled it earlier.
+        # We proceed if --auto-confirm is True OR if it's not set but we reached here (implied confirmation).
+        if not self.args.auto_confirm and not self.args.dry_run:
+            # This check might be redundant if entry point logic prevents non-interactive without --auto-confirm
+            logging.warning("Running without --auto-confirm. Assuming confirmation as script is interactive.")
+            # If we *really* wanted to block non-interactive without the flag, we could check sys.stdin.isatty()
+            # but relying on the argument is cleaner.
 
         logging.info("Starting file processing...")
         # Reset results for actual run
@@ -277,16 +289,15 @@ class PdfRenamerApp:
 
         # --- Start Sequential Processing (Simpler for now) ---
         logging.info("Using sequential processing.")
-        # The preview_data now contains the already instantiated strategy
-        for i, (file_path, info, strategy, _) in enumerate(preview_data):
+        # The valid_preview_data contains the already instantiated strategy and file info
+        for i, (file_path, info, strategy, details_dict) in enumerate(valid_preview_data):
             logging.info(f"[{i+1}/{total_to_process}] Processing: {os.path.basename(file_path)}")
             # We already have the statement_info and strategy from the preview_data tuple
+            # Check info and strategy again just in case, although filtering should handle this
             if info and strategy:
                  self._process_single_file(file_path, info, strategy)
-            else:
-                # This case should ideally not happen if preview_data was filtered correctly
-                logging.error(f"Skipping processing for {os.path.basename(file_path)} due to missing info/strategy from preview phase.")
-                self.processing_results["skipped"] += 1 # Or maybe error?
+            # else: This case should ideally not happen due to filtering
+
         # --- End Sequential Processing ---
 
         # Generate final checklist

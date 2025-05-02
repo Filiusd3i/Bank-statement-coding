@@ -186,55 +186,56 @@ class PNCStrategy(BankStrategy):
 
             # Extract fund name using various patterns
             if not fund_found:
-                 # Look for ARC-IMPACT first
+                # Look for ARC-IMPACT first
                 match = arc_impact_pattern.search(line)
-                    if match:
-                        fund_name = match.group(1)
-                    fund_name = re.sub(r'ARC[\s-]IMPACT', 'ARC-IMPACT', fund_name, flags=re.IGNORECASE).upper().strip()
-                        statement_info.account_name = fund_name
+                if match:
+                    fund_name = match.group(1)
+                    # Clean the found name right away
+                    fund_name = re.sub(r'ARC[\\s-]IMPACT', 'ARC-IMPACT', fund_name, flags=re.IGNORECASE).upper().strip()
+                    statement_info.account_name = fund_name
                     logging.debug(f"PNCStrategy: Found ARC-IMPACT name '{fund_name}' on line {i+1}.")
-                        fund_found = True
+                    fund_found = True
                     continue # Prioritize ARC-IMPACT match
 
-                 # Look for specific account name patterns
-                    for pattern in account_name_patterns:
-                        match = pattern.search(line)
-                        if match:
-                            if "PRODUCT DEV" in pattern.pattern.upper():
-                                identifier = match.group(1)
-                                fund_name = f"ARCTARIS PRODUCT DEV {identifier}"
-                                statement_info.account_name = fund_name.upper()
+                # Look for specific account name patterns if ARC-IMPACT wasn't found
+                for pattern in account_name_patterns:
+                    match = pattern.search(line)
+                    if match:
+                        if "PRODUCT DEV" in pattern.pattern.upper():
+                            identifier = match.group(1)
+                            fund_name = f"ARCTARIS PRODUCT DEV {identifier}"
+                            statement_info.account_name = fund_name.upper()
                             logging.debug(f"PNCStrategy: Found name '{fund_name}' via PRODUCT DEV pattern on line {i+1}.")
-                                fund_found = True
+                            fund_found = True
                             break # Stop checking account_name_patterns
-                            elif "PHASE" in pattern.pattern.upper():
-                                identifier = match.group(1)
-                                fund_name = f"PHASE {identifier} HOLDINGS"
-                                statement_info.account_name = fund_name.upper()
+                        elif "PHASE" in pattern.pattern.upper():
+                            identifier = match.group(1)
+                            fund_name = f"PHASE {identifier} HOLDINGS"
+                            statement_info.account_name = fund_name.upper()
                             logging.debug(f"PNCStrategy: Found name '{fund_name}' via PHASE pattern on line {i+1}.")
-                                fund_found = True
+                            fund_found = True
                             break # Stop checking account_name_patterns
-                if fund_found: continue # Move to next line if found
+                if fund_found: continue # Move to next line if found via account_name_patterns
 
-                 # Try generic fund patterns
-                     for pattern in fund_patterns:
-                        match = pattern.search(line)
-                        if match:
-                            fund_name = match.group(1).strip()
+                # Try generic fund patterns if specific ones weren't found
+                for pattern in fund_patterns:
+                    match = pattern.search(line)
+                    if match:
+                        fund_name = match.group(1).strip()
                         # Apply cleaning/normalization
                         if "cde" in fund_name.lower() and "sub" not in fund_name.lower():
                            # Check if line context suggests SUB-CDE
                            if "sub-cde" in line.lower() and re.search(r'CDE[^A-Za-z0-9]*[0-9]+', fund_name, re.IGNORECASE):
-                                    fund_name = "SUB-" + fund_name
-                            fund_name = fund_name.replace(',', '').replace('.', '')
-                        fund_name = re.sub(r'\s+Tax\s+ID.*$', '', fund_name, flags=re.IGNORECASE).strip() # Remove Tax ID info
-                        fund_name = re.sub(r'\s+', ' ', fund_name).upper() # Consolidate whitespace, uppercase
+                                fund_name = "SUB-" + fund_name
+                        fund_name = fund_name.replace(',', '').replace('.', '')
+                        fund_name = re.sub(r'\\s+Tax\\s+ID.*$', '', fund_name, flags=re.IGNORECASE).strip() # Remove Tax ID info
+                        fund_name = re.sub(r'\\s+', ' ', fund_name).upper() # Consolidate whitespace, uppercase
                         if "ARC IMPACT" in fund_name: fund_name = fund_name.replace("ARC IMPACT", "ARC-IMPACT")
 
                         if len(fund_name) > 3 and "SUMMARY" not in fund_name : # Basic check for meaningful name, avoid summary lines
-                                statement_info.account_name = fund_name
+                            statement_info.account_name = fund_name
                             logging.debug(f"PNCStrategy: Found name '{fund_name}' via generic pattern '{pattern.pattern}' on line {i+1}.")
-                                fund_found = True
+                            fund_found = True
                             break # Stop checking fund_patterns
                 if fund_found: continue
 
@@ -263,14 +264,14 @@ class PNCStrategy(BankStrategy):
                      fund_found = True
             elif full_account in pnc_mappings:
                 statement_info.account_name = pnc_mappings[full_account]
-                 logging.debug(f"PNCStrategy: Fallback - Mapped name '{statement_info.account_name}' from full account.")
-                 fund_found = True
+                logging.debug(f"PNCStrategy: Fallback - Mapped name '{statement_info.account_name}' from full account.")
+                fund_found = True
             else: # Try last 4 of full account
                 last4 = full_account[-4:]
                 if last4 in arc_impact_mappings:
                     statement_info.account_name = arc_impact_mappings[last4]
-                     logging.debug(f"PNCStrategy: Fallback - Mapped name '{statement_info.account_name}' from last4 of full account.")
-                     fund_found = True
+                    logging.debug(f"PNCStrategy: Fallback - Mapped name '{statement_info.account_name}' from last4 of full account.")
+                    fund_found = True
 
         # Set default account name if still not found
         if not statement_info.account_name:
@@ -288,21 +289,28 @@ class PNCStrategy(BankStrategy):
 
 
     def get_filename(self, statement_info: StatementInfo) -> str:
-        """ PNC Filename: [Account Name]_[Original Filename] """
+        """ PNC Filename: [Account name] statement_[account number]_YYYY_MM_DD.pdf """
         account_name = statement_info.account_name or "Unknown_PNC_Account"
-        original_filename = statement_info.original_filename or "statement.pdf"
-        clean_account_name = self._sanitize_filename(account_name.upper())
-        clean_original = self._sanitize_filename(os.path.splitext(original_filename)[0]) # Sanitize base name
-        date_str = statement_info.date.strftime("%Y%m%d") if statement_info.date else "NODATE"
-        # Construct: BANK_YYYYMMDD_ACCOUNT_NAME_LAST4.pdf
-        last4 = statement_info.account_number[-4:] if statement_info.account_number and len(statement_info.account_number) >= 4 else "XXXX"
-        new_filename = f"PNC_{date_str}_{clean_account_name}_{last4}.pdf"
-        # Limit length if necessary
+        # Use full account number if available, sanitize for filename
+        account_number_raw = statement_info.account_number or "UNKNOWN_ACCOUNT_NUM"
+        account_number_clean = self._sanitize_filename(account_number_raw.replace('-', '')) # Remove hyphens before sanitizing
+
+        # Sanitize account name
+        clean_account_name = self._sanitize_filename(account_name) # No need to uppercase if not desired
+
+        # Format date as YYYY_MM_DD
+        date_str = statement_info.date.strftime("%Y_%m_%d") if statement_info.date else "NODATE"
+
+        # Construct the new filename
+        new_filename = f"{clean_account_name} statement_{account_number_clean}_{date_str}.pdf"
+
+        # Limit length if necessary (optional, can be removed if length is not a concern)
         max_len = 200 # Example max length
         if len(new_filename) > max_len:
+             original_filename_for_log = statement_info.original_filename or "unknown.pdf"
              base, ext = os.path.splitext(new_filename)
              new_filename = base[:max_len - len(ext)] + ext
-             logging.warning(f"PNCStrategy: Truncated filename for {original_filename} due to length.")
+             logging.warning(f"PNCStrategy: Truncated filename for {original_filename_for_log} due to length.")
         return new_filename
 
     def get_subfolder_path(self, statement_info: StatementInfo) -> str:
@@ -358,7 +366,7 @@ class BerkshireStrategy(BankStrategy):
             logging.info(f"BerkshireStrategy: Detected NewStatement format for {original_filename}. Relying heavily on mappings.")
             # Try to get last 4 from filename if possible (e.g., NewStatement_1234.pdf)
             match = re.search(r'_(\\d{4})(?:\\.pdf)?$', original_filename)
-        if match:
+            if match:
                 account_last4 = match.group(1)
                 logging.debug(f"BerkshireStrategy: Found last 4 '{account_last4}' from NewStatement filename.")
                 if account_last4 in mappings:
@@ -366,14 +374,18 @@ class BerkshireStrategy(BankStrategy):
                     logging.debug(f"BerkshireStrategy: Mapped name '{fund_name}' from last4 in NewStatement filename.")
                     statement_info.account_name = fund_name
                     statement_info.account_number = f"xxxx{account_last4}"
-            # Date is usually not in these files, use fallback
-            statement_date = datetime.now()
-            logging.warning(f"BerkshireStrategy: Using current date as fallback for NewStatement file {original_filename}.")
-            # Exit early if we got the name from filename mapping
-            if fund_name:
-                statement_info.date = statement_date
-                return
-            # Otherwise, continue to process lines if any exist (might be corrupted/empty)
+                # Date is usually not in these files, use fallback
+                statement_date = datetime.now()
+                logging.warning(f"BerkshireStrategy: Using current date as fallback for NewStatement file {original_filename}.")
+                # Exit early if we got the name from filename mapping
+                if fund_name:
+                    statement_info.date = statement_date
+                    return
+                # Otherwise, continue to process lines if any exist (might be corrupted/empty)
+
+            # If match failed or mapping failed for NewStatement, log and proceed to line processing
+            if not fund_name:
+                 logging.debug(f"BerkshireStrategy: Could not determine name from NewStatement filename '{original_filename}' or mapping missing. Proceeding to line scan.")
 
         # Process lines for regular statements or if NewStatement processing failed
         logging.debug(f"BerkshireStrategy: Starting line processing for '{statement_info.original_filename}'.")
@@ -383,9 +395,9 @@ class BerkshireStrategy(BankStrategy):
 
             # Extract Account Number/Last 4
             if not account_number and not account_last4:
-                    for pattern in account_patterns:
-                        match = pattern.search(line)
-                        if match:
+                for pattern in account_patterns:
+                    match = pattern.search(line)
+                    if match:
                         num = match.group(1)
                         if len(num) >= 4:
                             account_last4 = num[-4:]
@@ -393,7 +405,7 @@ class BerkshireStrategy(BankStrategy):
                             if len(num) > 5 and pattern != account_patterns[4]: # Avoid assigning full num if just xxxx1234 matched
                                 account_number = num
                                 logging.debug(f"BerkshireStrategy: Found full account '{account_number}' (last4: {account_last4}) on line {i+1}.")
-                else:
+                            else:
                                 logging.debug(f"BerkshireStrategy: Found last 4 '{account_last4}' on line {i+1}.")
                             # Try mapping immediately
                             if not fund_name and account_last4 in mappings:
@@ -403,10 +415,10 @@ class BerkshireStrategy(BankStrategy):
 
             # Extract Fund Name
             if not fund_name:
-                         for pattern in fund_patterns:
-                            match = pattern.search(line)
-                            if match:
-                                potential_name = match.group(1).strip()
+                for pattern in fund_patterns:
+                    match = pattern.search(line)
+                    if match:
+                        potential_name = match.group(1).strip()
                         potential_name = re.sub(r'\s+', ' ', potential_name).upper()
                         # Basic validation
                         if len(potential_name) > 5 and "ACCOUNT SUMMARY" not in potential_name and "STATEMENT OF" not in potential_name:
@@ -425,8 +437,8 @@ class BerkshireStrategy(BankStrategy):
                         logging.debug(f"BerkshireStrategy: Found statement date '{statement_date.strftime('%Y-%m-%d')}' on line {i+1}.")
                 else:
                     match = period_end_date_pattern.search(line)
-                           if match:
-                               date_str = match.group(1)
+                    if match:
+                        date_str = match.group(1)
                         parsed = self._parse_date(date_str, ['%m/%d/%Y', '%m/%d/%y'])
                         if parsed:
                             statement_date = parsed
@@ -435,7 +447,7 @@ class BerkshireStrategy(BankStrategy):
             # Optimization: Stop if all found
             if (account_number or account_last4) and fund_name and statement_date:
                  logging.debug("BerkshireStrategy: All required info found, stopping line processing early.")
-                              break
+                 break
 
         # Assign extracted info to statement_info
         logging.debug(f"BerkshireStrategy: Finished line processing. Status: AccNum={bool(account_number)}, Last4={bool(account_last4)}, Fund={bool(fund_name)}, Date={bool(statement_date)}")
@@ -519,17 +531,17 @@ class CambridgeStrategy(BankStrategy):
         full_text = "\n".join(lines) # For multiline regex
 
         logging.debug(f"CambridgeStrategy: Starting processing for '{statement_info.original_filename}'.")
-            for i, line in enumerate(lines):
+        for i, line in enumerate(lines):
             if not line.strip(): continue
             logging.log(logging.DEBUG - 5 , f"Cambridge Line {i+1}: {line.strip()}")
 
             # Stop processing if all info is found
             if account_number and fund_name and statement_date:
-                 logging.debug("CambridgeStrategy: All required info found, stopping line processing.")
-                 break
+                logging.debug("CambridgeStrategy: All required info found, stopping line processing.")
+                break
 
-                # Extract Account Number
-                if not account_number:
+            # Extract Account Number
+            if not account_number:
                 match = account_pattern.search(line)
                 if match:
                     account_number = match.group(1).replace('-', '')
@@ -552,18 +564,18 @@ class CambridgeStrategy(BankStrategy):
                                  logging.debug(f"CambridgeStrategy: Found potential name '{fund_name}' via multiline pattern '{pattern.pattern}'.")
                                  break
                     # Try line-based patterns
-                        match = pattern.search(line)
-                        if match:
+                    match = pattern.search(line)
+                    if match:
                         potential_name = match.group(1).strip()
                         potential_name = re.sub(r'\s+', ' ', potential_name).upper()
                         if len(potential_name) > 5 and "ACCOUNT ACTIVITY" not in potential_name:
                             fund_name = potential_name
                             logging.debug(f"CambridgeStrategy: Found potential name '{fund_name}' via pattern '{pattern.pattern}' on line {i+1}.")
-                                break
+                            break
                 if fund_name: continue
 
-                # Extract Date
-                if not statement_date:
+            # Extract Date
+            if not statement_date:
                 match = date_pattern.search(line)
                 if match:
                     date_str = match.group(1)
@@ -574,13 +586,13 @@ class CambridgeStrategy(BankStrategy):
                         continue
                 else:
                      match = period_date_pattern.search(line)
-                        if match:
-                            date_str = match.group(1)
-                         parsed = self._parse_date(date_str, ['%m/%d/%Y', '%m/%d/%y'])
-                         if parsed:
-                             statement_date = parsed
-                             logging.debug(f"CambridgeStrategy: Found period end date '{statement_date.strftime('%Y-%m-%d')}' on line {i+1}.")
-                             continue
+                     if match:
+                        date_str = match.group(1)
+                        parsed = self._parse_date(date_str, ['%m/%d/%Y', '%m/%d/%y'])
+                        if parsed:
+                            statement_date = parsed
+                            logging.debug(f"CambridgeStrategy: Found period end date '{statement_date.strftime('%Y-%m-%d')}' on line {i+1}.")
+                            continue
 
         # Post-processing and assignment
         logging.debug(f"CambridgeStrategy: Finished line processing. Status: AccNum={bool(account_number)}, Fund={bool(fund_name)}, Date={bool(statement_date)}")
@@ -595,7 +607,7 @@ class CambridgeStrategy(BankStrategy):
                       if sub.lower() in fund_name.lower():
                            mapped_name = mapped
                            logging.debug(f"CambridgeStrategy: Mapped name '{mapped_name}' from substring '{sub}'.")
-                    break
+                           break
             statement_info.account_name = mapped_name or fund_name # Use mapped if found, else use extracted
         elif not statement_info.account_name:
              if account_number:
@@ -606,7 +618,7 @@ class CambridgeStrategy(BankStrategy):
                   logging.warning(f"CambridgeStrategy: No account name or number found for {statement_info.original_filename}. Using default: '{statement_info.account_name}'.")
 
         if statement_date:
-        statement_info.date = statement_date
+            statement_info.date = statement_date
         elif not statement_info.date:
             logging.warning(f"CambridgeStrategy: No statement date found for {statement_info.original_filename}. Using current date fallback.")
             statement_info.date = datetime.now()
@@ -619,7 +631,7 @@ class CambridgeStrategy(BankStrategy):
         year = statement_info.date.strftime('%Y') if statement_info.date else datetime.now().strftime('%Y')
 
         # Clean name
-        clean_name = self._sanitize_filename(account_name)
+        clean_name = self._sanitize_filename(account_name.upper())
 
         filename = f"{clean_name} {account_number} Cambridge Savings {month} {year}.pdf"
         return filename # Already sanitized name, rest is safe
@@ -701,7 +713,7 @@ class BankUnitedStrategy(BankStrategy):
             # Extract Date
             if not statement_date:
                 match = date_pattern.search(line) or period_date_pattern.search(line)
-                 if match:
+                if match:
                     date_str = match.group(1)
                     # BankUnited uses Month DD, YYYY format
                     parsed = self._parse_date(date_str, ['%B %d, %Y', '%b %d, %Y'])
@@ -731,24 +743,42 @@ class BankUnitedStrategy(BankStrategy):
                    logging.warning(f"BankUnitedStrategy: No account name or number found. Using default: '{statement_info.account_name}'.")
 
         if statement_date:
-        statement_info.date = statement_date
+            statement_info.date = statement_date
         elif not statement_info.date:
              logging.warning(f"BankUnitedStrategy: No statement date found. Using current date fallback.")
              statement_info.date = datetime.now()
 
     def get_filename(self, statement_info: StatementInfo) -> str:
-        """ Filename: BANKUNITED_[YYYYMMDD]_[Account Name]_[Last4].pdf """
-        account_name = statement_info.account_name or "Unknown_BankUnited_Account"
-        clean_account_name = self._sanitize_filename(account_name.upper())
-        date_str = statement_info.date.strftime("%Y%m%d") if statement_info.date else "NODATE"
-        last4 = statement_info.account_number[-4:] if statement_info.account_number and len(statement_info.account_number) >= 4 else "XXXX"
-        new_filename = f"BANKUNITED_{date_str}_{clean_account_name}_{last4}.pdf"
+        """ Filename: [Account Name] [Account Number] BankUnited [Month] [Year].pdf """
+        account_name = statement_info.account_name or "Unknown BankUnited Account"
+        account_number = statement_info.account_number or "UNKNOWN_ACCOUNT_NUM"
+        bank_name = self.get_bank_name() # Should be "BankUnited"
 
-        max_len = 200
+        # Sanitize components
+        # Use spaces, not underscores, and keep case as extracted unless upper explicitly desired
+        clean_account_name = self._sanitize_filename(account_name, allow_spaces=True)
+        # Sanitize account number, keep it identifiable
+        clean_account_number = self._sanitize_filename(account_number, allow_spaces=False) # No spaces in account number
+
+        # Get date components
+        if statement_info.date:
+            month = statement_info.date.strftime("%B") # Full month name, e.g., "March"
+            year = statement_info.date.strftime("%Y") # 4-digit year, e.g., "2024"
+        else:
+            month = "NoMonth"
+            year = "NoYear"
+
+        # Construct the filename using spaces
+        new_filename = f"{clean_account_name} {clean_account_number} {bank_name} {month} {year}.pdf"
+
+        # Limit length
+        max_len = 200 # Keep filename length reasonable
         if len(new_filename) > max_len:
+             # Basic truncation, might need smarter logic if this happens often
              base, ext = os.path.splitext(new_filename)
-             new_filename = base[:max_len - len(ext)] + ext
-             logging.warning(f"BankUnitedStrategy: Truncated filename due to length.")
+             cutoff = max_len - len(ext) - 3 # Make space for "..."
+             new_filename = base[:cutoff] + "..." + ext
+             logging.warning(f"BankUnitedStrategy: Truncated filename to {max_len} chars: {new_filename}")
         return new_filename
 
     def get_subfolder_path(self, statement_info: StatementInfo) -> str:
@@ -781,11 +811,11 @@ class UnlabeledStrategy(BankStrategy):
                  logging.debug(f"UnlabeledStrategy: Found potential full account number ending in {account_last4}")
                  break # Prefer full number
              else:
-            match = account_pattern.search(line)
-            if match:
-                     account_last4 = match.group(1)
-                     logging.debug(f"UnlabeledStrategy: Found potential last 4 digits {account_last4}")
-                     # Don't break, keep looking for a fuller number if possible
+                match = account_pattern.search(line)
+                if match:
+                    account_last4 = match.group(1)
+                    logging.debug(f"UnlabeledStrategy: Found potential last 4 digits {account_last4}")
+                    # Don't break, keep looking for a fuller number if possible
 
         if account_number:
              statement_info.account_number = account_number
@@ -862,10 +892,10 @@ class UnlabeledStrategy(BankStrategy):
 # Note: BANK_STRATEGIES map is no longer needed here, it's in PDFProcessor
 
 # Mapping from bank type string to strategy class
-BANK_STRATEGIES: Dict[str, BankStrategy] = {
-    "PNC": PNCStrategy(),
-    "Berkshire": BerkshireStrategy(),
-    "BankUnited": BankUnitedStrategy(),
-    "Cambridge": CambridgeStrategy(),
-    "Unlabeled": UnlabeledStrategy() # Add a generic strategy for unlabeled/unknown
-} 
+# BANK_STRATEGIES: Dict[str, type[BankStrategy]] = { # Original was likely type mapping
+#     "PNC": PNCStrategy,
+#     "Berkshire": BerkshireStrategy,
+#     "BankUnited": BankUnitedStrategy,
+#     "Cambridge": CambridgeStrategy,
+#     "Unlabeled": UnlabeledStrategy
+# } 

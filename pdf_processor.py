@@ -157,82 +157,92 @@ class PDFProcessor:
             self.extraction_stats["file_not_found"] += 1
             return None, None
 
-        statement_info = StatementInfo(original_filename=filename) # Create info object early
-
-        # 1. Extract Text using pdfplumber
-        lines, text_extracted = self._extract_text_with_pdfplumber(file_path, filename)
-        full_text = "\n".join(lines) # For content analysis
-
-        # 2. Identify Bank Type
-        bank_key = None
-        # Try filename first (quick check)
-        filename_bank_key = self._identify_bank_key_from_filename(filename)
-        if filename_bank_key != "unlabeled":
-            logging.info(f"Preliminary bank identification via filename '{filename}': {filename_bank_key}")
-            bank_key = filename_bank_key
-        else:
-            logging.info(f"Filename did not yield specific bank for '{filename}'. Analyzing content.")
-            # If filename fails, try content analysis
-            if text_extracted:
-                content_bank_key = self._identify_bank_from_content(full_text, filename)
-                if content_bank_key:
-                    bank_key = content_bank_key
-                else:
-                     bank_key = "unlabeled" # Stick with unlabeled if content fails too
-            else:
-                 logging.warning(f"Cannot perform content analysis for bank ID on {filename} due to text extraction failure.")
-                 bank_key = "unlabeled" # Fallback if no text
-
-        logging.info(f"Final determined bank key for {filename}: '{bank_key}'")
-        strategy_class = self.STRATEGY_MAP.get(bank_key, UnlabeledStrategy)
-        strategy = strategy_class(self.config_manager) # Instantiate the determined strategy
-
-        # 3. Extract Information using the selected strategy
         try:
-            # Pass extracted lines to the strategy
-            # The strategy should handle empty lines if text_extracted is False
-            strategy.extract_info(lines, statement_info)
+            logging.info(f"Processing PDF: {filename}")
 
-            # The strategy should set statement_info.bank_type correctly now.
-            # UnlabeledStrategy might refine the bank_type based on its *own* internal logic if needed.
-            if not statement_info.bank_type or statement_info.bank_type == "Unlabeled":
-                 # If the strategy failed to set a specific bank type, log a warning
-                 if bank_key != "unlabeled": # Only warn if we initially thought it was a specific bank
-                     logging.warning(f"Strategy {strategy.__class__.__name__} did not assign a specific bank type for {filename}, despite initial key '{bank_key}'.")
-                 statement_info.bank_type = strategy.get_bank_name() # Ensure it's at least set to the strategy's type
+            # Create StatementInfo object first
+            statement_info = StatementInfo()
+            # Assign the original filename
+            statement_info.original_filename = filename
 
-        except Exception as strategy_ex:
-            logging.error(f"Error during {strategy.__class__.__name__} execution for {filename}: {strategy_ex}", exc_info=True)
-            self.extraction_stats["strategy_error"] += 1
-            # Keep potentially partial info, ensure bank type is set from strategy instance
-            statement_info.bank_type = strategy.get_bank_name()
-            # Return partial info and strategy? Or mark as failure? Let's mark as failed info.
-            return None, strategy # Return strategy but None for info if strategy errors out
+            # 1. Extract text using pdfplumber
+            extracted_text, num_pages = self._extract_text_with_pdfplumber(file_path, filename)
 
-        # 4. Final Check and Return
-        # Consider a successful extraction if bank type is not Unlabeled *and* essential info exists
-        # (e.g., account number or name, date). This check might need refinement.
-        is_successful = (
-            statement_info and
-            statement_info.bank_type and
-            statement_info.bank_type != "Unlabeled" and
-            (statement_info.account_name or statement_info.account_number) and
-            statement_info.date
-        )
-
-        if is_successful:
-            logging.info(f"Extraction successful ({filename}): Bank={statement_info.bank_type}, Account='{statement_info.account_name}', AccNum='{statement_info.account_number}', Date='{statement_info.date.strftime('%Y-%m-%d') if statement_info.date else 'N/A'}'")
-            self.extraction_stats["success"] += 1
-            return statement_info, strategy
-        else:
-            log_level = logging.WARNING if statement_info.bank_type != "Unlabeled" else logging.INFO
-            logging.log(log_level, f"Strategy {strategy.__class__.__name__} did not extract sufficient info for {filename}. Result: Bank='{statement_info.bank_type}', Account='{statement_info.account_name}', AccNum='{statement_info.account_number}', Date='{statement_info.date.strftime('%Y-%m-%d') if statement_info.date else 'N/A'}'")
-            if statement_info.bank_type != "Unlabeled":
-                 self.extraction_stats["extraction_failed"] += 1
+            # 2. Identify Bank Type
+            bank_key = None
+            # Try filename first (quick check)
+            filename_bank_key = self._identify_bank_key_from_filename(filename)
+            if filename_bank_key != "unlabeled":
+                logging.info(f"Preliminary bank identification via filename '{filename}': {filename_bank_key}")
+                bank_key = filename_bank_key
             else:
-                 self.extraction_stats["unlabeled_unidentified"] += 1
-            # Return strategy instance even on failure for potential logging/reporting
-            return None, strategy
+                logging.info(f"Filename did not yield specific bank for '{filename}'. Analyzing content.")
+                # If filename fails, try content analysis
+                if extracted_text:
+                    content_bank_key = self._identify_bank_from_content(extracted_text, filename)
+                    if content_bank_key:
+                        bank_key = content_bank_key
+                    else:
+                         bank_key = "unlabeled" # Stick with unlabeled if content fails too
+                else:
+                     logging.warning(f"Cannot perform content analysis for bank ID on {filename} due to text extraction failure.")
+                     bank_key = "unlabeled" # Fallback if no text
+
+            logging.info(f"Final determined bank key for {filename}: '{bank_key}'")
+            strategy_class = self.STRATEGY_MAP.get(bank_key, UnlabeledStrategy)
+            strategy = strategy_class(self.config_manager) # Instantiate the determined strategy
+
+            # 3. Extract Information using the selected strategy
+            try:
+                # Pass extracted lines to the strategy
+                # The strategy should handle empty lines if text_extracted is False
+                strategy.extract_info(extracted_text, statement_info)
+
+                # The strategy should set statement_info.bank_type correctly now.
+                # UnlabeledStrategy might refine the bank_type based on its *own* internal logic if needed.
+                if not statement_info.bank_type or statement_info.bank_type == "Unlabeled":
+                     # If the strategy failed to set a specific bank type, log a warning
+                     if bank_key != "unlabeled": # Only warn if we initially thought it was a specific bank
+                         logging.warning(f"Strategy {strategy.__class__.__name__} did not assign a specific bank type for {filename}, despite initial key '{bank_key}'.")
+                     statement_info.bank_type = strategy.get_bank_name() # Ensure it's at least set to the strategy's type
+
+            except Exception as strategy_ex:
+                logging.error(f"Error during {strategy.__class__.__name__} execution for {filename}: {strategy_ex}", exc_info=True)
+                self.extraction_stats["strategy_error"] += 1
+                # Keep potentially partial info, ensure bank type is set from strategy instance
+                statement_info.bank_type = strategy.get_bank_name()
+                # Return partial info and strategy? Or mark as failure? Let's mark as failed info.
+                return None, strategy # Return strategy but None for info if strategy errors out
+
+            # 4. Final Check and Return
+            # Consider a successful extraction if bank type is not Unlabeled *and* essential info exists
+            # (e.g., account number or name, date). This check might need refinement.
+            is_successful = (
+                statement_info and
+                statement_info.bank_type and
+                statement_info.bank_type != "Unlabeled" and
+                (statement_info.account_name or statement_info.account_number) and
+                statement_info.date
+            )
+
+            if is_successful:
+                logging.info(f"Extraction successful ({filename}): Bank={statement_info.bank_type}, Account='{statement_info.account_name}', AccNum='{statement_info.account_number}', Date='{statement_info.date.strftime('%Y-%m-%d') if statement_info.date else 'N/A'}'")
+                self.extraction_stats["success"] += 1
+                return statement_info, strategy
+            else:
+                log_level = logging.WARNING if statement_info.bank_type != "Unlabeled" else logging.INFO
+                logging.log(log_level, f"Strategy {strategy.__class__.__name__} did not extract sufficient info for {filename}. Result: Bank='{statement_info.bank_type}', Account='{statement_info.account_name}', AccNum='{statement_info.account_number}', Date='{statement_info.date.strftime('%Y-%m-%d') if statement_info.date else 'N/A'}'")
+                if statement_info.bank_type != "Unlabeled":
+                     self.extraction_stats["extraction_failed"] += 1
+                else:
+                     self.extraction_stats["unlabeled_unidentified"] += 1
+                # Return strategy instance even on failure for potential logging/reporting
+                return None, strategy
+
+        except Exception as e:
+            logging.error(f"Error processing PDF: {filename}. Error: {e}", exc_info=True)
+            self.extraction_stats["processing_error"] += 1
+            return None, None
 
     def _identify_bank_key_from_filename(self, filename: str) -> str:
         """
