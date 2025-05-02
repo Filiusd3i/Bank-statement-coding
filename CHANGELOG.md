@@ -7,11 +7,20 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+- Support for loading sensitive account data (name, number) from `sensitive_accounts.yaml` (file itself is gitignored).
+- Helper methods in `BankStrategy` base class for matching sensitive data (`_find_sensitive_match_by_number`, `_find_sensitive_match_by_name`).
+- Logic in `config_manager.py` to safely load `sensitive_accounts.yaml` if present.
+- `python-Levenshtein` and `PyYAML` to `requirements.txt`.
+- Standard Python entries and `sensitive_accounts.yaml` to `.gitignore`.
+- Experimental auto-dependency check on startup in `main.py`.
+
 ### Changed
 - Refactored `main.py` preview logic (`_run_preview`) to use structured data from `file_manager`.
 - Modified `file_manager.py` (`process_file`) to return structured dictionary on dry run success.
 - Updated PNC bank statement filename format to: `[Account name] statement_[account number]_YYYY_MM_DD.pdf`.
 - Updated BankUnited bank statement filename format to match Cambridge Savings: `[Account Name] [Account Number] BankUnited [Month] [Year].pdf`.
+- Updated `UnlabeledStrategy.get_filename` to return the original filename, preserving it for manual review.
 
 ### Removed
 - Deleted unused script `Arctaris rename_statements.py`.
