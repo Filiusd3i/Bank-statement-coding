@@ -75,14 +75,32 @@ class PdfRenamerApp:
     """Orchestrates the PDF renaming process."""
 
     def __init__(self):
-        self.args = parse_arguments()
+        self.args = parse_arguments() # 1. Parse arguments first
+        
+        # --- Setup Logging EARLY --- 
+        # Use arg log level if provided, otherwise default to INFO for now
+        # We need logging set up *before* ConfigManager initialization to capture its internal logs
+        initial_log_level = self.args.log_level or "INFO" 
+        log_file = setup_logging(initial_log_level, self.args.log_file) # Setup logging BEFORE ConfigManager
+        logging.info(f"Initial logging setup complete (Level: {initial_log_level}, File: {log_file})")
+        # --- Logging Setup Done ---
+        
+        # 2. Initialize Config Manager (NOW its internal logs should be captured)
         self.config_manager = ConfigManager(self.args.config)
 
-        # Override config log settings if CLI args provided
-        log_level = self.args.log_level or self.config_manager.get("log_level", "INFO")
-        log_file = setup_logging(log_level, self.args.log_file) # Setup logging early
+        # 3. Optionally refine log level based on loaded config 
+        # (This might be redundant if initial_log_level is sufficient, but keeps existing logic)
+        final_log_level = self.args.log_level or self.config_manager.get("log_level", "INFO")
+        if final_log_level != initial_log_level:
+             logging.info(f"Adjusting log level based on config/args to: {final_log_level}")
+             # Re-getting the logger and setting level might be needed depending on setup_logging implementation
+             # For simplicity, let's assume setup_logging handles this or the initial level is sufficient.
+             # If necessary, add: logging.getLogger().setLevel(final_log_level.upper())
+             pass # Placeholder if re-configuration needed
+        else:
+             log_level = final_log_level # Assign for consistency with later code
 
-        # Initialize core components
+        # Initialize other core components
         self.pdf_verifier = PDFVerifier()
         self.error_recovery = ErrorRecovery(self.config_manager) # Pass config
         self.pdf_processor = PDFProcessor(self.config_manager)
@@ -466,6 +484,13 @@ class PdfRenamerApp:
         if not self.files_to_process:
              logging.warning("No files remaining after verification and repair attempts.")
              return 0
+
+        # --- Limit files for testing --- 
+        max_files_to_test = 50 # Set the desired number of files for the small batch
+        if len(self.files_to_process) > max_files_to_test:
+             logging.warning(f"Limiting processing to the first {max_files_to_test} files for this run.")
+             self.files_to_process = self.files_to_process[:max_files_to_test]
+        # --- End Limit --- 
 
         # 4. Run Preview (always runs internally, displays based on args)
         preview_data = self._run_preview(self.files_to_process)

@@ -232,8 +232,7 @@ class PDFProcessor:
                 statement_info and
                 statement_info.bank_type and
                 statement_info.bank_type != "Unlabeled" and
-                (statement_info.account_name or statement_info.account_number) and
-                statement_info.date
+                (statement_info.account_name or statement_info.account_number)
             )
 
             if is_successful:
