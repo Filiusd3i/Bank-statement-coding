@@ -14,6 +14,60 @@ from bank_strategies import BankStrategy, UnlabeledStrategy
 from statement_info import StatementInfo
 import json
 from collections import defaultdict
+import traceback # Added for detailed exception logging
+import subprocess # Added for dependency check
+import pkg_resources # Added for dependency check
+
+# --- Dependency Check Logic ---
+# NOTE: Auto-installing dependencies is generally discouraged.
+# It\'s better to use virtual environments and install manually via `pip install -r requirements.txt`
+# This function attempts to check and install if key packages are missing.
+def check_and_install_dependencies(requirements_file='requirements.txt'):
+    """Checks if required packages are installed and tries to install them if not."""
+    required = []
+    try:
+        with open(requirements_file, 'r') as f:
+            for line in f:
+                line = line.strip()
+                if line and not line.startswith('#'):
+                    # Basic parsing: get package name before version specifiers
+                    match = re.match(r'^([a-zA-Z0-9_-]+)\s*[=<>~!]?.*', line)
+                    if match:
+                        required.append(match.group(1))
+    except FileNotFoundError:
+        logging.error(f"'{requirements_file}' not found. Cannot check dependencies.")
+        return
+    except Exception as e:
+        logging.error(f"Error reading '{requirements_file}': {e}")
+        return
+
+    missing = []
+    for package in required:
+        try:
+            pkg_resources.get_distribution(package)
+            logging.debug(f"Package '{package}' found.")
+        except pkg_resources.DistributionNotFound:
+            logging.warning(f"Required package '{package}' not found.")
+            missing.append(package)
+        except Exception as e:
+            logging.error(f"Error checking package '{package}': {e}. Assuming it might be missing.")
+            missing.append(package) # Assume missing if check fails
+
+    if missing:
+        logging.warning(f"Missing required packages: {', '.join(missing)}. Attempting installation...")
+        try:
+            # Use sys.executable to ensure pip from the correct environment is used
+            subprocess.check_call([sys.executable, '-m', 'pip', 'install', '-r', requirements_file])
+            logging.info(f"Successfully installed packages from '{requirements_file}'. Please restart the script if needed.")
+            # Optional: Re-check after installation, or just exit/inform user to restart
+        except subprocess.CalledProcessError as e:
+            logging.critical(f"Failed to install dependencies using pip: {e}. Please install manually: pip install -r {requirements_file}")
+            sys.exit(1) # Exit if dependencies cannot be installed
+        except FileNotFoundError:
+             logging.critical(f"'pip' command not found. Cannot install dependencies. Please ensure Python and pip are correctly installed and in PATH.")
+             sys.exit(1)
+    else:
+        logging.info("All required dependencies are installed.")
 
 # --- Main Application Logic ---
 
