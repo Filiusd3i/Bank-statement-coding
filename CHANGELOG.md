@@ -8,6 +8,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ### Added
+- End-of-run summary printed to console and logged, showing total files attempted, processed, skipped, and errored, plus detailed `PDFProcessor` stats.
 - Support for loading sensitive account data (name, number) from `sensitive_accounts.yaml` (file itself is gitignored).
 - Helper methods in `BankStrategy` base class for matching sensitive data (`_find_sensitive_match_by_number`, `_find_sensitive_match_by_name`).
 - Logic in `config_manager.py` to safely load `sensitive_accounts.yaml` if present.
@@ -16,6 +17,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Experimental auto-dependency check on startup in `main.py`.
 
 ### Changed
+- Modified `PDFProcessor` (`process_pdf`) to return `None` for `StatementInfo` if `UnlabeledStrategy` is used, preventing renaming/moving.
 - Refactored `main.py` preview logic (`_run_preview`) to use structured data from `file_manager`.
 - Modified `file_manager.py` (`process_file`) to return structured dictionary on dry run success.
 - Updated PNC bank statement filename format to: `[Account name] statement_[account number]_YYYY_MM_DD.pdf`.
@@ -29,6 +31,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Removed redundant `BANK_STRATEGIES` dictionary definition from the end of `bank_strategies.py`.
 
 ### Fixed
+- Prevented `UnlabeledStrategy` files from being moved or renamed; they are now skipped by `FileManager` and left in the input folder.
 - Corrected various `IndentationError` issues within `bank_strategies.py`.
 - Resolved `TypeError` in `pdf_processor.py` caused by incorrect `StatementInfo` initialization (passing `original_filename` to `__init__`).
 - Corrected `AttributeError` typo in `pdf_processor.py` (called `_extract_text_with_plumber` instead of `_extract_text_with_pdfplumber`).

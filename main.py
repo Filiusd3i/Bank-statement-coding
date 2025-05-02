@@ -283,10 +283,10 @@ class PdfRenamerApp:
             print("-" * 30) # End of preview marker for batch
 
         # Generate preview checklist
-        checklist_path = self.file_manager.generate_checklist(self.checklist_dir, dry_run=True)
-        if checklist_path:
-            logging.info(f"Preview checklist saved to: {checklist_path}")
-            print(f"CHECKLIST_PATH: {checklist_path}") # Marker for batch file
+        # checklist_path = self.file_manager.generate_checklist(self.checklist_dir, dry_run=True) # <-- Temporarily commented out to test performance
+        # if checklist_path:
+        #    logging.info(f"Preview checklist saved to: {checklist_path}")
+        #    print(f"CHECKLIST_PATH: {checklist_path}") # Marker for batch file
 
         # Calculate count based on successful previews (where details_dict is present)
         num_processed = sum(1 for _, _, _, d in preview_data if d is not None)
@@ -364,6 +364,61 @@ class PdfRenamerApp:
         error_summary = self.error_recovery.get_summary()
         if error_summary["total_errors_recorded"] > 0:
              logging.info(f"Error Details: {error_summary}")
+
+        # Optionally generate checklist
+        if self.checklist_dir:
+             checklist_path = self.file_manager.generate_checklist(self.checklist_dir, dry_run=self.args.dry_run)
+             if checklist_path:
+                  logging.info(f"Processing checklist generated: {checklist_path}")
+             else:
+                  logging.error("Failed to generate checklist.")
+
+        # --- Generate and Display Summary ---
+        logging.info("\n" + "=" * 20 + " Processing Summary " + "=" * 20)
+        print("\n" + "=" * 20 + " Processing Summary " + "=" * 20)
+
+        # Get stats from PDFProcessor
+        final_stats = self.pdf_processor.get_extraction_stats()
+
+        # Get total files processed/attempted from FileManager log
+        total_attempted = len(self.file_manager.processed_files_log)
+        summary_lines = [f"Total files attempted: {total_attempted}"]
+
+        # Combine PDFProcessor stats with FileManager log counts for a comprehensive view
+        # Note: FileManager log might have entries for files skipped *before* PDFProcessor stage (e.g., duplicates)
+        processed_count = 0
+        skipped_count = 0
+        error_count = 0
+        for log_entry in self.file_manager.processed_files_log:
+            status = log_entry.get("Status", "").lower()
+            if "processed" in status or "would process" in status:
+                processed_count += 1
+            elif "skipped" in status:
+                skipped_count += 1
+            elif "error" in status:
+                error_count += 1
+            # Add other status checks if needed
+
+        summary_lines.append(f"Files processed successfully: {processed_count}")
+        summary_lines.append(f"Files skipped: {skipped_count}")
+        summary_lines.append(f"Files with errors: {error_count}")
+
+        # Add detailed stats from PDFProcessor if available
+        if final_stats:
+             summary_lines.append("-" * 20)
+             summary_lines.append("Detailed PDF Processor Stats:")
+             for key, value in sorted(final_stats.items()):
+                  summary_lines.append(f"  - {key.replace('_', ' ').title()}: {value}")
+
+        # Log and print the summary
+        summary_output = "\n".join(summary_lines)
+        logging.info(summary_output)
+        print(summary_output)
+
+        logging.info("=" * 58) # Match length of title line
+        print("=" * 58)
+
+        logging.info("PDF Renamer finished.")
 
 
     def _process_single_file(self, file_path: str, statement_info: StatementInfo, strategy: BankStrategy):

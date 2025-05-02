@@ -192,6 +192,16 @@ class PDFProcessor:
             strategy_class = self.STRATEGY_MAP.get(bank_key, UnlabeledStrategy)
             strategy = strategy_class(self.config_manager) # Instantiate the determined strategy
 
+            # If the strategy is UnlabeledStrategy, return None for info immediately
+            # This signals FileManager not to rename or move the file.
+            if strategy_class is UnlabeledStrategy:
+                logging.info(f"File '{filename}' identified as Unlabeled. Skipping further processing and renaming/moving.")
+                self.extraction_stats["unlabeled_identified"] += 1 # Track specifically identified unlabeled
+                # Return None for StatementInfo, but the strategy instance for potential logging
+                return None, strategy
+
+            # --- Proceed only if it's NOT UnlabeledStrategy ---
+
             # 3. Extract Information using the selected strategy
             try:
                 # Pass extracted lines to the strategy
@@ -211,8 +221,9 @@ class PDFProcessor:
                 self.extraction_stats["strategy_error"] += 1
                 # Keep potentially partial info, ensure bank type is set from strategy instance
                 statement_info.bank_type = strategy.get_bank_name()
-                # Return partial info and strategy? Or mark as failure? Let's mark as failed info.
-                return None, strategy # Return strategy but None for info if strategy errors out
+                # Return strategy instance even on failure for potential logging/reporting
+                # Return None for StatementInfo here to signal failure to FileManager
+                return None, strategy # Modified: Ensure StatementInfo is None on failure
 
             # 4. Final Check and Return
             # Consider a successful extraction if bank type is not Unlabeled *and* essential info exists
