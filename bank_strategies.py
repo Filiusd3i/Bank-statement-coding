@@ -144,32 +144,32 @@ class PNCStrategy(BankStrategy):
     def extract_info(self, lines: List[str], statement_info: StatementInfo):
         # Initialize
         statement_info.bank_type = self.get_bank_name()
-        pnc_mappings = self.config.get_account_mappings("pnc") # Keep for fallback
-        arc_impact_mappings = self.config.get_account_mappings("pnc_arc_impact_last4") # Keep for fallback
+        statement_info.match_status = "Default_Name" # Initial status
+        pnc_mappings = self.config.get_account_mappings("pnc") 
+        arc_impact_mappings = self.config.get_account_mappings("pnc_arc_impact_last4")
         sensitive_accounts = self.config.get_sensitive_accounts(self.get_bank_name())
         account_found = False; fund_found = False; date_found = False; sensitive_match_made = False
         
-        # Keep your existing Regex patterns here
+        # Regex patterns (keep as is)
         account_pattern = re.compile(r'Account Number:\s*(\d+-\d+-\d+|\d+)', re.IGNORECASE)
         account_last4_pattern = re.compile(r'(?:Account|Acct)[^0-9]*(?:[0-9]+-){0,2}([0-9]{4})\b', re.IGNORECASE)
         date_pattern = re.compile(r'For the Period .*?(?:through|to)\s*(\d{1,2}/\d{1,2}/\d{2,4})', re.IGNORECASE)
         arc_impact_pattern = re.compile(r'(ARC[\s-]IMPACT\s+PROGRAM(?:\s+(?:ERIE|SWPA|LIMA|PITTSBURGH|BUFFALO|HARTFORD|CUYAHOGA|CT))?(?:\s+LLC)?)', re.IGNORECASE)
-        account_name_patterns = [ # Keep your specific patterns
+        account_name_patterns = [
             re.compile(r'ARCTARIS\s+PRODUCT\s+DEV(?:ELOPMENT)?\s+([IVX]+)', re.IGNORECASE),
             re.compile(r'ARCTARIS\s+PRODUCT\s+DEV(?:ELOPMENT)?\s+(\d+)', re.IGNORECASE),
             re.compile(r'PRODUCT\s+DEV(?:ELOPMENT)?\s+([IVX]+|[0-9]+)', re.IGNORECASE),
             re.compile(r'PHASE\s+([0-9]+[A-Z]?)\s+HOLDINGS', re.IGNORECASE)
         ]
-        fund_patterns = [ # Keep your specific patterns
+        fund_patterns = [
             re.compile(r'(SUB\s*[-]?\s*CDE\s+[0-9]+\s+LLC)', re.IGNORECASE),
             re.compile(r'(?:Sub-)?CDE[^A-Za-z0-9]*([0-9]+)[^A-Za-z0-9]*LLC', re.IGNORECASE),
             re.compile(r'((?:Sub-)?CDE[^A-Za-z0-9]*[0-9]+[^A-Za-z0-9]*LLC)', re.IGNORECASE),
             re.compile(r'(ARCTARIS\s+PRODUCT\s+DEV(?:ELOPMENT)?\s+(?:[IVX]+|[0-9]+))', re.IGNORECASE),
             re.compile(r'(ARCTARIS[^A-Za-z0-9]*(?:[A-Za-z0-9\s\-]+)[^A-Za-z0-9]*LLC)', re.IGNORECASE),
-            # Generic LLC finder - use carefully
-            re.compile(r'^([A-Za-z0-9\s,.\-]+)\s+LLC', re.IGNORECASE), # Match start of line LLC
+            re.compile(r'^([A-Za-z0-9\s,.\-]+)\s+LLC', re.IGNORECASE),
             re.compile(r'ARCTARIS\s+([A-Za-z0-9\s,.\-]+?)(?:\s+LLC|$)', re.IGNORECASE),
-            re.compile(r'([A-Za-z0-9\s,.\-]+FUND[A-Za-z0-9\s,.\-]*)', re.IGNORECASE),
+            re.compile(r'([A-Za-z0-9\s,.\-]+FUND[A-Za-z0-9\s,.\-]*) ', re.IGNORECASE),
             re.compile(r'([A-Za-z]+\s+EAST\s+COAST[A-Za-z\s]+)', re.IGNORECASE),
             re.compile(r'([A-Za-z]+\s+OPPORTUNITY\s+ZONE[A-Za-z\s]+)', re.IGNORECASE)
         ]
@@ -177,6 +177,7 @@ class PNCStrategy(BankStrategy):
         logging.debug(f"PNC: Starting line processing. Sensitive accounts: {len(sensitive_accounts)}")
         for i, line in enumerate(lines):
             if not line.strip(): break
+            if sensitive_match_made and date_found: break # Optimization: if definitive match and date, stop early
             logging.log(logging.DEBUG - 5 , f"PNC Line {i+1}: {line.strip()}")
 
             # 1. Attempt Number Extraction & Sensitive Match
@@ -185,28 +186,27 @@ class PNCStrategy(BankStrategy):
                 match = account_pattern.search(line) or account_last4_pattern.search(line)
                 if match: 
                     potential_account_num = match.group(1)
-                    # Check sensitive list FIRST
                     sensitive_match = self._find_sensitive_match_by_number(potential_account_num, sensitive_accounts)
                     if sensitive_match:
                         statement_info.account_number = sensitive_match['number']
                         statement_info.account_name = sensitive_match['name']
+                        statement_info.match_status = "Success! (Sensitive Number)"
                         logging.info(f"PNC: Confirmed account via sensitive number match: {statement_info.account_name}")
                         account_found = fund_found = sensitive_match_made = True 
-                        continue # Go to next line, we have definitive info
+                        # continue # Removed continue to allow date search on same line
                     else: 
-                        # No sensitive match, store tentative regex result
                         num = potential_account_num
                         statement_info.account_number = num.replace('-', '') if '-' in num or len(num) > 4 else f"xxxx{num[-4:]}"
-                        account_found = True # Mark as found, but not definitive
+                        statement_info.match_status = "Regex Match (Review)" # Tentative
+                        account_found = True
                         logging.debug(f"PNC: Regex found potential account '{statement_info.account_number}', no sensitive match.")
 
             # 2. Attempt Name Extraction & Sensitive Match
-            if not fund_found:
+            if not fund_found or not sensitive_match_made: # Try even if num found, to confirm/upgrade name
                 potential_fund_name = None
-                # --- Start: Keep your existing Regex logic for finding potential_fund_name ---
                 match = arc_impact_pattern.search(line)
                 if match: 
-                    potential_fund_name = re.sub(r'ARC[\\s-]IMPACT', 'ARC-IMPACT', match.group(1), flags=re.IGNORECASE).upper().strip()
+                    potential_fund_name = re.sub(r'ARC[\s-]IMPACT', 'ARC-IMPACT', match.group(1), flags=re.IGNORECASE).upper().strip()
                 else:
                     for pattern in account_name_patterns:
                         match = pattern.search(line)
@@ -223,31 +223,29 @@ class PNCStrategy(BankStrategy):
                                 if "ARC IMPACT" in cleaned: cleaned = cleaned.replace("ARC IMPACT", "ARC-IMPACT")
                                 if len(cleaned) > 3 and "SUMMARY" not in cleaned:
                                     potential_fund_name = cleaned; break
-                # --- End: Keep your existing Regex logic for finding potential_fund_name ---
                 
                 if potential_fund_name:
-                    # Check sensitive list FIRST
                     sensitive_match = self._find_sensitive_match_by_name(potential_fund_name, sensitive_accounts)
                     if sensitive_match:
                         statement_info.account_name = sensitive_match['name']
+                        statement_info.match_status = "Success! (Sensitive Name)" # Upgrade/set status
                         fund_found = True
-                        if not account_found: # Found name first, get number from sensitive data
+                        if not account_found: 
                             statement_info.account_number = sensitive_match['number']
                             account_found = True
-                            sensitive_match_made = True # Definitive match now
-                            logging.info(f"PNC: Confirmed account via sensitive name match: {statement_info.account_name}")
-                            continue # Go to next line
-                        else:
-                            # Account number found earlier (maybe tentatively), now name confirmed
-                            logging.info(f"PNC: Confirmed name via sensitive match: {statement_info.account_name} (num found earlier)")
-                            # Should we mark sensitive_match_made = True here too? Maybe, depends if number match is better. Let's be conservative.
-                    else: 
-                        # No sensitive match, store tentative regex result
+                        elif statement_info.account_number != sensitive_match['number']:
+                            logging.warning(f"PNC: Sensitive name '{statement_info.account_name}' num {sensitive_match['number']} != earlier num {statement_info.account_number}. Prioritizing sensitive.")
+                            statement_info.account_number = sensitive_match['number']
+                        sensitive_match_made = True # Definitive match for name (and possibly number)
+                        logging.info(f"PNC: Confirmed account via sensitive name match: {statement_info.account_name}")
+                    elif not sensitive_match_made: # Only set tentative name if no sensitive match confirmed anything yet
                         statement_info.account_name = potential_fund_name
-                        fund_found = True # Mark as found, but not definitive
+                        if statement_info.match_status not in ["Success! (Sensitive Number)"]:
+                            statement_info.match_status = "Regex Match (Review)"
+                        fund_found = True
                         logging.debug(f"PNC: Regex found potential name '{potential_fund_name}', no sensitive match.")
 
-            # 3. Attempt Date Extraction (can run independently)
+            # 3. Attempt Date Extraction
             if not date_found:
                 match = date_pattern.search(line)
                 if match: 
@@ -256,41 +254,63 @@ class PNCStrategy(BankStrategy):
                         statement_info.date = parsed_date
                         date_found = True
                         logging.debug(f"PNC: Found date {parsed_date:%Y-%m-%d}")
+            
+            if sensitive_match_made and date_found: break # Re-check for early exit
 
-        # --- Fallback Logic --- (Only run if no definitive sensitive match was made)
+        # --- Fallback Logic --- 
         if not sensitive_match_made:
             logging.debug(f"PNC: No definitive sensitive match, running fallback logic.")
-            # Reset any tentatively found name from regex if sensitive match failed
-            statement_info.account_name = None 
-            fund_found = False # Reset this flag too
+            # Reset regex-found name if it wasn't confirmed by sensitive match or mapping
+            # statement_info.account_name = None # This might be too aggressive if regex name was good but no mapping exists
+            # fund_found = False 
             
-            # Try mapping only if account number was found (even tentatively)
             if account_found and statement_info.account_number:
-                acc_num = statement_info.account_number # The one found by regex (might be xxxx...)
-                last4 = acc_num[-4:]
-                if not acc_num.startswith('xxxx') and acc_num in pnc_mappings: 
-                    statement_info.account_name = pnc_mappings[acc_num]
-                    fund_found = True # Mark as found via fallback
-                    logging.debug(f"PNC: Fallback map from full regex num {acc_num}")
-                elif last4 in arc_impact_mappings: 
-                    statement_info.account_name = arc_impact_mappings[last4]
-                    fund_found = True # Mark as found via fallback
-                    logging.debug(f"PNC: Fallback map from last4 {last4}")
+                acc_num_for_map = statement_info.account_number 
+                last4_for_map = acc_num_for_map[-4:]
+                mapped_name = None
+                if not acc_num_for_map.startswith('xxxx') and acc_num_for_map in pnc_mappings: 
+                    mapped_name = pnc_mappings[acc_num_for_map]
+                    logging.debug(f"PNC: Fallback map from full regex num {acc_num_for_map}")
+                elif last4_for_map in arc_impact_mappings: 
+                    mapped_name = arc_impact_mappings[last4_for_map]
+                    logging.debug(f"PNC: Fallback map from last4 {last4_for_map}")
+                
+                if mapped_name:
+                    statement_info.account_name = mapped_name
+                    statement_info.match_status = "Fallback (Mapping)"
+                    fund_found = True # Fund name is now considered found via mapping
         
-        # --- Final Defaults --- 
-        # Set default name only if no name was found by sensitive data OR fallback mapping
+        # --- Final Defaults & Status Refinement ---
         if not statement_info.account_name: 
             if account_found and statement_info.account_number: 
-                # Use account number (prefer last 4 if possible) for default if number is known
                 default_suffix = statement_info.account_number[-4:]
                 statement_info.account_name = f"PNC Account {default_suffix}"
             else:
-                 # Absolute fallback if no number or name known
                  statement_info.account_name = "UNKNOWN PNC ACCOUNT"
+            statement_info.match_status = "Fallback (Default)"
             logging.warning(f"PNC: Using default name: {statement_info.account_name}")
-        # Set default date only if no date was found
+        
         if not statement_info.date:
-            logging.warning(f"PNC: Using fallback date.")
+            logging.warning(f"PNC: Using fallback date (current date). No date found in statement.")
+            # statement_info.date = datetime.now() # Or keep as None if preferred for checklist
+            # if "Success!" in statement_info.match_status: statement_info.match_status = "Partial (No Date)" # Optional downgrade
+
+        # Final status check: if it's still Default_Name, determine best fit
+        if statement_info.match_status == "Default_Name":
+            if sensitive_match_made: # This should have set a Success! status already
+                pass # Should not happen if logic above is correct
+            elif fund_found: # Implies name was found by regex or mapping
+                # If by mapping, status is already Fallback (Mapping). If by regex, it should be Regex Match
+                # This state needs careful thought - if fund_found is true but status is Default_Name, it's an issue.
+                # For now, assume previous logic set it. If it truly is Default_Name here, it means regex failed too.
+                if statement_info.account_name and "PNC Account" not in statement_info.account_name and "UNKNOWN" not in statement_info.account_name:
+                    statement_info.match_status = "Regex Match (Review)" # Likely a regex name without sensitive/map
+                else:
+                    statement_info.match_status = "Fallback (Default)"
+            elif account_found: # Only number found by regex
+                statement_info.match_status = "Regex Match (Review)"
+            else: # Nothing significant found
+                statement_info.match_status = "Fallback (Default)"
 
     def get_filename(self, statement_info: StatementInfo) -> str:
         """ PNC Filename: [Account Name] [Original Filename].pdf (Simplified based on user request) """
@@ -370,133 +390,84 @@ class BerkshireStrategy(BankStrategy):
     def extract_info(self, lines: List[str], statement_info: StatementInfo):
         # Initialize
         statement_info.bank_type = self.get_bank_name()
-        mappings = self.config.get_account_mappings("berkshire_last4") # Keep for fallback
+        # Default status, assuming it will need manual review due to being image-based
+        statement_info.match_status = "Manual Review (Image PDF)"
+        
         sensitive_accounts = self.config.get_sensitive_accounts(self.get_bank_name())
         original_filename = statement_info.original_filename or ""
-        is_new_statement_format = "newstatement" in original_filename.lower() or "new_statement" in original_filename.lower()
-        account_found = False; fund_found = False; date_found = False; sensitive_match_made = False
         
-        # Keep your existing Regex patterns here
-        account_patterns = [ # Keep your specific patterns
-             re.compile(r'Account\s*[#:]?\s*(\d+)', re.IGNORECASE),
-             re.compile(r'Account Number[:#\s]*(\d+)', re.IGNORECASE),
-             re.compile(r'ACCT\s*[#:]?\s*(\d+)', re.IGNORECASE),
-             re.compile(r'\bA/C\s*[#:]?\s*(\d+)', re.IGNORECASE),
-             re.compile(r'xxxx(\d{4})\b', re.IGNORECASE), # Explicit last 4
-             re.compile(r'Ending Balance on \d{1,2}/\d{1,2}/\d{2,4}\s+(\d+)', re.IGNORECASE) # Less reliable pattern
-        ]
-        # Simpler name patterns first
-        fund_patterns = [
-            re.compile(r'^(ARCTARIS\s+[A-Za-z0-9\s-]+(?:LLC|LP|INC)?)$', re.IGNORECASE), # Arctaris name at line start
-            re.compile(r'(?:Owner|Name)[:\s]+(ARCTARIS\s+[A-Za-z0-9\s-]+(?:LLC|LP|INC)?)', re.IGNORECASE), # Explicit Owner/Name
-            re.compile(r'^(SUB[- ]?CDE\s+\d+\s+LLC)$', re.IGNORECASE), # Sub CDE at line start
-            re.compile(r'(?:Owner|Name)[:\s]+(SUB[- ]?CDE\s+\d+\s+LLC)', re.IGNORECASE), # Explicit Owner/Name for SUB CDE
-            # More generic LLC/LP finder - use carefully
-            re.compile(r'^([A-Za-z0-9\s,.\\-]+(?:\s+LLC|\s+LP|\s+INC))$', re.IGNORECASE)
-        ]
-        date_pattern = re.compile(r'Statement Date[:\s]*(\d{1,2}/\d{1,2}/\d{2,4})', re.IGNORECASE)
-        period_end_date_pattern = re.compile(r'Statement Period[:\s]*.*? to [\s]*(\d{1,2}/\d{1,2}/\d{2,4})', re.IGNORECASE)
+        account_found_by_filename = False
+        date_found_by_filename = False
 
-        # Handle NewStatement format via sensitive filename heuristic FIRST
-        if is_new_statement_format:
-            logging.info(f"Berkshire: Detected NewStatement format. Checking filename heuristic.")
-            match = re.search(r'_(\d{4})(?:\\.pdf)?$', original_filename)
+        # 1. Try to get info from filename (heuristic for "NewStatement" format)
+        if "newstatement" in original_filename.lower() or "new_statement" in original_filename.lower():
+            logging.info(f"Berkshire: Detected NewStatement format from filename: '{original_filename}'.")
+            match = re.search(r'_(\d{4})(?:\\.pdf)?$', original_filename) # Looking for _XXXX.pdf
             if match:
                 potential_last4 = match.group(1)
                 sensitive_match = self._find_sensitive_match_by_number(potential_last4, sensitive_accounts)
                 if sensitive_match:
                     statement_info.account_number = sensitive_match['number']
                     statement_info.account_name = sensitive_match['name']
-                    logging.info(f"Berkshire: Confirmed NewStatement via sensitive filename match ({potential_last4}): {statement_info.account_name}")
-                    account_found = fund_found = sensitive_match_made = date_found = True # Mark all as found
-                    statement_info.date = datetime.now() # Use fallback date for these
-                    return # Exit early, definitive match from filename
+                    # Upgrade status if filename heuristic with sensitive match works
+                    statement_info.match_status = "Success! (Filename Heuristic)"
+                    logging.info(f"Berkshire: Confirmed account via sensitive filename match ({potential_last4}): {statement_info.account_name}")
+                    account_found_by_filename = True
                 else: 
-                    logging.debug(f"Berkshire: NewStatement last4 '{potential_last4}' found, no sensitive match.")
+                    logging.debug(f"Berkshire: NewStatement last4 '{potential_last4}' from filename, no sensitive match.")
+                    # If no sensitive match, but we got a last4, we can use it for a default name
+                    statement_info.account_number = f"xxxx{potential_last4}"
+                    statement_info.account_name = f"BERKSHIRE ACCOUNT {potential_last4}"
+                    statement_info.match_status = "Fallback (Filename Heuristic)" # Better than just image, but not sensitive confirmed
+                    account_found_by_filename = True 
             else: 
                 logging.debug(f"Berkshire: Could not extract last4 from NewStatement filename '{original_filename}'.")
-            # If no sensitive match from filename, proceed to line scan unless we should stop?
-            # For now, let's assume we proceed if no sensitive match.
-            if not sensitive_match_made: 
-                 logging.debug("Berkshire: No sensitive match from NewStatement filename, proceeding to line scan.")
-
-        # Process lines (unless already matched via NewStatement filename)
-        if not sensitive_match_made:
-             logging.debug(f"Berkshire: Starting line processing. Sensitive accounts: {len(sensitive_accounts)}")
-             for i, line in enumerate(lines):
-                 if not line.strip() or sensitive_match_made: break
-                 logging.log(logging.DEBUG - 5 , f"Berkshire Line {i+1}: {line.strip()}")
-
-                 # 1. Attempt Number Extraction & Sensitive Match
-                 potential_account_num = None
-                 if not account_found:
-                     for pattern in account_patterns:
-                         match = pattern.search(line)
-                         if match: potential_account_num = match.group(1); break
-                     if potential_account_num:
-                         sensitive_match = self._find_sensitive_match_by_number(potential_account_num, sensitive_accounts)
-                         if sensitive_match:
-                             statement_info.account_number = sensitive_match['number']
-                             statement_info.account_name = sensitive_match['name']
-                             logging.info(f"Berkshire: Confirmed account via sensitive number match: {statement_info.account_name}")
-                             account_found = fund_found = sensitive_match_made = True; continue
-                         else: # Tentative regex match
-                             num = potential_account_num; last4 = num[-4:]
-                             statement_info.account_number = num if len(num) > 4 and not num.startswith('xxxx') else f"xxxx{last4}"
-                             account_found = True; logging.debug(f"Berkshire: Regex found potential account '{statement_info.account_number}', no sensitive match.")
-
-                 # 2. Attempt Name Extraction & Sensitive Match
-                 if not fund_found:
-                     potential_fund_name = None
-                     # --- Start: Keep your existing Regex logic for finding potential_fund_name ---
-                     for pattern in fund_patterns:
-                         match = pattern.search(line)
-                         if match:
-                             extracted = match.group(1).strip(); cleaned = re.sub(r'\s+', ' ', extracted).upper()
-                             if len(cleaned) > 5 and "ACCOUNT SUMMARY" not in cleaned and "STATEMENT OF" not in cleaned:
-                                 potential_fund_name = cleaned; break
-                     # --- End: Keep your existing Regex logic ---
-                     
-                     if potential_fund_name:
-                         sensitive_match = self._find_sensitive_match_by_name(potential_fund_name, sensitive_accounts)
-                         if sensitive_match:
-                             statement_info.account_name = sensitive_match['name']; fund_found = True
-                             if not account_found: # Found name first
-                                 statement_info.account_number = sensitive_match['number']; account_found = True; sensitive_match_made = True
-                                 logging.info(f"Berkshire: Confirmed account via sensitive name match: {statement_info.account_name}")
-                                 continue
-                             else: logging.info(f"Berkshire: Confirmed name via sensitive match: {statement_info.account_name} (num found earlier)")
-                         else: # Tentative regex name match
-                             statement_info.account_name = potential_fund_name; fund_found = True
-                             logging.debug(f"Berkshire: Regex found potential name '{potential_fund_name}', no sensitive match.")
-
-                 # 3. Attempt Date Extraction
-                 if not date_found:
-                     match = date_pattern.search(line) or period_end_date_pattern.search(line)
-                     if match: 
-                         parsed_date = self._parse_date(match.group(1), ['%m/%d/%Y', '%m/%d/%y'])
-                         if parsed_date: 
-                             statement_info.date = parsed_date; date_found = True; logging.debug(f"Berkshire: Found date {parsed_date:%Y-%m-%d}"); continue
         
-        # --- Fallback Logic --- (Only if no sensitive match was definitive)
-        if not sensitive_match_made:
-            logging.debug(f"Berkshire: No definitive sensitive match, running fallback logic.")
-            # Try mapping only if fund wasn't found yet and account number was found (even tentatively)
-            if account_found and not fund_found and statement_info.account_number: 
-                acc_num = statement_info.account_number # The one found by regex
-                last4 = acc_num[-4:] if len(acc_num) >= 4 else None
-                if last4 and last4 in mappings: 
-                    statement_info.account_name = mappings[last4]
-                    fund_found = True # Mark as found via fallback
-                    logging.debug(f"Berkshire: Fallback map from regex last4 {last4}")
+        # 2. Attempt to parse a date from filename (YYYY-MM-DD or YYYYMMDD)
+        # This is a generic heuristic, not specific to NewStatement
+        date_match_filename = re.search(r'(\d{4}[-_]?\d{2}[-_]?\d{2})', original_filename)
+        if date_match_filename:
+            date_str = date_match_filename.group(1).replace('-','').replace('_','')
+            parsed_date = self._parse_date(date_str, ['%Y%m%d'])
+            if parsed_date:
+                statement_info.date = parsed_date
+                date_found_by_filename = True
+                logging.info(f"Berkshire: Extracted date '{parsed_date:%Y-%m-%d}' from filename.")
+        
+        # 3. Log based on text extraction result (passed in `lines`)
+        if not lines or not any(line.strip() for line in lines):
+            logging.warning(f"Berkshire: No text extracted for '{original_filename}'. Expected for image-based PDF. Processing based on filename if possible.")
+        else:
+            # This case is unexpected for Berkshire if truly image-based.
+            # It might mean PyMuPDF got *something* (e.g. OCR during PDF generation by bank?)
+            logging.warning(f"Berkshire: Text was unexpectedly extracted for '{original_filename}'. Strategy will still prioritize filename heuristics and assume manual review needed.")
+            # We could potentially try a quick regex scan here if text *is* present, but it complicates the "manual handling" decision.
+            # For now, stick to the image-based assumption primarily.
 
-        # --- Final Defaults ---
-        if not statement_info.account_name: 
-            last4 = statement_info.account_number[-4:] if account_found and len(statement_info.account_number) >= 4 else "XXXX"
-            statement_info.account_name = f"BERKSHIRE ACCOUNT {last4}"
+        # --- Final Fallback & Status for Berkshire (after filename checks) ---
+        if not statement_info.account_name:
+            # If no name from filename heuristic, use a generic default
+            num_part = statement_info.account_number[-4:] if statement_info.account_number and len(statement_info.account_number) >=4 else "XXXX"
+            statement_info.account_name = f"BERKSHIRE ACCOUNT {num_part}"
+            # If account_found_by_filename was false, status is still likely "Manual Review (Image PDF)"
+            # If account was found by filename but not sensitive, it's "Fallback (Filename Heuristic)"
+            # If no account info at all, it remains "Manual Review (Image PDF)" or becomes "Fallback (Default)"
+            if not account_found_by_filename: # If filename didn't yield any account number
+                statement_info.match_status = "Fallback (Default - Image PDF)" 
             logging.warning(f"Berkshire: Using default name: {statement_info.account_name}")
+
         if not statement_info.date:
-            logging.warning(f"Berkshire: Using fallback date.")
+            logging.warning(f"Berkshire: No date from filename or content. Using fallback date.")
+            # For Berkshire image PDFs, a missing date is common. 
+            # Status should remain focused on the image/manual aspect unless filename provided a date.
+            # No specific status change here unless we want e.g. "Manual Review (Image PDF - No Date)"
+
+        # If status is still the initial "Default_Name", it means no filename heuristic applied successfully.
+        # This shouldn't happen if the logic above sets it to Manual Review or Fallback.
+        if statement_info.match_status == "Default_Name":
+            statement_info.match_status = "Manual Review (Image PDF)" # Ensure it defaults to this if nothing else set it
+
+        logging.info(f"Berkshire: Final status for '{original_filename}': {statement_info.match_status}")
 
     def get_filename(self, statement_info: StatementInfo) -> str:
         """ Filename: [last4]-[Account Name]-[YYYYMMDD].pdf """
@@ -540,7 +511,8 @@ class CambridgeStrategy(BankStrategy):
     def extract_info(self, lines: List[str], statement_info: StatementInfo):
         # Initialize
         statement_info.bank_type = self.get_bank_name()
-        mappings = self.config.get_account_mappings("cambridge_name_substring")
+        statement_info.match_status = "Default_Name" # Default status
+        mappings = self.config.get_account_mappings("cambridge_name_substring") # Keep for fallback
         sensitive_accounts = self.config.get_sensitive_accounts(self.get_bank_name())
         account_found = False; fund_found = False; date_found = False
         full_text = "\n".join(lines) 
@@ -551,18 +523,20 @@ class CambridgeStrategy(BankStrategy):
             re.compile(r'^(ARCTARIS\s+[A-Za-z0-9\s-]+(?:LLC|LP|INC)?)$', re.IGNORECASE),
             re.compile(r'^([A-Z\s&\d,-]+(?:LLC|LP|INC))\s*\r?$', re.MULTILINE), 
             re.compile(r'^(SUB[- ]?CDE\s+\d+\s+LLC)$', re.IGNORECASE), 
-            re.compile(r'^([A-Za-z0-9\s,.\-]+(?:\s+LLC|\s+LP|\s+INC))$', re.IGNORECASE) 
+            re.compile(r'(?:Owner|Name)[:\s]+(ARCTARIS\s+[A-Za-z0-9\s-]+(?:LLC|LP|INC)?)', re.IGNORECASE), # Explicit Owner/Name
+            re.compile(r'(?:Owner|Name)[:\s]+(SUB[- ]?CDE\s+\d+\s+LLC)', re.IGNORECASE), # Explicit Owner/Name for SUB CDE
+            re.compile(r'^([A-Za-z0-9\s,.\-]+(?:\s+LLC|\s+LP|\s+INC))$', re.IGNORECASE) # More generic LLC/LP finder
         ]
-        # Simpler date pattern for focused search
-        date_only_pattern = re.compile(r"(\d{1,2}/\d{1,2}/\d{2,4})")
-
-        # --- Removed full text date search --- 
+        date_pattern = re.compile(r'Statement Date[:\s]*(\d{1,2}/\d{1,2}/\d{2,4})', re.IGNORECASE)
+        period_date_pattern = re.compile(r'Statement Period .*? (?:through|thru|to)\s+(\d{1,2}/\d{1,2}/\d{2,4})', re.IGNORECASE | re.DOTALL)
+        generic_date_pattern = re.compile(r'(\d{1,2}/\d{1,2}/\d{2,4})')
+        date_parse_formats = ['%m/%d/%Y', '%m/%d/%y']
 
         logging.debug(f"Cambridge: Starting line processing. Sensitive accounts: {len(sensitive_accounts)}")
         # --- Process lines for Account and Fund Name FIRST --- 
         for i, line in enumerate(lines):
-            if not line.strip(): continue # Skip blank lines
-            if account_found and fund_found: break # Stop early if account/fund found
+            if not line.strip(): continue
+            if account_found and fund_found: break
             
             logging.log(logging.DEBUG - 5 , f"Cambridge Line {i+1}: {line.strip()}")
 
@@ -576,36 +550,47 @@ class CambridgeStrategy(BankStrategy):
                     if sensitive_match:
                         statement_info.account_number = sensitive_match['number']
                         statement_info.account_name = sensitive_match['name']
+                        statement_info.match_status = "Success! (Sensitive Number)"
                         logging.info(f"Cambridge: Confirmed account via sensitive number match: {statement_info.account_name}")
-                        account_found = fund_found = True 
-                    else: 
+                        account_found = fund_found = True
+                    else:
                         statement_info.account_number = potential_account_num; account_found = True
+                        statement_info.match_status = "Regex Match (Review)"
                         logging.debug(f"Cambridge: Regex found potential account '{potential_account_num}', no sensitive match.")
+                        # No direct last4 mapping for Cambridge, name match is primary
 
-            # 2. Attempt Name Extraction & Sensitive Match (only if not found)
+            # 2. Attempt Name Extraction & Sensitive Match (only if not fund_found)
             if not fund_found:
                 potential_fund_name = None
                 for pattern in fund_patterns:
-                     text_to_search = full_text if pattern.flags & re.MULTILINE else line
-                     match = pattern.search(text_to_search)
-                     if match:
-                         extracted = match.group(1).strip(); cleaned = re.sub(r'\s+', ' ', extracted).upper()
-                         if len(cleaned) > 5 and "ACCOUNT ACTIVITY" not in cleaned: 
-                             potential_fund_name = cleaned; break 
+                    text_to_search = full_text if pattern.flags & re.MULTILINE else line
+                    match = pattern.search(text_to_search)
+                    if match:
+                        extracted = match.group(1).strip(); cleaned = re.sub(r'\s+', ' ', extracted).upper()
+                        if len(cleaned) > 5 and "CAMBRIDGE SAVINGS BANK" not in cleaned and "PAGE" not in cleaned:
+                            potential_fund_name = cleaned; break
                 if potential_fund_name:
                     sensitive_match = self._find_sensitive_match_by_name(potential_fund_name, sensitive_accounts)
                     if sensitive_match:
-                        statement_info.account_name = sensitive_match['name']; fund_found = True
-                        if not account_found: 
-                            statement_info.account_number = sensitive_match['number']; account_found = True; 
+                        statement_info.account_name = sensitive_match['name']
+                        statement_info.match_status = "Success! (Sensitive Name)"
+                        fund_found = True
+                        if not account_found:
+                            statement_info.account_number = sensitive_match['number']; account_found = True
                             logging.info(f"Cambridge: Confirmed account via sensitive name match: {statement_info.account_name}")
-                        else: 
+                        else:
+                            if statement_info.account_number != sensitive_match['number']:
+                                logging.warning(f"Cambridge: Sensitive name '{statement_info.account_name}' num {sensitive_match['number']} != regex num {statement_info.account_number}. Prioritizing sensitive.")
+                                statement_info.account_number = sensitive_match['number']
                             logging.info(f"Cambridge: Confirmed name via sensitive match: {statement_info.account_name} (num found earlier)")
-                    else: 
-                        statement_info.account_name = potential_fund_name; fund_found = True
+                    else:
+                        statement_info.account_name = potential_fund_name
+                        if statement_info.match_status not in ["Success! (Sensitive Number)"]:
+                             statement_info.match_status = "Regex Match (Review)" 
+                        fund_found = True
                         logging.debug(f"Cambridge: Regex found potential name '{potential_fund_name}', no sensitive match.")
 
-        # --- Process lines AGAIN specifically for Date, using landmarks --- 
+        # --- Process lines AGAIN specifically for Date, using landmarks ---
         if not date_found:
             logging.debug("Cambridge Date Search: Starting focused search near landmarks.")
             for i, line in enumerate(lines):
@@ -619,12 +604,12 @@ class CambridgeStrategy(BankStrategy):
                     logging.debug(f"Cambridge Date Search: Window text:\n---\n{search_window_text}\n---")
 
                     # Find ALL potential dates in the window
-                    possible_dates = date_only_pattern.findall(search_window_text)
+                    possible_dates = generic_date_pattern.findall(search_window_text)
                     logging.debug(f"Cambridge Date Search: Dates found in window: {possible_dates}")
                     
                     parsed_dates = []
                     for date_str in possible_dates:
-                         parsed = self._parse_date(date_str, ['%m/%d/%Y', '%m/%d/%y'])
+                         parsed = self._parse_date(date_str, date_parse_formats)
                          if parsed:
                               parsed_dates.append(parsed)
                          else:
@@ -638,30 +623,32 @@ class CambridgeStrategy(BankStrategy):
                          break # Exit the date search loop
             if not date_found:
                  logging.debug("Cambridge Date Search: Landmark search did not find a valid date.")
-        # --- End Date Extraction --- 
 
-        # --- Fallback Logic --- 
-        if not fund_found: 
-            logging.debug(f"Cambridge: No definitive fund name match, running fallback logic.")
-            # Try substring mapping only if fund WAS found (tentatively) by regex but not sensitive, and mapping exists
-            if statement_info.account_name and mappings: # Check if tentative name exists
-                current_name = statement_info.account_name; mapped_name = None
-                for sub, mapped in mappings.items():
-                    if sub.lower() in current_name.lower(): mapped_name = mapped; break
-                if mapped_name: 
-                    statement_info.account_name = mapped_name # Overwrite tentative name
-                    fund_found = True # Mark as found via fallback map
-                    logging.debug(f"Cambridge: Fallback map from substring '{sub}' of regex name '{current_name}'.")
-            # If still no fund_found after fallback map, reset tentative name?
-            # Maybe not, keep tentative name if no fallback map applied.
+        # --- Fallback Logic for Name (if fund not found, but account number might be) ---
+        if not fund_found and statement_info.account_name is None and account_found:
+            logging.debug("Cambridge: Fund name not found by sensitive or regex, attempting mapping for name.")
+            # Cambridge uses substring mapping based on name, but we don't have a name yet.
+            # If we have an account number, we might still need a name. This is a tricky spot for Cambridge.
+            # For now, if number found by regex but no name, this will lead to default name.
+            pass 
 
-        # --- Final Defaults --- (remains the same)
-        if not statement_info.account_name: 
-            last4 = statement_info.account_number[-4:] if account_found and len(statement_info.account_number) >= 4 else "XXXX"
-            statement_info.account_name = f"CAMBRIDGE ACCOUNT {last4}"
+        # --- Final Name Fallback & Status Adjustment ---
+        if not statement_info.account_name:
+            num_part = statement_info.account_number if account_found else "UNKNOWN"
+            statement_info.account_name = f"CAMBRIDGE ACCOUNT {num_part}"
+            statement_info.match_status = "Fallback (Default)" # Set status
             logging.warning(f"Cambridge: Using default name: {statement_info.account_name}")
-        if not statement_info.date: # Check if date was actually found
+        if not statement_info.date:
             logging.warning(f"Cambridge: Using fallback date.")
+            # if "Success!" in statement_info.match_status: statement_info.match_status = "Partial (No Date)"
+
+        # Ensure status reflects reality if info is missing
+        if not account_found and not fund_found:
+             statement_info.match_status = "Fallback (Default)"
+        elif statement_info.match_status == "Default_Name": 
+             if fund_found: pass # Assume status set correctly when fund_found became True
+             elif account_found: statement_info.match_status = "Regex Match (Review)"
+             else: statement_info.match_status = "Fallback (Default)"
 
     def get_filename(self, statement_info: StatementInfo) -> str:
         """ Filename: [Account Name] [Account Number] Cambridge Savings [Month] [YYYY].pdf """
@@ -691,103 +678,193 @@ class BankUnitedStrategy(BankStrategy):
     def extract_info(self, lines: List[str], statement_info: StatementInfo):
         # Initialize
         statement_info.bank_type = self.get_bank_name()
-        mappings = self.config.get_account_mappings("bankunited_last4") # Keep for fallback
+        statement_info.match_status = "Default_Name" # Initial status
+        mappings = self.config.get_account_mappings("bankunited_last4")
         sensitive_accounts = self.config.get_sensitive_accounts(self.get_bank_name())
         account_found = False; fund_found = False; date_found = False; sensitive_match_made = False
-        
-        # Keep your existing Regex patterns here
-        account_pattern = re.compile(r'Account(?: Number)?:?\s*(\d+)\b', re.IGNORECASE)
-        fund_patterns = [ # Keep your specific patterns
+        full_text = "\n".join(lines) # Keep for potential multiline name patterns
+
+        # Define Regex patterns
+        # Pattern for ******1234 format near "Account Number" or "ACCOUNT #"
+        masked_account_pattern = re.compile(r'(?:Account\s+Number|ACCOUNT\s+#)\s*.*?(\*+)(\d{4})\b', re.IGNORECASE)
+        # Fallback pattern for potentially full account numbers
+        account_pattern_fallback = re.compile(r'Account(?: Number)?:?\s*(\d+)\b', re.IGNORECASE)
+        fund_patterns = [
              re.compile(r'^(ARCTARIS\s+[A-Za-z0-9\s-]+(?:LLC|LP|INC)?)$', re.IGNORECASE),
              re.compile(r'^(SUB[- ]?CDE\s+\d+\s+LLC)$', re.IGNORECASE),
-             # Look for ALL CAPS line that contains LLC/LP/INC
              re.compile(r'^([A-Z\s&\d,-]+(?:LLC|LP|INC))\s*\r?$'),
-             # Generic LLC/LP finder
              re.compile(r'^([A-Za-z0-9\s,.\-]+(?:\s+LLC|\s+LP|\s+INC))$', re.IGNORECASE)
         ]
-        date_pattern = re.compile(r'Statement Date[:\s]*(\w+\s+\d{1,2},\s+\d{4})', re.IGNORECASE)
-        period_date_pattern = re.compile(r'Statement Period\s+.*\s+-\s+(\w+\s+\d{1,2},\s+\d{4})', re.IGNORECASE)
+        # Date logic remains landmark-based from previous successful approach
+        date_only_pattern = re.compile(r"(\w+\s+\d{1,2},\s+\d{4})")
+        bankunited_date_formats = ['%B %d, %Y', '%b %d, %Y']
 
-        logging.debug(f"BankUnited: Starting line processing. Sensitive accounts: {len(sensitive_accounts)}")
+        logging.debug(f"BankUnited: Starting extraction (single-loop). Sensitive accounts: {len(sensitive_accounts)}")
+
+        # --- Process lines for Account, Name, Date --- 
         for i, line in enumerate(lines):
-            if not line.strip() or sensitive_match_made: break
+            if not line.strip(): continue
+            # Optimization: Stop if definitive match found for name/fund AND date found
+            if sensitive_match_made and date_found: break 
+            
             logging.log(logging.DEBUG - 5 , f"BankUnited Line {i+1}: {line.strip()}")
 
-            # 1. Attempt Number Extraction & Sensitive Match
-            potential_account_num = None
+            # 1. Attempt Account Number Extraction (Masked first, then Fallback)
             if not account_found:
-                match = account_pattern.search(line)
-                if match: potential_account_num = match.group(1)
-                if potential_account_num:
-                    sensitive_match = self._find_sensitive_match_by_number(potential_account_num, sensitive_accounts)
+                potential_num_str = None
+                is_masked = False
+                match_masked = masked_account_pattern.search(line)
+                if match_masked:
+                    potential_num_str = match_masked.group(2) # The 4 digits
+                    is_masked = True
+                    logging.debug(f"BankUnited: Masked account pattern found last 4: '{potential_num_str}'")
+                else:
+                    match_fallback = account_pattern_fallback.search(line)
+                    if match_fallback:
+                        potential_num_str = match_fallback.group(1) # Full number
+                        logging.debug(f"BankUnited: Fallback regex found potential account number: '{potential_num_str}'")
+                
+                # If any number pattern matched, check sensitive list
+                if potential_num_str:
+                    sensitive_match = self._find_sensitive_match_by_number(potential_num_str, sensitive_accounts)
                     if sensitive_match:
-                        statement_info.account_number = sensitive_match['number']
+                        statement_info.account_number = sensitive_match['number'] # Use canonical number
                         statement_info.account_name = sensitive_match['name']
-                        logging.info(f"BankUnited: Confirmed account via sensitive number match: {statement_info.account_name}")
-                        account_found = fund_found = sensitive_match_made = True; continue
-                    else: # Tentative regex match
-                        statement_info.account_number = potential_account_num; account_found = True
-                        logging.debug(f"BankUnited: Regex found potential account '{potential_account_num}', no sensitive match.")
-                        # Tentative map from last4 (do this early?)
-                        if not fund_found: 
-                            last4 = potential_account_num[-4:]
-                            if last4 in mappings: 
-                                statement_info.account_name = mappings[last4]
-                                fund_found = True # Tentatively found name via mapping
-                                logging.debug(f"BankUnited: Tentative map from regex last4 {last4}")
-
-            # 2. Attempt Name Extraction & Sensitive Match
-            if not fund_found: # Check again in case mapping above found it
+                        statement_info.match_status = "Success! (Sensitive Number)"
+                        logging.info(f"BankUnited: Confirmed account via sensitive number match ('{potential_num_str}'): {statement_info.account_name}")
+                        account_found = fund_found = sensitive_match_made = True
+                    else:
+                        # No sensitive match, store what we found
+                        if is_masked:
+                            statement_info.account_number = f"xxxx{potential_num_str}"
+                        else:
+                            statement_info.account_number = potential_num_str
+                        account_found = True
+                        statement_info.match_status = "Regex Match (Review)" # Tentative
+                        logging.debug(f"BankUnited: Regex account '{statement_info.account_number}' not sensitive. Status: {statement_info.match_status}")
+            
+            # 2. Attempt Name Extraction & Validation (Skip if already confirmed by sensitive number)
+            if not sensitive_match_made: 
                 potential_fund_name = None
-                # --- Start: Keep your existing Regex logic for finding potential_fund_name ---
+                # Loop through patterns to find name (using full_text for potential multiline names)
                 for pattern in fund_patterns:
-                    match = pattern.search(line)
-                    if match:
-                        extracted = match.group(1).strip(); cleaned = re.sub(r'\s+', ' ', extracted).upper()
-                        # Add your specific validation logic here
-                        if len(cleaned) > 5 and "BANKUNITED" not in cleaned and "PAGE" not in cleaned:
+                     match = pattern.search(full_text)
+                     if match:
+                         extracted = match.group(1).strip(); cleaned = re.sub(r'\s+', ' ', extracted).upper()
+                         if len(cleaned) > 5 and "BANKUNITED" not in cleaned and "PAGE" not in cleaned:
                              potential_fund_name = cleaned; break
-                # --- End: Keep your existing Regex logic ---
                 
                 if potential_fund_name:
-                    sensitive_match = self._find_sensitive_match_by_name(potential_fund_name, sensitive_accounts)
-                    if sensitive_match:
-                        statement_info.account_name = sensitive_match['name']; fund_found = True
-                        if not account_found: # Found name first
-                            statement_info.account_number = sensitive_match['number']; account_found = True; sensitive_match_made = True
-                            logging.info(f"BankUnited: Confirmed account via sensitive name match: {statement_info.account_name}")
-                            continue
-                        else: logging.info(f"BankUnited: Confirmed name via sensitive match: {statement_info.account_name} (num found earlier)")
-                    else: # Tentative regex name match
-                        statement_info.account_name = potential_fund_name; fund_found = True
-                        logging.debug(f"BankUnited: Regex found potential name '{potential_fund_name}', no sensitive match.")
+                    logging.debug(f"BankUnited: Regex found potential name '{potential_fund_name}'. Checking sensitive list (threshold 0.95).")
+                    sensitive_name_match_entry = self._find_sensitive_match_by_name(potential_fund_name, sensitive_accounts, threshold=0.95)
+                    
+                    if sensitive_name_match_entry:
+                        # Sensitive name match found! Validate against number found earlier.
+                        logging.info(f"BankUnited: Confirmed name via sensitive match: {sensitive_name_match_entry['name']}")
+                        final_status = ""
+                        final_account_number = None 
 
-            # 3. Attempt Date Extraction
+                        if account_found and statement_info.account_number:
+                            extracted_num_for_validation = statement_info.account_number
+                            extracted_last4 = extracted_num_for_validation[-4:]
+                            sensitive_last4 = sensitive_name_match_entry['number'][-4:]
+                            if extracted_last4 == sensitive_last4:
+                                final_status = "Success! (Name & Num Verified)"
+                                # Use the number we extracted from PDF (masked or full)
+                                final_account_number = extracted_num_for_validation 
+                                logging.debug(f"BankUnited: Sensitive name validated: PDF num last4 ({extracted_last4}) matches sensitive last4.")
+                            else:
+                                final_status = "Warning (Sensitive Name Match, Num Mismatch)"
+                                # Use number from PDF, but flag mismatch
+                                final_account_number = extracted_num_for_validation 
+                                logging.warning(f"BankUnited: Sensitive name '{sensitive_name_match_entry['name']}' matched, but PDF number last4 ({extracted_last4}) != sensitive number last4 ({sensitive_last4}).")
+                        else:
+                            # Sensitive name matched, but couldn't extract any number from PDF
+                            final_status = "Success! (Sensitive Name, Num Unverified)"
+                            final_account_number = sensitive_name_match_entry['number'] # Use number from sensitive entry
+                            logging.debug(f"BankUnited: Sensitive name matched, but no number found in PDF to verify.")
+
+                        # Assign validated/unverified info
+                        statement_info.account_name = sensitive_name_match_entry['name']
+                        statement_info.account_number = final_account_number
+                        statement_info.match_status = final_status
+                        fund_found = True
+                        account_found = True # Account is considered found if name confirmed
+                        sensitive_match_made = True
+                    
+                    elif not fund_found: # Regex name found, but no sensitive name match AND no earlier mapping/sensitive number match
+                        statement_info.account_name = potential_fund_name
+                        # Only update status if it wasn't set better by number regex/mapping
+                        if statement_info.match_status not in ["Success! (Sensitive Number)", "Fallback (Mapping)"]:
+                            statement_info.match_status = "Regex Match (Review)" 
+                        fund_found = True
+                        logging.debug(f"BankUnited: Regex name '{potential_fund_name}' found, but no sensitive match.")
+
+            # 3. Attempt Date Extraction (Using landmark approach within the loop)
             if not date_found:
-                match = date_pattern.search(line) or period_date_pattern.search(line)
-                if match: 
-                    parsed_date = self._parse_date(match.group(1), ['%B %d, %Y', '%b %d, %Y'])
-                    if parsed_date: 
-                        statement_info.date = parsed_date; date_found = True; logging.debug(f"BankUnited: Found date {parsed_date:%Y-%m-%d}"); continue
-        
-        # --- Fallback Logic ---
-        if not sensitive_match_made:
-            logging.debug(f"BankUnited: No definitive sensitive match, running fallback logic.")
-            # If account was found (tentatively) but name wasn't confirmed by sensitive match
-            if account_found and not fund_found and statement_info.account_number: 
-                last4 = statement_info.account_number[-4:]
-                if last4 in mappings: 
-                    statement_info.account_name = mappings[last4]
-                    fund_found = True # Mark as found via fallback
-                    logging.debug(f"BankUnited: Fallback map from regex last4 {last4}")
+                 # ... (Date landmark logic remains the same) ...
+                 search_line_lower = line.lower()
+                 if "statement period" in search_line_lower or "statement date" in search_line_lower:
+                     logging.debug(f"BankUnited Date Search: Found landmark on line {i+1}: '{line.strip()}'")
+                     window_lines = lines[i : min(i + 3, len(lines))]
+                     search_window_text = "\n".join(window_lines)
+                     logging.debug(f"BankUnited Date Search: Window text:\n---\n{search_window_text}\n---")
+                     possible_dates = date_only_pattern.findall(search_window_text)
+                     logging.debug(f"BankUnited Date Search: Dates found in window: {possible_dates}")
+                     parsed_dates = []
+                     for date_str in possible_dates:
+                         parsed = self._parse_date(date_str, bankunited_date_formats)
+                         if parsed:
+                             parsed_dates.append(parsed)
+                         else:
+                             logging.warning(f"BankUnited Date Search: Failed to parse potential date string: '{date_str}'")
+                     if parsed_dates:
+                         statement_info.date = max(parsed_dates) 
+                         date_found = True
+                         logging.debug(f"BankUnited: Found date {statement_info.date:%Y-%m-%d} from landmark window search.")
+            
+            # Check for early exit inside the loop if definitive match and date found
+            if sensitive_match_made and date_found: break 
 
-        # --- Final Defaults ---
-        if not statement_info.account_name: 
-            last4 = statement_info.account_number[-4:] if account_found and len(statement_info.account_number) >= 4 else "XXXX"
-            statement_info.account_name = f"BANKUNITED ACCOUNT {last4}"
+        # --- Fallbacks & Final Status Checks --- (After loop)
+        # Apply last4 mapping if no sensitive match and account number IS known
+        if not sensitive_match_made and account_found and not fund_found and statement_info.account_number:
+             # Check if number is masked or full before getting last4
+             num_for_mapping = statement_info.account_number
+             last4 = num_for_mapping[-4:] if len(num_for_mapping) >= 4 else None
+             if last4 and last4 in mappings:
+                 statement_info.account_name = mappings[last4]
+                 statement_info.match_status = "Fallback (Mapping)"
+                 fund_found = True
+                 logging.debug(f"BankUnited: Applied fallback mapping for last4 '{last4}'.")
+
+        # Apply default name if still needed
+        if not statement_info.account_name:
+            last4_default = statement_info.account_number[-4:] if account_found and statement_info.account_number and len(statement_info.account_number) >= 4 else "XXXX"
+            statement_info.account_name = f"BANKUNITED ACCOUNT {last4_default}"
+            if statement_info.match_status not in ["Success! (Sensitive Number)", "Fallback (Mapping)"]:
+                 statement_info.match_status = "Fallback (Default)" 
             logging.warning(f"BankUnited: Using default name: {statement_info.account_name}")
+
+        # Check date
         if not statement_info.date:
-            logging.warning(f"BankUnited: Using fallback date.")
+            logging.warning(f"BankUnited: Using fallback date (None).")
+            # Optional status downgrade: if "Success!" in statement_info.match_status: statement_info.match_status += " (No Date)"
+
+        # Final sanity check on status if it's still the initial default
+        if statement_info.match_status == "Default_Name":
+             if sensitive_match_made: pass # Should have been set higher
+             elif fund_found: # Name found (by mapping or regex)
+                 if statement_info.account_name in mappings.values(): # Check if name came from mapping
+                     statement_info.match_status = "Fallback (Mapping)"
+                 else: # Must have been regex name
+                     statement_info.match_status = "Regex Match (Review)"
+             elif account_found: # Only number found (masked or full) by regex
+                 statement_info.match_status = "Regex Match (Review)"
+             else: # Nothing found
+                 statement_info.match_status = "Fallback (Default)"
+        
+        logging.info(f"BankUnited: Final extraction result: Name='{statement_info.account_name}', Num='{statement_info.account_number}', Date='{statement_info.date}', Status='{statement_info.match_status}'")
 
     def get_filename(self, statement_info: StatementInfo) -> str:
         """ Filename: [Account Name] [Account Number] BankUnited [Month] [Year].pdf """
@@ -837,38 +914,77 @@ class UnlabeledStrategy(BankStrategy):
     def extract_info(self, lines: List[str], statement_info: StatementInfo):
         # Set bank type to Unlabeled. PDFProcessor already tried to identify it.
         statement_info.bank_type = self.get_bank_name()
+        statement_info.match_status = "Unlabeled (Generic Extraction)" # Default status for unlabeled
         logging.info(f"Executing UnlabeledStrategy for '{statement_info.original_filename}'. Attempting generic extraction.")
+        
+        # Simplified generic extraction - focus on any account number and any date
         account_pattern = re.compile(r'(?:Account|Acct|ACCOUNT|ACCT)[^0-9]*(?:[\dX]+-){0,2}([0-9]{4})\b', re.IGNORECASE)
         account_number_full_pattern = re.compile(r'(?:Account|Acct|ACCOUNT|ACCT)[^0-9]*(\d{6,})\b', re.IGNORECASE)
-        account_last4 = None; account_number = None
+        account_last4 = None; account_number = None; account_found = False
+        
         for line in lines:
-             match = account_number_full_pattern.search(line)
-             if match: account_number = match.group(1); account_last4 = account_number[-4:]; logging.debug(f"Unlabeled: Found potential full account ending in {account_last4}"); break
-             else: match = account_pattern.search(line)
-             if match: account_last4 = match.group(1); logging.debug(f"Unlabeled: Found potential last 4 digits {account_last4}")
-        if account_number: statement_info.account_number = account_number
-        elif account_last4: statement_info.account_number = f"xxxx{account_last4}"
+            if account_found: break
+            match = account_number_full_pattern.search(line)
+            if match: 
+                account_number = match.group(1)
+                account_last4 = account_number[-4:]
+                account_found = True
+                logging.debug(f"Unlabeled: Found potential full account ending in {account_last4}"); break
+            else: 
+                match = account_pattern.search(line)
+                if match: 
+                    account_last4 = match.group(1)
+                    account_found = True
+                    logging.debug(f"Unlabeled: Found potential last 4 digits {account_last4}")
+        
+        if account_number: 
+            statement_info.account_number = account_number
+        elif account_last4: 
+            statement_info.account_number = f"xxxx{account_last4}"
+        
         date_patterns = [
-            re.compile(r'Statement Date[:\s]*(\d{1,2}[/-]\d{1,2}[/-]\d{2,4})', re.I), re.compile(r'Statement Date[:\s]*(\w+\s+\d{1,2},\s+\d{4})', re.I),
-            re.compile(r'Statement Period.*?to\s+(\d{1,2}[/-]\d{1,2}[/-]\d{2,4})', re.I), re.compile(r'Statement Period.*?-\s+(\w+\s+\d{1,2},\s+\d{4})', re.I),
-            re.compile(r'Ending\s+(\d{1,2}/\d{1,2}/\d{2,4})', re.I), re.compile(r'As of\s+(\d{1,2}[/-]\d{1,2}[/-]\d{2,4})', re.I),
-            re.compile(r'Date\s+(\d{1,2}/\d{1,2}/\d{4})\b', re.I), re.compile(r'\b(\d{1,2}/\d{1,2}/\d{4})\b')
+            re.compile(r'Statement Date[:\s]*(\d{1,2}[/-]\d{1,2}[/-]\d{2,4})', re.I), 
+            re.compile(r'Statement Date[:\s]*(\w+\s+\d{1,2},\s+\d{4})', re.I),
+            re.compile(r'Statement Period.*?to\s+(\d{1,2}[/-]\d{1,2}[/-]\d{2,4})', re.I), 
+            re.compile(r'Statement Period.*?-\s+(\w+\s+\d{1,2},\s+\d{4})', re.I),
+            re.compile(r'Ending\s+(\d{1,2}/\d{1,2}/\d{2,4})', re.I), 
+            re.compile(r'As of\s+(\d{1,2}[/-]\d{1,2}[/-]\d{2,4})', re.I),
+            re.compile(r'Date\s+(\d{1,2}/\d{1,2}/\d{4})\b', re.I), 
+            re.compile(r'\b(\d{1,2}/\d{1,2}/\d{4})\b') # Generic date anywhere
         ]
         date_formats = ['%m/%d/%Y', '%m/%d/%y', '%B %d, %Y', '%b %d, %Y', '%Y-%m-%d']
-        statement_date = None
+        statement_date = None; date_found = False
+        
         for line in lines:
+            if date_found: break
             for pattern in date_patterns:
                 match = pattern.search(line)
                 if match:
                     parsed_date = self._parse_date(match.group(1), date_formats)
                     if parsed_date and 2000 <= parsed_date.year <= datetime.now().year + 1:
-                         statement_date = parsed_date; logging.debug(f"Unlabeled: Found potential date {statement_date:%Y-%m-%d}"); break
-            if statement_date: break
-        statement_info.date = statement_date
-        if not statement_info.date: logging.warning(f"Unlabeled: No date found. Using current date."); statement_info.date = datetime.now()
+                         statement_info.date = parsed_date
+                         date_found = True
+                         logging.debug(f"Unlabeled: Found potential date {statement_info.date:%Y-%m-%d}"); break
+        
+        if not statement_info.date: 
+            logging.warning(f"Unlabeled: No date found. Using current date as fallback.")
+            statement_info.date = datetime.now() # Fallback date
+            statement_info.match_status = "Unlabeled (Generic - No Date)" # More specific status
+
         if not statement_info.account_name:
-            if statement_info.account_number: last4 = statement_info.account_number[-4:] if len(statement_info.account_number) >= 4 else "XXXX"; statement_info.account_name = f"ACCOUNT {last4}"; logging.info(f"Unlabeled: Setting default name: {statement_info.account_name}")
-            else: statement_info.account_name = "UNKNOWN ACCOUNT"; logging.info(f"Unlabeled: Setting default name: {statement_info.account_name}")
+            if statement_info.account_number: 
+                last4_display = statement_info.account_number[-4:] if len(statement_info.account_number) >= 4 else "XXXX"
+                statement_info.account_name = f"UNLABELED ACCOUNT {last4_display}"
+            else: 
+                statement_info.account_name = "UNKNOWN UNLABELED ACCOUNT"
+                # If no account number was found either, the status is worse
+                if not date_found: # No date AND no account number
+                    statement_info.match_status = "Unlabeled (Needs Review - No Info)"
+                else: # Has date, but no account number
+                    statement_info.match_status = "Unlabeled (Needs Review - No Account)"
+            logging.info(f"Unlabeled: Setting default name: {statement_info.account_name}")
+        
+        logging.info(f"Unlabeled: Final status for '{statement_info.original_filename}': {statement_info.match_status}")
 
     def get_filename(self, statement_info: StatementInfo) -> str:
         """ For Unlabeled files, keep the original filename. """

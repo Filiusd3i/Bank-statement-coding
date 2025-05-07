@@ -54,6 +54,15 @@ class PDFProcessor:
         self.config_manager = config_manager
         self.extraction_stats = defaultdict(int)
         # Cache removed, filename logic simplified below
+        # Dynamically build strategy map from config or use a default
+        self.bank_strategies = {
+            "PNC": PNCStrategy(config_manager),
+            "Berkshire": BerkshireStrategy(config_manager),
+            "BankUnited": BankUnitedStrategy(config_manager),
+            "Cambridge": CambridgeStrategy(config_manager),
+            # "Unlabeled" strategy is handled as a fallback by default
+        }
+        self.unlabeled_strategy = UnlabeledStrategy(config_manager)
 
     def _extract_text_with_pdfplumber(self, file_path: str, filename: str) -> Tuple[List[str], bool]:
         """Extracts text from PDF using pdfplumber, returning lines and success status."""

@@ -19,7 +19,7 @@ class FileManager:
         """Initialize with configuration."""
         self.config = config
         self._created_folders: Set[str] = set() # Cache for created folders
-        self.processed_files_log: List[Dict[str, str]] = [] # Log for checklist
+        self.processed_files_log: List[Dict[str, Any]] = [] # Log for checklist
 
     def ensure_folder_exists(self, folder_path: str, dry_run: bool = False) -> bool:
         """Ensure the folder exists, creating it if necessary."""
@@ -109,6 +109,21 @@ class FileManager:
             destination_filepath = os.path.join(full_output_folder, final_filename)
             relative_destination = os.path.join(relative_subfolder, final_filename).replace('\\\\', '/') # For logging and consistency
 
+            # Prepare log details (even if dry run or error, to capture intent)
+            log_account_name = statement_info.account_name
+            log_account_number = statement_info.account_number
+            log_statement_date = statement_info.date.strftime("%Y-%m-%d") if statement_info.date else "N/A"
+            log_match_status = statement_info.match_status # Get from statement_info
+
+            # --- ADD DEBUG LOGGING HERE ---
+            logging.debug(f"FileManager.process_file - Logging for {original_filename}: Name='{log_account_name}', Num='{log_account_number}', Date='{log_statement_date}', MatchStatus='{log_match_status}'")
+            # --- END DEBUG LOGGING ---
+
+            if os.path.exists(destination_filepath) and not self.config.get("overwrite_duplicates_in_output", False):
+                message = f"skip processing {original_filename}: Destination file already exists and overwrite is disabled: {destination_filepath}"
+                self._log_processed_file(source_filepath, "Error", statement_info.bank_type, f"Error (Duplicate)", dry_run)
+                return False, message # Return message string on failure
+
             # 5. Perform action (copy/move or log)
             if dry_run:
                 status = "Would Process"
@@ -158,51 +173,68 @@ class FileManager:
              self._log_processed_file(source_filepath, "Error", statement_info.bank_type if statement_info else "Unknown", "Error (Unexpected)", dry_run)
              return False, message # Return message string on failure
 
-    def _log_processed_file(self, original_path: str, dest_path: str, bank_type: str, status: str, dry_run: bool):
+    def _log_processed_file(self, original_path: str, dest_path: str, bank_type: str, status: str, dry_run: bool,
+                            account_name: Optional[str] = "N/A",
+                            account_number: Optional[str] = "N/A",
+                            statement_date: Optional[str] = "N/A",
+                            match_status: Optional[str] = "N/A"):
         """Adds an entry to the internal log for checklist generation."""
-        self.processed_files_log.append({
-            'Original File': os.path.basename(original_path),
-            'Destination File': dest_path.replace('\\', '/'), # Use consistent slashes
-            'Bank Type': bank_type,
-            'Status': status,
-            'Verified': '' # Placeholder for manual verification
-        })
+        log_entry = {
+            "Original File": os.path.basename(original_path),
+            "Original Path": original_path,
+            "New Filename": os.path.basename(dest_path) if dest_path and dest_path != "N/A" else "N/A",
+            "New Path": dest_path,
+            "Bank Type": bank_type or "Unknown",
+            "Account Name": account_name or "N/A",
+            "Account Number": account_number or "N/A",
+            "Statement Date": statement_date or "N/A",
+            "Match Status": match_status or "N/A",
+            "Status": status,
+            "Processed Timestamp": datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
+            "Dry Run": dry_run
+        }
+        self.processed_files_log.append(log_entry)
+        logging.debug(f"Logged for checklist: {log_entry}")
 
-    def generate_checklist(self, checklist_dir: str, dry_run: bool = False) -> Optional[str]:
-        """
-        Generate a CSV checklist of processed files.
+    def generate_checklist(self, checklist_dir: Optional[str], dry_run: bool) -> Optional[str]:
+        """Generates a CSV checklist of all processed files."""
+        if not self.processed_files_log:
+            logging.info("No files were processed or logged. Checklist not generated.")
+            return None
+        
+        if not checklist_dir:
+            checklist_dir = os.path.join(os.getcwd(), "checklists") 
+            logging.info(f"Checklist directory not specified, defaulting to: {checklist_dir}")
 
-        Args:
-            checklist_dir: Path to save the checklist CSV.
-            dry_run: Whether this was a dry run (affects filename).
-
-        Returns:
-            Path to the generated CSV file, or None on error.
-        """
-        if not self.ensure_folder_exists(checklist_dir, dry_run=dry_run):
-             logging.error(f"Cannot create checklist directory: {checklist_dir}")
-             return None
-        if dry_run and not os.path.exists(checklist_dir):
-             logging.info(f"Dry Run: Checklist would be saved in {checklist_dir}")
-             return os.path.join(checklist_dir, "dry_run_checklist.csv") # Placeholder path
-
-        timestamp = datetime.now().strftime('%Y%m%d_%H%M%S')
-        prefix = "preview_" if dry_run else ""
-        csv_filename = f"{prefix}checklist_{timestamp}.csv"
-        csv_path = os.path.join(checklist_dir, csv_filename)
+        self._ensure_dir(checklist_dir)
+        
+        timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
+        prefix = "DRYRUN_" if dry_run else ""
+        checklist_filename = f"{prefix}processing_checklist_{timestamp}.csv"
+        checklist_filepath = os.path.join(checklist_dir, checklist_filename)
 
         try:
-            with open(csv_path, 'w', newline='', encoding='utf-8') as csvfile:
-                fieldnames = ['Original File', 'Destination File', 'Bank Type', 'Status', 'Verified']
-                writer = csv.DictWriter(csvfile, fieldnames=fieldnames)
-
+            with open(checklist_filepath, 'w', newline='', encoding='utf-8') as csvfile:
+                # Corrected and comprehensive fieldnames list
+                fieldnames = [
+                    "Original File", "Original Path", 
+                    "New Filename", "New Path", 
+                    "Bank Type", "Account Name", "Account Number", "Statement Date", 
+                    "Match Status", "Status", 
+                    "Processed Timestamp", "Dry Run"
+                ]
+                # Add 'Verified' if you still intend to use it for manual checks later
+                # fieldnames.append("Verified") 
+                
+                writer = csv.DictWriter(csvfile, fieldnames=fieldnames, extrasaction='ignore') # extrasaction='ignore' is safer
                 writer.writeheader()
-                # Sort log entries for consistency (optional, but nice)
-                sorted_log = sorted(self.processed_files_log, key=lambda x: x.get('Original File', ''))
-                writer.writerows(sorted_log)
-
-            logging.info(f"Checklist generated: {csv_path}")
-            return csv_path
+                for entry in self.processed_files_log:
+                    writer.writerow(entry) # No need to pre-filter keys if using extrasaction='ignore'
+            logging.info(f"Successfully generated checklist: {checklist_filepath}")
+            return checklist_filepath
+        except IOError as e:
+            logging.error(f"Error writing checklist CSV to {checklist_filepath}: {e}", exc_info=True)
+            return None
         except Exception as e:
-            logging.error(f"Failed to write checklist file {csv_path}: {e}", exc_info=True)
+            logging.error(f"An unexpected error occurred during checklist generation: {e}", exc_info=True)
             return None 

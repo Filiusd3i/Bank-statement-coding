@@ -9,47 +9,41 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 - End-of-run summary printed to console and logged, showing total files attempted, processed, skipped, and errored, plus detailed `PDFProcessor` stats.
-- Support for loading sensitive account data (name, number) from `sensitive_accounts.yaml` (file itself is gitignored).
-- Helper methods in `BankStrategy` base class for matching sensitive data (`_find_sensitive_match_by_number`, `_find_sensitive_match_by_name`).
-- Logic in `config_manager.py` to safely load `sensitive_accounts.yaml` if present.
-- `python-Levenshtein` and `PyYAML` to `requirements.txt`.
-- Standard Python entries and `sensitive_accounts.yaml` to `.gitignore`.
+- Detailed file processing log generated as a CSV checklist (`checklists/` folder).
+- `--log-level` command-line argument (DEBUG, INFO, WARNING, ERROR, CRITICAL).
+- `--show-preview` flag to display detailed dry run output grouped by bank.
+- `--auto-confirm` flag to skip interactive confirmation prompt.
+- Basic file verification (`verify_pdf`) and optional auto-repair (`attempt_pdf_repair`) using `pikepdf`.
+- Duplicate file detection (based on hash) and option to skip or process duplicates (`--process-duplicates`).
+- Support for BankUnited statements, including specific mappings for ARC Impact accounts.
+- Support for Cambridge Savings Bank statements.
 - Experimental auto-dependency check on startup in `main.py`.
 - Integrated `PyMuPDF` as a fallback text extraction library in `PDFProcessor` if `pdfplumber` fails.
+- **`match_status` field:** Added to `StatementInfo` and checklist output (`Success!`, `Fallback`, `Regex Match (Review)`, etc.) to indicate processing confidence.
 
 ### Changed
 - Temporarily limited processing in `main.py` to the first 50 files for testing.
-- Modified `PDFProcessor` (`process_pdf`) to return `None` for `StatementInfo` if `UnlabeledStrategy` is used, preventing renaming/moving.
-- Refactored `main.py` preview logic (`_run_preview`) to use structured data from `file_manager`.
-- Modified `file_manager.py` (`process_file`) to return structured dictionary on dry run success.
-- Updated PNC bank statement filename format to: `[Account name] statement_[account number]_YYYY_MM_DD.pdf`.
-- Updated BankUnited bank statement filename format to match Cambridge Savings: `[Account Name] [Account Number] BankUnited [Month] [Year].pdf`.
-- Updated `UnlabeledStrategy.get_filename` to return the original filename, preserving it for manual review.
-- Simplified `PNCStrategy` to always place files directly in the `PNC` output folder (removed date subfolder) and prepend the matched account name to the original filename.
-- Simplified `PNCStrategy.get_filename` to prepend account name to original filename.
-- Corrected PNC date extraction logic by adjusting loop control flow in `PNCStrategy.extract_info`.
-- Updated `PNCStrategy.get_subfolder_path` to use `YYYY/Month` format (e.g., `PNC/2025/April`).
-- Implemented batch processing in `main.py`'s `run` method to handle files in chunks of 50.
-- Confirmed successful end-to-end processing run with all recent PNC and batching changes; output duplicate handling overwrites existing files with a warning as intended.
-
-### Removed
-- Deleted unused script `Arctaris rename_statements.py`.
-- Deleted unused helper scripts `simplified_bank_statements.bat`, `simplified_script.vbs`, `BankStatements.vbs`.
-- Removed interactive `input()` confirmation from `main.py`, relying solely on `--auto-confirm` flag for non-dry runs.
-- Removed redundant `BANK_STRATEGIES` dictionary definition from the end of `bank_strategies.py`.
+- Improved logging detail and clarity across modules.
+- Refactored `PDFProcessor` to use strategy instances.
+- Refactored `FileManager` for clarity and checklist generation.
+- Switched default file operation from move to copy (`delete_originals` config option added, defaults to `False`).
+- Renamed main script to `main.py` (from `pdf_renamer.py`).
+- Standardized filename generation across strategies.
+- Increased fuzzy matching threshold for BankUnited sensitive name checks to 0.95 for more accuracy.
 
 ### Fixed
 - Prevented incorrect date fallback (`datetime.now()`) in all strategies; uses `None` date with appropriate filename/path fallbacks (`NODATE`/`UnknownDate`) instead.
-- Corrected `config.json` structure and ensured `delete_originals: true` is loaded correctly, fixing issue where originals were not deleted.
-- Removed date requirement from `is_successful` check in `PDFProcessor`, preventing files with failed date parsing from being incorrectly skipped.
-- Prevented `UnlabeledStrategy` files from being moved or renamed; they are now skipped by `FileManager` and left in the input folder.
-- Corrected various `IndentationError` issues within `bank_strategies.py`.
-- Resolved `TypeError` in `pdf_processor.py` caused by incorrect `StatementInfo` initialization (passing `original_filename` to `__init__`).
-- Corrected `AttributeError` typo in `pdf_processor.py` (called `_extract_text_with_plumber` instead of `_extract_text_with_pdfplumber`).
-- Resolved `TypeError` in `pdf_processor.py` by adding the missing `filename` argument to the `_extract_text_with_pdfplumber` call.
+- Handled potential `FileNotFoundError` during config loading more gracefully.
 - Improved exception handling in `main.py` (`_collect_files`) to catch specific `FileNotFoundError` and `PermissionError` instead of generic `Exception`.
 - Corrected `re.error: nothing to repeat` in `BerkshireStrategy` (and preventatively in `CambridgeStrategy`) by removing an erroneous `?` after `$` in several regex patterns.
-- **CambridgeStrategy Date Extraction:** Resolved issue where dates were not extracted due to statement period information being split across lines. Implemented a landmark-based search (looking near "Statement Period"/"Statement Date") to reliably find and parse the correct statement end date.
+- **CambridgeStrategy Date Extraction:** Resolved issue where dates were not extracted due to statement period information being split across lines. Implemented a landmark-based search (looking near "Statement Period"/"Statement Date") to reliably find and parse the end date.
+- Fixed `ValueError` in checklist generation due to mismatched fieldnames.
+- **BankUnited Account Number:** Correctly extract masked account numbers (e.g., `******1234`) and differentiate accounts with the same name but different numbers (e.g., Operating vs. MMK) by validating extracted number against sensitive list entry. Resolved filename collision issue.
+
+### Removed
+- Deleted unused script `bank_statement_simple.py`.
+- Removed old `process_statement` function from `main.py` in favor of `PDFProcessor` class.
+- Removed direct dependency on `PyPDF2` in favor of `pdfplumber` and `PyMuPDF`.
 
 ### Investigated & Decided
 - **Berkshire PDF Processing:** Encountered issues with certain Berkshire PDF statements being image-based, preventing text extraction by both `pdfplumber` and `PyMuPDF`.
