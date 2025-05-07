@@ -2,6 +2,7 @@
 import os
 # import PyPDF2 # Replaced with pdfplumber
 import pdfplumber # Added
+import fitz # PyMuPDF
 import re
 import logging
 from typing import Tuple, Optional, Dict, Type, List # Added List
@@ -105,6 +106,58 @@ class PDFProcessor:
 
         return lines, text_extraction_success
 
+    def _extract_text_with_pymupdf(self, file_path: str, filename: str) -> Tuple[List[str], bool]:
+        """Extracts text from PDF using PyMuPDF (fitz), returning lines and success status."""
+        lines = []
+        text_extraction_success = False
+        full_text = ""
+        try:
+            doc = fitz.open(file_path)
+            if not doc.page_count:
+                logging.warning(f"PyMuPDF found no pages in: {filename}")
+                self.extraction_stats["empty_pdf_pymupdf"] += 1
+                return lines, text_extraction_success
+
+            max_pages_to_scan = min(doc.page_count, self.config_manager.get("pdf_scan_max_pages", 10))
+            logging.info(f"Attempting text extraction with PyMuPDF from up to {max_pages_to_scan} pages in {filename}")
+
+            for i in range(max_pages_to_scan):
+                page = doc.load_page(i)
+                try:
+                    page_text = page.get_text("text", sort=True) # "text" for plain text, sort for reading order
+                    if page_text:
+                        full_text += page_text + "\n"
+                        if not text_extraction_success:
+                            text_extraction_success = True
+                            sample = page_text[:150].replace('\n', ' ') + ("..." if len(page_text) > 150 else "")
+                            logging.info(f"PyMuPDF: First successful text extraction (page {i+1}, {len(page_text)} chars) from {filename}. Sample: '{sample}'")
+                    else:
+                        logging.debug(f"No text extracted by PyMuPDF from page {i+1} of {filename}")
+                except Exception as page_ex:
+                    logging.warning(f"PyMuPDF error extracting text from page {i+1} of {filename}: {page_ex}")
+            
+            doc.close()
+
+            if text_extraction_success:
+                lines = full_text.splitlines()
+                logging.info(f"PyMuPDF successfully extracted {len(full_text)} characters ({len(lines)} lines) from {filename}")
+                self.extraction_stats["text_extraction_success_pymupdf"] += 1
+            else:
+                logging.warning(f"PyMuPDF failed to extract any text from {filename}")
+                self.extraction_stats["text_extraction_failed_pymupdf"] += 1
+        
+        except fitz.EmptyFileError:
+            logging.error(f"PyMuPDF: Empty or invalid PDF file: {filename}")
+            self.extraction_stats["corrupted_pdf_pymupdf"] += 1
+        except PermissionError:
+            logging.error(f"PyMuPDF: Permission denied accessing file: {file_path}")
+            self.extraction_stats["permission_error_pymupdf"] += 1
+        except Exception as read_ex:
+            logging.error(f"PyMuPDF: Unexpected error reading PDF '{filename}': {read_ex}", exc_info=True)
+            self.extraction_stats["read_error_pymupdf"] += 1
+            
+        return lines, text_extraction_success
+
     def _identify_bank_from_content(self, text_content: str, filename: str) -> Optional[str]:
         """Identifies the most likely bank key based on keywords in text content."""
         if not text_content:
@@ -158,55 +211,68 @@ class PDFProcessor:
             return None, None
 
         try:
-            logging.info(f"Processing PDF: {filename}")
-
             # Create StatementInfo object first
             statement_info = StatementInfo()
             # Assign the original filename
             statement_info.original_filename = filename
 
-            # 1. Extract text using pdfplumber
-            extracted_text, num_pages = self._extract_text_with_pdfplumber(file_path, filename)
+            # 1. Extract text - Attempt with pdfplumber first
+            extracted_lines, text_extracted_pdfplumber = self._extract_text_with_pdfplumber(file_path, filename)
+            
+            # Convert lines to single string for content identification
+            extracted_text_content = "\n".join(extracted_lines) if extracted_lines else ""
 
-            # 2. Identify Bank Type
+            # 2. Identify Bank Type (preliminary based on filename)
+            # This helps decide if we *need* to try PyMuPDF for specific banks like Berkshire
+            # or if pdfplumber already failed.
+            bank_key_from_filename = self._identify_bank_key_from_filename(filename)
+            
+            # If pdfplumber failed, or if it's a bank known to need OCR (e.g., Berkshire if we configure it so)
+            # For now, let's try PyMuPDF if pdfplumber failed for any file.
+            if not text_extracted_pdfplumber:
+                logging.info(f"pdfplumber failed for {filename}. Attempting with PyMuPDF.")
+                extracted_lines_pymupdf, text_extracted_pymupdf = self._extract_text_with_pymupdf(file_path, filename)
+                if text_extracted_pymupdf:
+                    extracted_lines = extracted_lines_pymupdf # Use PyMuPDF results
+                    extracted_text_content = "\n".join(extracted_lines_pymupdf)
+                    logging.info(f"Successfully switched to PyMuPDF text for {filename}.")
+                else:
+                    logging.warning(f"Both pdfplumber and PyMuPDF failed to extract text from {filename}.")
+            
+            # 3. Identify Bank Type (final determination)
             bank_key = None
-            # Try filename first (quick check)
-            filename_bank_key = self._identify_bank_key_from_filename(filename)
-            if filename_bank_key != "unlabeled":
-                logging.info(f"Preliminary bank identification via filename '{filename}': {filename_bank_key}")
-                bank_key = filename_bank_key
+            if bank_key_from_filename != "unlabeled":
+                logging.info(f"Preliminary bank identification via filename '{filename}': {bank_key_from_filename}")
+                bank_key = bank_key_from_filename
             else:
                 logging.info(f"Filename did not yield specific bank for '{filename}'. Analyzing content.")
-                # If filename fails, try content analysis
-                if extracted_text:
-                    content_bank_key = self._identify_bank_from_content(extracted_text, filename)
+                if extracted_text_content: # Check if we have any text (from either method)
+                    content_bank_key = self._identify_bank_from_content(extracted_text_content, filename)
                     if content_bank_key:
                         bank_key = content_bank_key
                     else:
-                         bank_key = "unlabeled" # Stick with unlabeled if content fails too
+                         bank_key = "unlabeled" 
                 else:
-                     logging.warning(f"Cannot perform content analysis for bank ID on {filename} due to text extraction failure.")
-                     bank_key = "unlabeled" # Fallback if no text
+                     logging.warning(f"Cannot perform content analysis for bank ID on {filename} due to complete text extraction failure.")
+                     bank_key = "unlabeled"
 
             logging.info(f"Final determined bank key for {filename}: '{bank_key}'")
             strategy_class = self.STRATEGY_MAP.get(bank_key, UnlabeledStrategy)
-            strategy = strategy_class(self.config_manager) # Instantiate the determined strategy
+            strategy = strategy_class(self.config_manager)
 
-            # If the strategy is UnlabeledStrategy, return None for info immediately
-            # This signals FileManager not to rename or move the file.
             if strategy_class is UnlabeledStrategy:
                 logging.info(f"File '{filename}' identified as Unlabeled. Skipping further processing and renaming/moving.")
-                self.extraction_stats["unlabeled_identified"] += 1 # Track specifically identified unlabeled
+                self.extraction_stats["unlabeled_identified"] += 1
                 # Return None for StatementInfo, but the strategy instance for potential logging
                 return None, strategy
 
             # --- Proceed only if it's NOT UnlabeledStrategy ---
 
-            # 3. Extract Information using the selected strategy
+            # 4. Extract Information using the selected strategy
             try:
                 # Pass extracted lines to the strategy
                 # The strategy should handle empty lines if text_extracted is False
-                strategy.extract_info(extracted_text, statement_info)
+                strategy.extract_info(extracted_lines, statement_info)
 
                 # The strategy should set statement_info.bank_type correctly now.
                 # UnlabeledStrategy might refine the bank_type based on its *own* internal logic if needed.
@@ -225,7 +291,7 @@ class PDFProcessor:
                 # Return None for StatementInfo here to signal failure to FileManager
                 return None, strategy # Modified: Ensure StatementInfo is None on failure
 
-            # 4. Final Check and Return
+            # 5. Final Check and Return
             # Consider a successful extraction if bank type is not Unlabeled *and* essential info exists
             # (e.g., account number or name, date). This check might need refinement.
             is_successful = (

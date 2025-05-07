@@ -1,4 +1,13 @@
-pdfplumber>=0.10.0
-PyPDF2>=3.0.0 
-python-Levenshtein>=0.12.2
-PyYAML>=6.0 
+# Base dependencies
+pdfminer.six
+pdfplumber
+openpyxl
+PyMuPDF
+# For sensitive data and config
+python-Levenshtein
+PyYAML
+# For OCR capabilities
+pytesseract
+pdf2image
+# Other utilities (if any, e.g., for specific strategies or future use)
+# Example: psutil (if you were to use it for system monitoring) 

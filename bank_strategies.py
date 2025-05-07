@@ -387,12 +387,12 @@ class BerkshireStrategy(BankStrategy):
         ]
         # Simpler name patterns first
         fund_patterns = [
-            re.compile(r'^(ARCTARIS\s+[A-Za-z0-9\s-]+(?:LLC|LP|INC)?)$?', re.IGNORECASE), # Arctaris name at line start
+            re.compile(r'^(ARCTARIS\s+[A-Za-z0-9\s-]+(?:LLC|LP|INC)?)$', re.IGNORECASE), # Arctaris name at line start
             re.compile(r'(?:Owner|Name)[:\s]+(ARCTARIS\s+[A-Za-z0-9\s-]+(?:LLC|LP|INC)?)', re.IGNORECASE), # Explicit Owner/Name
-            re.compile(r'^(SUB[- ]?CDE\s+\d+\s+LLC)$?', re.IGNORECASE), # Sub CDE at line start
+            re.compile(r'^(SUB[- ]?CDE\s+\d+\s+LLC)$', re.IGNORECASE), # Sub CDE at line start
             re.compile(r'(?:Owner|Name)[:\s]+(SUB[- ]?CDE\s+\d+\s+LLC)', re.IGNORECASE), # Explicit Owner/Name for SUB CDE
             # More generic LLC/LP finder - use carefully
-            re.compile(r'^([A-Za-z0-9\s,.\\-]+(?:\s+LLC|\s+LP|\s+INC))$?', re.IGNORECASE)
+            re.compile(r'^([A-Za-z0-9\s,.\\-]+(?:\s+LLC|\s+LP|\s+INC))$', re.IGNORECASE)
         ]
         date_pattern = re.compile(r'Statement Date[:\s]*(\d{1,2}/\d{1,2}/\d{2,4})', re.IGNORECASE)
         period_end_date_pattern = re.compile(r'Statement Period[:\s]*.*? to [\s]*(\d{1,2}/\d{1,2}/\d{2,4})', re.IGNORECASE)
@@ -540,29 +540,33 @@ class CambridgeStrategy(BankStrategy):
     def extract_info(self, lines: List[str], statement_info: StatementInfo):
         # Initialize
         statement_info.bank_type = self.get_bank_name()
-        mappings = self.config.get_account_mappings("cambridge_name_substring") # Keep for fallback
+        mappings = self.config.get_account_mappings("cambridge_name_substring")
         sensitive_accounts = self.config.get_sensitive_accounts(self.get_bank_name())
-        account_found = False; fund_found = False; date_found = False; sensitive_match_made = False
-        full_text = "\n".join(lines) # For multiline regex if needed
+        account_found = False; fund_found = False; date_found = False
+        full_text = "\n".join(lines) 
         
-        # Keep your existing Regex patterns here
+        # Define Regex patterns
         account_pattern = re.compile(r'Account(?: Number)?:?\s*(\d+-?\d+)\b', re.IGNORECASE)
-        fund_patterns = [ # Keep your specific patterns (including multiline ones)
+        fund_patterns = [ 
             re.compile(r'^(ARCTARIS\s+[A-Za-z0-9\s-]+(?:LLC|LP|INC)?)$', re.IGNORECASE),
             re.compile(r'^([A-Z\s&\d,-]+(?:LLC|LP|INC))\s*\r?$', re.MULTILINE), 
-            # ... etc (Ensure other patterns here are also correct)
-            re.compile(r'^(SUB[- ]?CDE\s+\d+\s+LLC)$', re.IGNORECASE), # Example: Ensure others are also correct
-            re.compile(r'^([A-Za-z0-9\s,.\-]+(?:\s+LLC|\s+LP|\s+INC))$', re.IGNORECASE) # Example: Ensure others are also correct
+            re.compile(r'^(SUB[- ]?CDE\s+\d+\s+LLC)$', re.IGNORECASE), 
+            re.compile(r'^([A-Za-z0-9\s,.\-]+(?:\s+LLC|\s+LP|\s+INC))$', re.IGNORECASE) 
         ]
-        date_pattern = re.compile(r'Statement Date[:\s]*(\d{1,2}/\d{1,2}/\d{2,4})', re.IGNORECASE)
-        period_date_pattern = re.compile(r'Statement Period[:\s]*.*?\s+to\s+(\d{1,2}/\d{1,2}/\d{2,4})', re.IGNORECASE)
+        # Simpler date pattern for focused search
+        date_only_pattern = re.compile(r"(\d{1,2}/\d{1,2}/\d{2,4})")
+
+        # --- Removed full text date search --- 
 
         logging.debug(f"Cambridge: Starting line processing. Sensitive accounts: {len(sensitive_accounts)}")
+        # --- Process lines for Account and Fund Name FIRST --- 
         for i, line in enumerate(lines):
-            if not line.strip() or sensitive_match_made: break
+            if not line.strip(): continue # Skip blank lines
+            if account_found and fund_found: break # Stop early if account/fund found
+            
             logging.log(logging.DEBUG - 5 , f"Cambridge Line {i+1}: {line.strip()}")
 
-            # 1. Attempt Number Extraction & Sensitive Match
+            # 1. Attempt Number Extraction & Sensitive Match (only if not found)
             potential_account_num = None
             if not account_found:
                 match = account_pattern.search(line)
@@ -573,65 +577,90 @@ class CambridgeStrategy(BankStrategy):
                         statement_info.account_number = sensitive_match['number']
                         statement_info.account_name = sensitive_match['name']
                         logging.info(f"Cambridge: Confirmed account via sensitive number match: {statement_info.account_name}")
-                        account_found = fund_found = sensitive_match_made = True; continue
-                    else: # Tentative regex match
+                        account_found = fund_found = True 
+                    else: 
                         statement_info.account_number = potential_account_num; account_found = True
                         logging.debug(f"Cambridge: Regex found potential account '{potential_account_num}', no sensitive match.")
 
-            # 2. Attempt Name Extraction & Sensitive Match
+            # 2. Attempt Name Extraction & Sensitive Match (only if not found)
             if not fund_found:
                 potential_fund_name = None
-                # --- Start: Keep your existing Regex logic for finding potential_fund_name ---
                 for pattern in fund_patterns:
-                     # Use full_text for multiline patterns, line for others
                      text_to_search = full_text if pattern.flags & re.MULTILINE else line
                      match = pattern.search(text_to_search)
                      if match:
                          extracted = match.group(1).strip(); cleaned = re.sub(r'\s+', ' ', extracted).upper()
-                         # Add your specific validation logic here
                          if len(cleaned) > 5 and "ACCOUNT ACTIVITY" not in cleaned: 
                              potential_fund_name = cleaned; break 
-                # --- End: Keep your existing Regex logic ---
-                
                 if potential_fund_name:
                     sensitive_match = self._find_sensitive_match_by_name(potential_fund_name, sensitive_accounts)
                     if sensitive_match:
                         statement_info.account_name = sensitive_match['name']; fund_found = True
-                        if not account_found: # Found name first
-                            statement_info.account_number = sensitive_match['number']; account_found = True; sensitive_match_made = True
+                        if not account_found: 
+                            statement_info.account_number = sensitive_match['number']; account_found = True; 
                             logging.info(f"Cambridge: Confirmed account via sensitive name match: {statement_info.account_name}")
-                            continue
-                        else: logging.info(f"Cambridge: Confirmed name via sensitive match: {statement_info.account_name} (num found earlier)")
-                    else: # Tentative regex name match
+                        else: 
+                            logging.info(f"Cambridge: Confirmed name via sensitive match: {statement_info.account_name} (num found earlier)")
+                    else: 
                         statement_info.account_name = potential_fund_name; fund_found = True
                         logging.debug(f"Cambridge: Regex found potential name '{potential_fund_name}', no sensitive match.")
 
-            # 3. Attempt Date Extraction
-            if not date_found:
-                match = date_pattern.search(line) or period_date_pattern.search(line)
-                if match: 
-                    parsed_date = self._parse_date(match.group(1), ['%m/%d/%Y', '%m/%d/%y'])
-                    if parsed_date: 
-                        statement_info.date = parsed_date; date_found = True; logging.debug(f"Cambridge: Found date {parsed_date:%Y-%m-%d}"); continue
+        # --- Process lines AGAIN specifically for Date, using landmarks --- 
+        if not date_found:
+            logging.debug("Cambridge Date Search: Starting focused search near landmarks.")
+            for i, line in enumerate(lines):
+                search_line_lower = line.lower()
+                # Check for landmarks like "Statement Period" or "Statement Date"
+                if "statement period" in search_line_lower or "statement date" in search_line_lower:
+                    logging.debug(f"Cambridge Date Search: Found landmark on line {i}: '{line.strip()}'")
+                    # Define search window (current line + next 2 lines)
+                    window_lines = lines[i : min(i + 3, len(lines))]
+                    search_window_text = "\n".join(window_lines)
+                    logging.debug(f"Cambridge Date Search: Window text:\n---\n{search_window_text}\n---")
 
-        # --- Fallback Logic ---
-        if not sensitive_match_made:
-            logging.debug(f"Cambridge: No definitive sensitive match, running fallback logic.")
+                    # Find ALL potential dates in the window
+                    possible_dates = date_only_pattern.findall(search_window_text)
+                    logging.debug(f"Cambridge Date Search: Dates found in window: {possible_dates}")
+                    
+                    parsed_dates = []
+                    for date_str in possible_dates:
+                         parsed = self._parse_date(date_str, ['%m/%d/%Y', '%m/%d/%y'])
+                         if parsed:
+                              parsed_dates.append(parsed)
+                         else:
+                              logging.warning(f"Cambridge Date Search: Failed to parse potential date string from window: '{date_str}'")
+                    
+                    if parsed_dates:
+                         # Heuristic: Assume the LATEST date in the window is the statement end date
+                         statement_info.date = max(parsed_dates) 
+                         date_found = True
+                         logging.debug(f"Cambridge: Found date {statement_info.date:%Y-%m-%d} from landmark window search.")
+                         break # Exit the date search loop
+            if not date_found:
+                 logging.debug("Cambridge Date Search: Landmark search did not find a valid date.")
+        # --- End Date Extraction --- 
+
+        # --- Fallback Logic --- 
+        if not fund_found: 
+            logging.debug(f"Cambridge: No definitive fund name match, running fallback logic.")
             # Try substring mapping only if fund WAS found (tentatively) by regex but not sensitive, and mapping exists
-            if fund_found and statement_info.account_name and mappings:
+            if statement_info.account_name and mappings: # Check if tentative name exists
                 current_name = statement_info.account_name; mapped_name = None
                 for sub, mapped in mappings.items():
                     if sub.lower() in current_name.lower(): mapped_name = mapped; break
                 if mapped_name: 
                     statement_info.account_name = mapped_name # Overwrite tentative name
+                    fund_found = True # Mark as found via fallback map
                     logging.debug(f"Cambridge: Fallback map from substring '{sub}' of regex name '{current_name}'.")
+            # If still no fund_found after fallback map, reset tentative name?
+            # Maybe not, keep tentative name if no fallback map applied.
 
-        # --- Final Defaults ---
+        # --- Final Defaults --- (remains the same)
         if not statement_info.account_name: 
             last4 = statement_info.account_number[-4:] if account_found and len(statement_info.account_number) >= 4 else "XXXX"
             statement_info.account_name = f"CAMBRIDGE ACCOUNT {last4}"
             logging.warning(f"Cambridge: Using default name: {statement_info.account_name}")
-        if not statement_info.date:
+        if not statement_info.date: # Check if date was actually found
             logging.warning(f"Cambridge: Using fallback date.")
 
     def get_filename(self, statement_info: StatementInfo) -> str:
@@ -669,12 +698,12 @@ class BankUnitedStrategy(BankStrategy):
         # Keep your existing Regex patterns here
         account_pattern = re.compile(r'Account(?: Number)?:?\s*(\d+)\b', re.IGNORECASE)
         fund_patterns = [ # Keep your specific patterns
-             re.compile(r'^(ARCTARIS\s+[A-Za-z0-9\s-]+(?:LLC|LP|INC)?)$?', re.IGNORECASE),
-             re.compile(r'^(SUB[- ]?CDE\s+\d+\s+LLC)$?', re.IGNORECASE),
+             re.compile(r'^(ARCTARIS\s+[A-Za-z0-9\s-]+(?:LLC|LP|INC)?)$', re.IGNORECASE),
+             re.compile(r'^(SUB[- ]?CDE\s+\d+\s+LLC)$', re.IGNORECASE),
              # Look for ALL CAPS line that contains LLC/LP/INC
              re.compile(r'^([A-Z\s&\d,-]+(?:LLC|LP|INC))\s*\r?$'),
              # Generic LLC/LP finder
-             re.compile(r'^([A-Za-z0-9\s,.\-]+(?:\s+LLC|\s+LP|\s+INC))$?', re.IGNORECASE)
+             re.compile(r'^([A-Za-z0-9\s,.\-]+(?:\s+LLC|\s+LP|\s+INC))$', re.IGNORECASE)
         ]
         date_pattern = re.compile(r'Statement Date[:\s]*(\w+\s+\d{1,2},\s+\d{4})', re.IGNORECASE)
         period_date_pattern = re.compile(r'Statement Period\s+.*\s+-\s+(\w+\s+\d{1,2},\s+\d{4})', re.IGNORECASE)
