@@ -106,15 +106,40 @@ class PdfRenamerApp:
         self.pdf_processor = PDFProcessor(self.config_manager)
         self.file_manager = FileManager(self.config_manager)
 
-        # Determine effective input/output paths
-        self.input_folder = self.args.input or self.config_manager.get("input_folder")
-        self.processed_folder = self.args.output or self.config_manager.get("processed_folder")
-        self.checklist_dir = self.args.checklist_dir
+        # --- !!! User Editable Default Paths !!! ---
+        # Set your default input and output folders here.
+        # Command-line arguments (--input / --output) will override these defaults.
+        default_input_folder = r"C:\Users\Christian\OneDrive - Arctaris Michigan Partners, LLC\Desktop\Bank Automation\input_statements"
+        default_processed_folder = r"C:\Users\Christian\OneDrive - Arctaris Michigan Partners, LLC\Desktop\Bank Automation\processed_statements"
+        # --- End User Editable Paths ---
+
+        # Determine effective input/output paths (Args override script defaults)
+        self.input_folder = self.args.input or default_input_folder
+        self.processed_folder = self.args.output or default_processed_folder
+        # Removed fallback to config for these specific paths to prioritize script defaults
+        # self.input_folder = self.args.input or self.config_manager.get("input_folder") <--- OLD
+        # self.processed_folder = self.args.output or self.config_manager.get("processed_folder") <--- OLD
+        
+        self.checklist_dir = self.args.checklist_dir # Checklist dir still uses arg or default logic in FileManager
 
         # Validate paths
         if not self.input_folder or not os.path.isdir(self.input_folder):
             logging.critical(f"Invalid or missing input folder: {self.input_folder}")
             sys.exit(1) # Exit if input is invalid
+        
+        # Ensure output folder exists or can be created (unless dry run)
+        # Moved this check here for clarity
+        if not self.args.dry_run:
+            try:
+                 # Use FileManager's method to ensure consistency
+                 if not self.file_manager.ensure_folder_exists(self.processed_folder, dry_run=False):
+                      # Error logged within ensure_folder_exists
+                      logging.critical(f"Could not create or access processed folder: {self.processed_folder}. Exiting.")
+                      sys.exit(1)
+            except Exception as e:
+                 logging.critical(f"Error validating processed folder {self.processed_folder}: {e}. Exiting.", exc_info=True)
+                 sys.exit(1)
+
 
         logging.info("=" * 40)
         logging.info(f"PDF Renamer Initialized (Dry Run: {self.args.dry_run})")
