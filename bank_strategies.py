@@ -254,7 +254,7 @@ class PNCStrategy(BankStrategy):
                         statement_info.date = parsed_date
                         date_found = True
                         logging.debug(f"PNC: Found date {parsed_date:%Y-%m-%d}")
-            
+
             if sensitive_match_made and date_found: break # Re-check for early exit
 
         # --- Fallback Logic --- 
@@ -433,7 +433,6 @@ class BerkshireStrategy(BankStrategy):
                 statement_info.date = parsed_date
                 date_found_by_filename = True
                 logging.info(f"Berkshire: Extracted date '{parsed_date:%Y-%m-%d}' from filename.")
-        
         # 3. Log based on text extraction result (passed in `lines`)
         if not lines or not any(line.strip() for line in lines):
             logging.warning(f"Berkshire: No text extracted for '{original_filename}'. Expected for image-based PDF. Processing based on filename if possible.")
@@ -445,7 +444,7 @@ class BerkshireStrategy(BankStrategy):
             # For now, stick to the image-based assumption primarily.
 
         # --- Final Fallback & Status for Berkshire (after filename checks) ---
-        if not statement_info.account_name:
+        if not statement_info.account_name: 
             # If no name from filename heuristic, use a generic default
             num_part = statement_info.account_number[-4:] if statement_info.account_number and len(statement_info.account_number) >=4 else "XXXX"
             statement_info.account_name = f"BERKSHIRE ACCOUNT {num_part}"
@@ -511,144 +510,175 @@ class CambridgeStrategy(BankStrategy):
     def extract_info(self, lines: List[str], statement_info: StatementInfo):
         # Initialize
         statement_info.bank_type = self.get_bank_name()
-        statement_info.match_status = "Default_Name" # Default status
-        mappings = self.config.get_account_mappings("cambridge_name_substring") # Keep for fallback
+        statement_info.match_status = "Default_Name" # Initial status
+        # mappings = self.config.get_account_mappings("cambridge_name_substring") # Not used in this structure
         sensitive_accounts = self.config.get_sensitive_accounts(self.get_bank_name())
-        account_found = False; fund_found = False; date_found = False
+        
+        # Information buckets from extraction passes
+        extracted_num_str: Optional[str] = None # Raw number from PDF
+        normalized_extracted_num: Optional[str] = None # Number with dashes removed
+        sensitive_num_match: Optional[Dict] = None
+        potential_fund_name: Optional[str] = None
+        sensitive_name_match: Optional[Dict] = None
+        extracted_date: Optional[datetime] = None
+
         full_text = "\n".join(lines) 
         
         # Define Regex patterns
-        account_pattern = re.compile(r'Account(?: Number)?:?\s*(\d+-?\d+)\b', re.IGNORECASE)
+        # Landmark pattern for Cambridge account number (e.g., Account Number XXXXXX-XX)
+        account_num_landmark_pattern = re.compile(r'^Account(?:\s+Number)?[\s#:]*(\d+-?\d+)\b', re.IGNORECASE | re.MULTILINE)
         fund_patterns = [ 
             re.compile(r'^(ARCTARIS\s+[A-Za-z0-9\s-]+(?:LLC|LP|INC)?)$', re.IGNORECASE),
             re.compile(r'^([A-Z\s&\d,-]+(?:LLC|LP|INC))\s*\r?$', re.MULTILINE), 
             re.compile(r'^(SUB[- ]?CDE\s+\d+\s+LLC)$', re.IGNORECASE), 
-            re.compile(r'(?:Owner|Name)[:\s]+(ARCTARIS\s+[A-Za-z0-9\s-]+(?:LLC|LP|INC)?)', re.IGNORECASE), # Explicit Owner/Name
-            re.compile(r'(?:Owner|Name)[:\s]+(SUB[- ]?CDE\s+\d+\s+LLC)', re.IGNORECASE), # Explicit Owner/Name for SUB CDE
-            re.compile(r'^([A-Za-z0-9\s,.\-]+(?:\s+LLC|\s+LP|\s+INC))$', re.IGNORECASE) # More generic LLC/LP finder
+            re.compile(r'(?:Owner|Name)[:\s]+(ARCTARIS\s+[A-Za-z0-9\s-]+(?:LLC|LP|INC)?)', re.IGNORECASE),
+            re.compile(r'(?:Owner|Name)[:\s]+(SUB[- ]?CDE\s+\d+\s+LLC)', re.IGNORECASE),
+            re.compile(r'^([A-Za-z0-9\s,.\-]+(?:\s+LLC|\s+LP|\s+INC))$', re.IGNORECASE)
         ]
-        date_pattern = re.compile(r'Statement Date[:\s]*(\d{1,2}/\d{1,2}/\d{2,4})', re.IGNORECASE)
-        period_date_pattern = re.compile(r'Statement Period .*? (?:through|thru|to)\s+(\d{1,2}/\d{1,2}/\d{2,4})', re.IGNORECASE | re.DOTALL)
+        # Date patterns remain the same (landmark search used in Pass 3)
         generic_date_pattern = re.compile(r'(\d{1,2}/\d{1,2}/\d{2,4})')
         date_parse_formats = ['%m/%d/%Y', '%m/%d/%y']
 
-        logging.debug(f"Cambridge: Starting line processing. Sensitive accounts: {len(sensitive_accounts)}")
-        # --- Process lines for Account and Fund Name FIRST --- 
+        logging.debug(f"Cambridge: Starting multi-pass extraction. Sensitive accounts: {len(sensitive_accounts)}")
+
+        # --- Pass 1: Find Account Number via Landmark --- 
+        logging.debug(f"Cambridge Pass 1: Searching for account number landmark.")
+        num_match = account_num_landmark_pattern.search(full_text)
+        if num_match:
+            extracted_num_str = num_match.group(1) # Store raw number (with potential dash)
+            normalized_extracted_num = extracted_num_str.replace('-', '')
+            logging.debug(f"Cambridge Pass 1: Landmark found potential account number: '{extracted_num_str}' (Normalized: '{normalized_extracted_num}')")
+            # Check sensitive list using normalized number
+            sensitive_num_match = self._find_sensitive_match_by_number(normalized_extracted_num, sensitive_accounts)
+            if sensitive_num_match:
+                logging.info(f"Cambridge Pass 1: Sensitive number match found for '{normalized_extracted_num}': {sensitive_num_match['name']}")
+            else:
+                logging.debug(f"Cambridge Pass 1: Landmark number '{normalized_extracted_num}' not in sensitive list.")
+        else:
+             logging.debug(f"Cambridge Pass 1: Account number landmark pattern not found.")
+
+        # --- Pass 2: Find Account Name --- 
+        logging.debug(f"Cambridge Pass 2: Searching for account name.")
+        for pattern in fund_patterns:
+            match = pattern.search(full_text) # Search full text
+            if match:
+                extracted = match.group(1).strip(); cleaned = re.sub(r'\s+', ' ', extracted).upper()
+                if len(cleaned) > 5 and "CAMBRIDGE SAVINGS BANK" not in cleaned and "PAGE" not in cleaned:
+                    potential_fund_name = cleaned
+                    logging.debug(f"Cambridge Pass 2: Regex found potential name '{potential_fund_name}'.")
+                    break 
+        if potential_fund_name:
+            # Use slightly stricter threshold for Cambridge name matching
+            sensitive_name_match = self._find_sensitive_match_by_name(potential_fund_name, sensitive_accounts, threshold=0.90)
+            if sensitive_name_match:
+                logging.info(f"Cambridge Pass 2: Sensitive name match found for '{potential_fund_name}': {sensitive_name_match['name']}")
+            else:
+                logging.debug(f"Cambridge Pass 2: Potential name '{potential_fund_name}' not in sensitive list (threshold 0.90).")
+        else:
+            logging.debug(f"Cambridge Pass 2: No potential account name found via regex.")
+
+        # --- Validation & Status Assignment --- 
+        logging.debug(f"Cambridge Validation: Num Match: {bool(sensitive_num_match)}, Name Match: {bool(sensitive_name_match)}, Extracted Num: {extracted_num_str}, Extracted Name: {potential_fund_name}")
+        account_assigned = False
+        if sensitive_num_match:
+            # Priority 1: Sensitive number match
+            statement_info.account_number = sensitive_num_match['number'] # Use canonical number
+            statement_info.account_name = sensitive_num_match['name']
+            statement_info.match_status = "Success! (Sensitive Number)"
+            logging.debug(f"Validation outcome: Sensitive Number Match takes precedence.")
+            account_assigned = True
+        elif sensitive_name_match:
+            # Priority 2: Sensitive name match (validate against extracted number)
+            statement_info.account_name = sensitive_name_match['name']
+            if normalized_extracted_num: # Check if number was found via landmark
+                sensitive_num_normalized = sensitive_name_match['number'].replace('-', '')
+                if normalized_extracted_num == sensitive_num_normalized:
+                    statement_info.match_status = "Success! (Name & Num Verified)"
+                    statement_info.account_number = extracted_num_str # Use number from PDF (with dash if present)
+                    logging.debug(f"Validation outcome: Sensitive Name Verified against extracted number ({normalized_extracted_num}).")
+                else:
+                    statement_info.match_status = "Warning (Sensitive Name Match, Num Mismatch)"
+                    statement_info.account_number = extracted_num_str # Use number from PDF, flag warning
+                    logging.warning(f"Validation outcome: Sensitive Name Matched, BUT number mismatch (PDF Norm: {normalized_extracted_num}, Sensitive Norm: {sensitive_num_normalized}).")
+            else:
+                # Sensitive name matched, but no number extracted from PDF to verify
+                statement_info.match_status = "Success! (Sensitive Name, Num Unverified)"
+                statement_info.account_number = sensitive_name_match['number'] # Use number from sensitive entry
+                logging.debug(f"Validation outcome: Sensitive Name Matched, Number from sensitive list (unverified in PDF).")
+            account_assigned = True
+        elif extracted_num_str: 
+            # Priority 3: Number extracted via landmark regex, no sensitive match
+            statement_info.account_number = extracted_num_str # Use number from PDF
+            # No last4 mapping for Cambridge, need name from regex or default
+            if potential_fund_name:
+                statement_info.account_name = potential_fund_name
+                statement_info.match_status = "Regex Match (Review)" # Both found by regex
+                logging.debug(f"Validation outcome: Landmark number and Regex name found (no sensitive).")
+            else:
+                 num_part = statement_info.account_number 
+                 statement_info.account_name = f"CAMBRIDGE ACCOUNT {num_part}" # Default name
+                 statement_info.match_status = "Regex Match (Review)" # Found number but no name
+                 logging.debug(f"Validation outcome: Landmark number found, no name found.")
+            account_assigned = True
+        elif potential_fund_name: 
+            # Priority 4: Only name extracted via regex, no sensitive match
+            statement_info.account_name = potential_fund_name
+            statement_info.match_status = "Regex Match (Review)"
+            statement_info.account_number = None 
+            logging.debug(f"Validation outcome: Regex name found, no number found.")
+            account_assigned = True
+        else:
+            # Priority 5: Nothing significant found
+            statement_info.match_status = "Fallback (Default)"
+            statement_info.account_name = "CAMBRIDGE UNKNOWN ACCOUNT"
+            statement_info.account_number = None
+            logging.debug(f"Validation outcome: No number or name found.")
+            account_assigned = True # Mark as assigned even if default
+
+        # --- Pass 3: Find Date via Landmark --- 
+        logging.debug(f"Cambridge Pass 3: Searching for date.")
+        date_found = False
         for i, line in enumerate(lines):
-            if not line.strip(): continue
-            if account_found and fund_found: break
-            
-            logging.log(logging.DEBUG - 5 , f"Cambridge Line {i+1}: {line.strip()}")
-
-            # 1. Attempt Number Extraction & Sensitive Match (only if not found)
-            potential_account_num = None
-            if not account_found:
-                match = account_pattern.search(line)
-                if match: potential_account_num = match.group(1).replace('-', '')
-                if potential_account_num:
-                    sensitive_match = self._find_sensitive_match_by_number(potential_account_num, sensitive_accounts)
-                    if sensitive_match:
-                        statement_info.account_number = sensitive_match['number']
-                        statement_info.account_name = sensitive_match['name']
-                        statement_info.match_status = "Success! (Sensitive Number)"
-                        logging.info(f"Cambridge: Confirmed account via sensitive number match: {statement_info.account_name}")
-                        account_found = fund_found = True
-                    else:
-                        statement_info.account_number = potential_account_num; account_found = True
-                        statement_info.match_status = "Regex Match (Review)"
-                        logging.debug(f"Cambridge: Regex found potential account '{potential_account_num}', no sensitive match.")
-                        # No direct last4 mapping for Cambridge, name match is primary
-
-            # 2. Attempt Name Extraction & Sensitive Match (only if not fund_found)
-            if not fund_found:
-                potential_fund_name = None
-                for pattern in fund_patterns:
-                    text_to_search = full_text if pattern.flags & re.MULTILINE else line
-                    match = pattern.search(text_to_search)
-                    if match:
-                        extracted = match.group(1).strip(); cleaned = re.sub(r'\s+', ' ', extracted).upper()
-                        if len(cleaned) > 5 and "CAMBRIDGE SAVINGS BANK" not in cleaned and "PAGE" not in cleaned:
-                            potential_fund_name = cleaned; break
-                if potential_fund_name:
-                    sensitive_match = self._find_sensitive_match_by_name(potential_fund_name, sensitive_accounts)
-                    if sensitive_match:
-                        statement_info.account_name = sensitive_match['name']
-                        statement_info.match_status = "Success! (Sensitive Name)"
-                        fund_found = True
-                        if not account_found:
-                            statement_info.account_number = sensitive_match['number']; account_found = True
-                            logging.info(f"Cambridge: Confirmed account via sensitive name match: {statement_info.account_name}")
-                        else:
-                            if statement_info.account_number != sensitive_match['number']:
-                                logging.warning(f"Cambridge: Sensitive name '{statement_info.account_name}' num {sensitive_match['number']} != regex num {statement_info.account_number}. Prioritizing sensitive.")
-                                statement_info.account_number = sensitive_match['number']
-                            logging.info(f"Cambridge: Confirmed name via sensitive match: {statement_info.account_name} (num found earlier)")
-                    else:
-                        statement_info.account_name = potential_fund_name
-                        if statement_info.match_status not in ["Success! (Sensitive Number)"]:
-                             statement_info.match_status = "Regex Match (Review)" 
-                        fund_found = True
-                        logging.debug(f"Cambridge: Regex found potential name '{potential_fund_name}', no sensitive match.")
-
-        # --- Process lines AGAIN specifically for Date, using landmarks ---
-        if not date_found:
-            logging.debug("Cambridge Date Search: Starting focused search near landmarks.")
-            for i, line in enumerate(lines):
-                search_line_lower = line.lower()
-                # Check for landmarks like "Statement Period" or "Statement Date"
-                if "statement period" in search_line_lower or "statement date" in search_line_lower:
-                    logging.debug(f"Cambridge Date Search: Found landmark on line {i}: '{line.strip()}'")
-                    # Define search window (current line + next 2 lines)
-                    window_lines = lines[i : min(i + 3, len(lines))]
-                    search_window_text = "\n".join(window_lines)
-                    logging.debug(f"Cambridge Date Search: Window text:\n---\n{search_window_text}\n---")
-
-                    # Find ALL potential dates in the window
-                    possible_dates = generic_date_pattern.findall(search_window_text)
-                    logging.debug(f"Cambridge Date Search: Dates found in window: {possible_dates}")
-                    
-                    parsed_dates = []
-                    for date_str in possible_dates:
-                         parsed = self._parse_date(date_str, date_parse_formats)
-                         if parsed:
-                              parsed_dates.append(parsed)
-                         else:
-                              logging.warning(f"Cambridge Date Search: Failed to parse potential date string from window: '{date_str}'")
-                    
-                    if parsed_dates:
-                         # Heuristic: Assume the LATEST date in the window is the statement end date
-                         statement_info.date = max(parsed_dates) 
-                         date_found = True
-                         logging.debug(f"Cambridge: Found date {statement_info.date:%Y-%m-%d} from landmark window search.")
-                         break # Exit the date search loop
+            if date_found: break
+            search_line_lower = line.lower()
+            if "statement period" in search_line_lower or "statement date" in search_line_lower:
+                logging.debug(f"Cambridge Date Search: Found landmark on line {i}: '{line.strip()}'")
+                window_lines = lines[i : min(i + 3, len(lines))]
+                search_window_text = "\n".join(window_lines)
+                logging.debug(f"Cambridge Date Search: Window text:\n---\n{search_window_text}\n---")
+                possible_dates = generic_date_pattern.findall(search_window_text)
+                logging.debug(f"Cambridge Date Search: Dates found in window: {possible_dates}")
+                parsed_dates = []
+                for date_str in possible_dates:
+                     parsed = self._parse_date(date_str, date_parse_formats)
+                     if parsed:
+                          parsed_dates.append(parsed)
+                     else:
+                          logging.warning(f"Cambridge Date Search: Failed to parse potential date string: '{date_str}'")
+                if parsed_dates:
+                     extracted_date = max(parsed_dates) 
+                     logging.debug(f"Cambridge: Found date {extracted_date:%Y-%m-%d} from landmark window search.")
+                     date_found = True
+                     break 
             if not date_found:
-                 logging.debug("Cambridge Date Search: Landmark search did not find a valid date.")
+             logging.debug("Cambridge Date Search: Landmark search did not find a valid date.")
+        # --- End Date Logic --- 
 
-        # --- Fallback Logic for Name (if fund not found, but account number might be) ---
-        if not fund_found and statement_info.account_name is None and account_found:
-            logging.debug("Cambridge: Fund name not found by sensitive or regex, attempting mapping for name.")
-            # Cambridge uses substring mapping based on name, but we don't have a name yet.
-            # If we have an account number, we might still need a name. This is a tricky spot for Cambridge.
-            # For now, if number found by regex but no name, this will lead to default name.
-            pass 
-
-        # --- Final Name Fallback & Status Adjustment ---
-        if not statement_info.account_name:
-            num_part = statement_info.account_number if account_found else "UNKNOWN"
-            statement_info.account_name = f"CAMBRIDGE ACCOUNT {num_part}"
-            statement_info.match_status = "Fallback (Default)" # Set status
-            logging.warning(f"Cambridge: Using default name: {statement_info.account_name}")
+        # --- Final Assignment & Fallbacks ---
+        statement_info.date = extracted_date # Assign date found (or None)
         if not statement_info.date:
-            logging.warning(f"Cambridge: Using fallback date.")
-            # if "Success!" in statement_info.match_status: statement_info.match_status = "Partial (No Date)"
-
-        # Ensure status reflects reality if info is missing
-        if not account_found and not fund_found:
+            logging.warning(f"Cambridge: No date found. Using fallback date (None).")
+            # Optional status adjustment: if "Success!" in statement_info.match_status... etc.
+        
+        # Final safety net for default name if missed
+        if not account_assigned:
+             logging.warning("Cambridge: Reached final fallback - account info assignment missed.")
+             num_part = statement_info.account_number if statement_info.account_number else "UNKNOWN"
+             statement_info.account_name = f"CAMBRIDGE ACCOUNT {num_part}"
              statement_info.match_status = "Fallback (Default)"
-        elif statement_info.match_status == "Default_Name": 
-             if fund_found: pass # Assume status set correctly when fund_found became True
-             elif account_found: statement_info.match_status = "Regex Match (Review)"
-             else: statement_info.match_status = "Fallback (Default)"
+             logging.warning(f"Cambridge: Assigning default name post-validation: {statement_info.account_name}")
+
+        logging.info(f"Cambridge: Final extraction result: Name='{statement_info.account_name}', Num='{statement_info.account_number}', Date='{statement_info.date}', Status='{statement_info.match_status}'")
 
     def get_filename(self, statement_info: StatementInfo) -> str:
         """ Filename: [Account Name] [Account Number] Cambridge Savings [Month] [YYYY].pdf """
@@ -748,12 +778,11 @@ class BankUnitedStrategy(BankStrategy):
                 potential_fund_name = None
                 # Loop through patterns to find name (using full_text for potential multiline names)
                 for pattern in fund_patterns:
-                     match = pattern.search(full_text)
-                     if match:
-                         extracted = match.group(1).strip(); cleaned = re.sub(r'\s+', ' ', extracted).upper()
-                         if len(cleaned) > 5 and "BANKUNITED" not in cleaned and "PAGE" not in cleaned:
-                             potential_fund_name = cleaned; break
-                
+                    match = pattern.search(full_text)
+                    if match:
+                        extracted = match.group(1).strip(); cleaned = re.sub(r'\s+', ' ', extracted).upper()
+                        if len(cleaned) > 5 and "BANKUNITED" not in cleaned and "PAGE" not in cleaned:
+                            potential_fund_name = cleaned; break
                 if potential_fund_name:
                     logging.debug(f"BankUnited: Regex found potential name '{potential_fund_name}'. Checking sensitive list (threshold 0.95).")
                     sensitive_name_match_entry = self._find_sensitive_match_by_name(potential_fund_name, sensitive_accounts, threshold=0.95)
@@ -839,7 +868,7 @@ class BankUnitedStrategy(BankStrategy):
                  logging.debug(f"BankUnited: Applied fallback mapping for last4 '{last4}'.")
 
         # Apply default name if still needed
-        if not statement_info.account_name:
+        if not statement_info.account_name: 
             last4_default = statement_info.account_number[-4:] if account_found and statement_info.account_number and len(statement_info.account_number) >= 4 else "XXXX"
             statement_info.account_name = f"BANKUNITED ACCOUNT {last4_default}"
             if statement_info.match_status not in ["Success! (Sensitive Number)", "Fallback (Mapping)"]:

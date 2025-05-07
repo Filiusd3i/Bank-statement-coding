@@ -39,6 +39,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - **CambridgeStrategy Date Extraction:** Resolved issue where dates were not extracted due to statement period information being split across lines. Implemented a landmark-based search (looking near "Statement Period"/"Statement Date") to reliably find and parse the end date.
 - Fixed `ValueError` in checklist generation due to mismatched fieldnames.
 - **BankUnited Account Number:** Correctly extract masked account numbers (e.g., `******1234`) and differentiate accounts with the same name but different numbers (e.g., Operating vs. MMK) by validating extracted number against sensitive list entry. Resolved filename collision issue.
+- Corrected `IndentationError` in `CambridgeStrategy` within `bank_strategies.py` that occurred after a refactor.
 
 ### Removed
 - Deleted unused script `bank_statement_simple.py`.
