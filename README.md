@@ -1,3 +1,5 @@
+[![Portfolio](https://img.shields.io/badge/Portfolio-Project-blue.svg)](https://github.com/Filiusd3i)
+
 # 🏦 Bank Statement Processing Automation
 
 ## 🔍 Overview
