@@ -1,0 +1,162 @@
+2025-05-01 11:23:51 - INFO - [utils.py:49] - Logging initialized (Level: INFO, File: 'C:\Users\Christian\OneDrive - Arctaris Michigan Partners, LLC\Desktop\Bank Automation\Codes\Bank-statement-coding\logs\pdf_processor_20250501_112351.log')
+2025-05-01 11:23:51 - INFO - [main.py:47] - ========================================
+2025-05-01 11:23:51 - INFO - [main.py:48] - PDF Renamer Initialized (Dry Run: True)
+2025-05-01 11:23:51 - INFO - [main.py:49] - Input Folder: C:\Users\Christian\OneDrive - Arctaris Michigan Partners, LLC\Desktop\Bank Automation\input_statements
+2025-05-01 11:23:51 - INFO - [main.py:50] - Output Folder: C:\Users\Christian\OneDrive - Arctaris Michigan Partners, LLC\Desktop\Bank Automation\processed_statements
+2025-05-01 11:23:51 - INFO - [main.py:51] - Config File: config.json
+2025-05-01 11:23:51 - INFO - [main.py:52] - Log File: C:\Users\Christian\OneDrive - Arctaris Michigan Partners, LLC\Desktop\Bank Automation\Codes\Bank-statement-coding\logs\pdf_processor_20250501_112351.log
+2025-05-01 11:23:51 - INFO - [main.py:53] - ========================================
+2025-05-01 11:23:52 - INFO - [main.py:73] - Found 1329 PDF file(s) in input folder.
+2025-05-01 11:23:52 - INFO - [main.py:91] - Checking for duplicate files...
+2025-05-01 11:23:58 - WARNING - [main.py:98] - Found 11 group(s) of duplicate files:
+2025-05-01 11:23:58 - WARNING - [main.py:101] -   Duplicate Group 1 (Hash: f31ddfd5..., 2 files):
+2025-05-01 11:23:58 - WARNING - [main.py:103] -     - 1396 - Arctaris Opportunity Zone Fund 2019 LLC -20250228.pdf
+2025-05-01 11:23:58 - WARNING - [main.py:103] -     - NewStatement (1).pdf
+2025-05-01 11:23:58 - WARNING - [main.py:101] -   Duplicate Group 2 (Hash: 95b43be5..., 2 files):
+2025-05-01 11:23:58 - WARNING - [main.py:103] -     - 1396 - Arctaris Opportunity Zone Fund 2019 LLC-20250131.pdf
+2025-05-01 11:23:58 - WARNING - [main.py:103] -     - NewStatement.pdf
+2025-05-01 11:23:58 - WARNING - [main.py:101] -   Duplicate Group 3 (Hash: f9932558..., 2 files):
+2025-05-01 11:23:58 - WARNING - [main.py:103] -     - 4519 - Arctaris Opportunity Zone Fund 2020, LLC -20250228.pdf
+2025-05-01 11:23:58 - WARNING - [main.py:103] -     - NewStatement (2).pdf
+2025-05-01 11:23:58 - WARNING - [main.py:101] -   Duplicate Group 4 (Hash: cd1b2ded..., 2 files):
+2025-05-01 11:23:58 - WARNING - [main.py:103] -     - 4519 - Arctaris Opportunity Zone Fund 2020, LLC-20240131.pdf
+2025-05-01 11:23:58 - WARNING - [main.py:103] -     - NewStatement (3).pdf
+2025-05-01 11:23:58 - WARNING - [main.py:101] -   Duplicate Group 5 (Hash: f25fefa3..., 2 files):
+2025-05-01 11:23:58 - WARNING - [main.py:103] -     - Bank United AII Management March 2024 Statement.pdf
+2025-05-01 11:23:58 - WARNING - [main.py:103] -     - dxweb (15).pdf
+2025-05-01 11:23:58 - WARNING - [main.py:101] -   Duplicate Group 6 (Hash: 8b912b9c..., 2 files):
+2025-05-01 11:23:58 - WARNING - [main.py:103] -     - Bank United AII Operating July 2024 Statement.pdf
+2025-05-01 11:23:58 - WARNING - [main.py:103] -     - Bank United AII Operating June 2024 Statement.pdf
+2025-05-01 11:23:58 - WARNING - [main.py:101] -   Duplicate Group 7 (Hash: 5a68460c..., 2 files):
+2025-05-01 11:23:58 - WARNING - [main.py:103] -     - Bank United Eastern Development Housing Savings May 2024 Statement.pdf
+2025-05-01 11:23:58 - WARNING - [main.py:103] -     - dxweb (13).pdf
+2025-05-01 11:23:58 - WARNING - [main.py:101] -   Duplicate Group 8 (Hash: a4486dca..., 2 files):
+2025-05-01 11:23:58 - WARNING - [main.py:103] -     - Bank United OZ 2019 Management Collateral March 2024 Statement.pdf
+2025-05-01 11:23:58 - WARNING - [main.py:103] -     - dxweb (17).pdf
+2025-05-01 11:23:58 - WARNING - [main.py:101] -   Duplicate Group 9 (Hash: da552c0e..., 2 files):
+2025-05-01 11:23:58 - WARNING - [main.py:103] -     - Berkshire MMK 2019_05_31_2023.pdf
+2025-05-01 11:23:58 - WARNING - [main.py:103] -     - Berkshire MMK 2022 05_31_2023.pdf
+2025-05-01 11:23:58 - WARNING - [main.py:101] -   Duplicate Group 10 (Hash: 22efae72..., 2 files):
+2025-05-01 11:23:58 - WARNING - [main.py:103] -     - dxweb (26).pdf
+2025-05-01 11:23:58 - WARNING - [main.py:103] -     - dxweb (27).pdf
+2025-05-01 11:23:58 - WARNING - [main.py:101] -   Duplicate Group 11 (Hash: cd8aa766..., 2 files):
+2025-05-01 11:23:58 - WARNING - [main.py:103] -     - dxweb (32).pdf
+2025-05-01 11:23:58 - WARNING - [main.py:103] -     - dxweb (33).pdf
+2025-05-01 11:23:58 - WARNING - [main.py:109] - Skipping 11 duplicate file(s). Use --process-duplicates to process all.
+2025-05-01 11:23:58 - INFO - [main.py:121] - Verifying PDF files...
+2025-05-01 11:23:59 - WARNING - [utils.py:144] - PyPDF2 read error for Bank United AII Collateral October 2024 Statement.pdf: EOF marker not found
+2025-05-01 11:23:59 - WARNING - [main.py:130] - Verification failed for Bank United AII Collateral October 2024 Statement.pdf: Invalid PDF structure: EOF marker not found
+2025-05-01 11:23:59 - WARNING - [main.py:130] - Verification failed for Bank United AII Operating September 2024 Statement.pdf: Empty file
+2025-05-01 11:23:59 - WARNING - [utils.py:144] - PyPDF2 read error for Bank United Mid Atlantic Inclusive Housing October 2024 Statement.pdf: EOF marker not found
+2025-05-01 11:23:59 - WARNING - [main.py:130] - Verification failed for Bank United Mid Atlantic Inclusive Housing October 2024 Statement.pdf: Invalid PDF structure: EOF marker not found
+2025-05-01 11:23:59 - WARNING - [utils.py:144] - PyPDF2 read error for bank United Mid Atlantic Inclusive Housing September 2024 Statement.pdf: EOF marker not found
+2025-05-01 11:23:59 - WARNING - [main.py:130] - Verification failed for bank United Mid Atlantic Inclusive Housing September 2024 Statement.pdf: Invalid PDF structure: EOF marker not found
+2025-05-01 11:23:59 - WARNING - [utils.py:144] - PyPDF2 read error for Bank United OZ 2019 Operating September 2024 Statement.pdf: EOF marker not found
+2025-05-01 11:23:59 - WARNING - [main.py:130] - Verification failed for Bank United OZ 2019 Operating September 2024 Statement.pdf: Invalid PDF structure: EOF marker not found
+2025-05-01 11:23:59 - WARNING - [utils.py:144] - PyPDF2 read error for Bank United OZ 2020 Collateral October 2024 Statement.pdf: EOF marker not found
+2025-05-01 11:23:59 - WARNING - [main.py:130] - Verification failed for Bank United OZ 2020 Collateral October 2024 Statement.pdf: Invalid PDF structure: EOF marker not found
+2025-05-01 11:24:02 - WARNING - [main.py:138] - 6 file(s) failed verification.
+2025-05-01 11:24:02 - INFO - [main.py:142] - Attempting repairs for failed files...
+2025-05-01 11:24:02 - INFO - [utils.py:222] - Attempting repair for Bank United AII Collateral October 2024 Statement.pdf -> Bank United AII Collateral October 2024 Statement.pdf.repaired.pdf
+2025-05-01 11:24:02 - ERROR - [utils.py:251] - PDF repair attempt failed for Bank United AII Collateral October 2024 Statement.pdf: EOF marker not found
+Traceback (most recent call last):
+  File "C:\Users\Christian\OneDrive - Arctaris Michigan Partners, LLC\Desktop\Bank Automation\Codes\Bank-statement-coding\utils.py", line 228, in attempt_pdf_repair
+    reader = PyPDF2.PdfReader(input_file, strict=False)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Christian\AppData\Local\Packages\PythonSoftwareFoundation.Python.3.12_qbz5n2kfra8p0\LocalCache\local-packages\Python312\site-packages\PyPDF2\_reader.py", line 319, in __init__
+    self.read(stream)
+  File "C:\Users\Christian\AppData\Local\Packages\PythonSoftwareFoundation.Python.3.12_qbz5n2kfra8p0\LocalCache\local-packages\Python312\site-packages\PyPDF2\_reader.py", line 1415, in read
+    self._find_eof_marker(stream)
+  File "C:\Users\Christian\AppData\Local\Packages\PythonSoftwareFoundation.Python.3.12_qbz5n2kfra8p0\LocalCache\local-packages\Python312\site-packages\PyPDF2\_reader.py", line 1471, in _find_eof_marker
+    raise PdfReadError("EOF marker not found")
+PyPDF2.errors.PdfReadError: EOF marker not found
+2025-05-01 11:24:02 - ERROR - [main.py:160] - Repair failed for Bank United AII Collateral October 2024 Statement.pdf.
+2025-05-01 11:24:02 - INFO - [utils.py:222] - Attempting repair for Bank United AII Operating September 2024 Statement.pdf -> Bank United AII Operating September 2024 Statement.pdf.repaired.pdf
+2025-05-01 11:24:02 - ERROR - [utils.py:251] - PDF repair attempt failed for Bank United AII Operating September 2024 Statement.pdf: Cannot read an empty file
+Traceback (most recent call last):
+  File "C:\Users\Christian\OneDrive - Arctaris Michigan Partners, LLC\Desktop\Bank Automation\Codes\Bank-statement-coding\utils.py", line 228, in attempt_pdf_repair
+    reader = PyPDF2.PdfReader(input_file, strict=False)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Christian\AppData\Local\Packages\PythonSoftwareFoundation.Python.3.12_qbz5n2kfra8p0\LocalCache\local-packages\Python312\site-packages\PyPDF2\_reader.py", line 319, in __init__
+    self.read(stream)
+  File "C:\Users\Christian\AppData\Local\Packages\PythonSoftwareFoundation.Python.3.12_qbz5n2kfra8p0\LocalCache\local-packages\Python312\site-packages\PyPDF2\_reader.py", line 1414, in read
+    self._basic_validation(stream)
+  File "C:\Users\Christian\AppData\Local\Packages\PythonSoftwareFoundation.Python.3.12_qbz5n2kfra8p0\LocalCache\local-packages\Python312\site-packages\PyPDF2\_reader.py", line 1455, in _basic_validation
+    raise EmptyFileError("Cannot read an empty file")
+PyPDF2.errors.EmptyFileError: Cannot read an empty file
+2025-05-01 11:24:02 - ERROR - [main.py:160] - Repair failed for Bank United AII Operating September 2024 Statement.pdf.
+2025-05-01 11:24:02 - INFO - [utils.py:222] - Attempting repair for Bank United Mid Atlantic Inclusive Housing October 2024 Statement.pdf -> Bank United Mid Atlantic Inclusive Housing October 2024 Statement.pdf.repaired.pdf
+2025-05-01 11:24:02 - ERROR - [utils.py:251] - PDF repair attempt failed for Bank United Mid Atlantic Inclusive Housing October 2024 Statement.pdf: EOF marker not found
+Traceback (most recent call last):
+  File "C:\Users\Christian\OneDrive - Arctaris Michigan Partners, LLC\Desktop\Bank Automation\Codes\Bank-statement-coding\utils.py", line 228, in attempt_pdf_repair
+    reader = PyPDF2.PdfReader(input_file, strict=False)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Christian\AppData\Local\Packages\PythonSoftwareFoundation.Python.3.12_qbz5n2kfra8p0\LocalCache\local-packages\Python312\site-packages\PyPDF2\_reader.py", line 319, in __init__
+    self.read(stream)
+  File "C:\Users\Christian\AppData\Local\Packages\PythonSoftwareFoundation.Python.3.12_qbz5n2kfra8p0\LocalCache\local-packages\Python312\site-packages\PyPDF2\_reader.py", line 1415, in read
+    self._find_eof_marker(stream)
+  File "C:\Users\Christian\AppData\Local\Packages\PythonSoftwareFoundation.Python.3.12_qbz5n2kfra8p0\LocalCache\local-packages\Python312\site-packages\PyPDF2\_reader.py", line 1471, in _find_eof_marker
+    raise PdfReadError("EOF marker not found")
+PyPDF2.errors.PdfReadError: EOF marker not found
+2025-05-01 11:24:02 - ERROR - [main.py:160] - Repair failed for Bank United Mid Atlantic Inclusive Housing October 2024 Statement.pdf.
+2025-05-01 11:24:02 - INFO - [utils.py:222] - Attempting repair for bank United Mid Atlantic Inclusive Housing September 2024 Statement.pdf -> bank United Mid Atlantic Inclusive Housing September 2024 Statement.pdf.repaired.pdf
+2025-05-01 11:24:02 - ERROR - [utils.py:251] - PDF repair attempt failed for bank United Mid Atlantic Inclusive Housing September 2024 Statement.pdf: EOF marker not found
+Traceback (most recent call last):
+  File "C:\Users\Christian\OneDrive - Arctaris Michigan Partners, LLC\Desktop\Bank Automation\Codes\Bank-statement-coding\utils.py", line 228, in attempt_pdf_repair
+    reader = PyPDF2.PdfReader(input_file, strict=False)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Christian\AppData\Local\Packages\PythonSoftwareFoundation.Python.3.12_qbz5n2kfra8p0\LocalCache\local-packages\Python312\site-packages\PyPDF2\_reader.py", line 319, in __init__
+    self.read(stream)
+  File "C:\Users\Christian\AppData\Local\Packages\PythonSoftwareFoundation.Python.3.12_qbz5n2kfra8p0\LocalCache\local-packages\Python312\site-packages\PyPDF2\_reader.py", line 1415, in read
+    self._find_eof_marker(stream)
+  File "C:\Users\Christian\AppData\Local\Packages\PythonSoftwareFoundation.Python.3.12_qbz5n2kfra8p0\LocalCache\local-packages\Python312\site-packages\PyPDF2\_reader.py", line 1471, in _find_eof_marker
+    raise PdfReadError("EOF marker not found")
+PyPDF2.errors.PdfReadError: EOF marker not found
+2025-05-01 11:24:02 - ERROR - [main.py:160] - Repair failed for bank United Mid Atlantic Inclusive Housing September 2024 Statement.pdf.
+2025-05-01 11:24:02 - INFO - [utils.py:222] - Attempting repair for Bank United OZ 2019 Operating September 2024 Statement.pdf -> Bank United OZ 2019 Operating September 2024 Statement.pdf.repaired.pdf
+2025-05-01 11:24:03 - ERROR - [utils.py:251] - PDF repair attempt failed for Bank United OZ 2019 Operating September 2024 Statement.pdf: EOF marker not found
+Traceback (most recent call last):
+  File "C:\Users\Christian\OneDrive - Arctaris Michigan Partners, LLC\Desktop\Bank Automation\Codes\Bank-statement-coding\utils.py", line 228, in attempt_pdf_repair
+    reader = PyPDF2.PdfReader(input_file, strict=False)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Christian\AppData\Local\Packages\PythonSoftwareFoundation.Python.3.12_qbz5n2kfra8p0\LocalCache\local-packages\Python312\site-packages\PyPDF2\_reader.py", line 319, in __init__
+    self.read(stream)
+  File "C:\Users\Christian\AppData\Local\Packages\PythonSoftwareFoundation.Python.3.12_qbz5n2kfra8p0\LocalCache\local-packages\Python312\site-packages\PyPDF2\_reader.py", line 1415, in read
+    self._find_eof_marker(stream)
+  File "C:\Users\Christian\AppData\Local\Packages\PythonSoftwareFoundation.Python.3.12_qbz5n2kfra8p0\LocalCache\local-packages\Python312\site-packages\PyPDF2\_reader.py", line 1471, in _find_eof_marker
+    raise PdfReadError("EOF marker not found")
+PyPDF2.errors.PdfReadError: EOF marker not found
+2025-05-01 11:24:03 - ERROR - [main.py:160] - Repair failed for Bank United OZ 2019 Operating September 2024 Statement.pdf.
+2025-05-01 11:24:03 - INFO - [utils.py:222] - Attempting repair for Bank United OZ 2020 Collateral October 2024 Statement.pdf -> Bank United OZ 2020 Collateral October 2024 Statement.pdf.repaired.pdf
+2025-05-01 11:24:03 - ERROR - [utils.py:251] - PDF repair attempt failed for Bank United OZ 2020 Collateral October 2024 Statement.pdf: EOF marker not found
+Traceback (most recent call last):
+  File "C:\Users\Christian\OneDrive - Arctaris Michigan Partners, LLC\Desktop\Bank Automation\Codes\Bank-statement-coding\utils.py", line 228, in attempt_pdf_repair
+    reader = PyPDF2.PdfReader(input_file, strict=False)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Christian\AppData\Local\Packages\PythonSoftwareFoundation.Python.3.12_qbz5n2kfra8p0\LocalCache\local-packages\Python312\site-packages\PyPDF2\_reader.py", line 319, in __init__
+    self.read(stream)
+  File "C:\Users\Christian\AppData\Local\Packages\PythonSoftwareFoundation.Python.3.12_qbz5n2kfra8p0\LocalCache\local-packages\Python312\site-packages\PyPDF2\_reader.py", line 1415, in read
+    self._find_eof_marker(stream)
+  File "C:\Users\Christian\AppData\Local\Packages\PythonSoftwareFoundation.Python.3.12_qbz5n2kfra8p0\LocalCache\local-packages\Python312\site-packages\PyPDF2\_reader.py", line 1471, in _find_eof_marker
+    raise PdfReadError("EOF marker not found")
+PyPDF2.errors.PdfReadError: EOF marker not found
+2025-05-01 11:24:03 - ERROR - [main.py:160] - Repair failed for Bank United OZ 2020 Collateral October 2024 Statement.pdf.
+2025-05-01 11:24:03 - INFO - [main.py:169] - Proceeding with 1312 verified/repaired file(s).
+2025-05-01 11:24:03 - INFO - [main.py:175] - 
+=== DRY RUN PREVIEW ===
+2025-05-01 11:24:03 - INFO - [main.py:182] - [1/1312] Previewing: 1396 - Arctaris Opportunity Zone Fund 2019 LLC -20250228.pdf
+2025-05-01 11:24:03 - CRITICAL - [main.py:389] - Unhandled exception occurred: StatementInfo.__init__() got an unexpected keyword argument 'original_filename'
+Traceback (most recent call last):
+  File "C:\Users\Christian\OneDrive - Arctaris Michigan Partners, LLC\Desktop\Bank Automation\Codes\Bank-statement-coding\main.py", line 382, in <module>
+    exit_code = app.run()
+                ^^^^^^^^^
+  File "C:\Users\Christian\OneDrive - Arctaris Michigan Partners, LLC\Desktop\Bank Automation\Codes\Bank-statement-coding\main.py", line 362, in run
+    preview_data = self._run_preview(self.files_to_process)
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Christian\OneDrive - Arctaris Michigan Partners, LLC\Desktop\Bank Automation\Codes\Bank-statement-coding\main.py", line 184, in _run_preview
+    statement_info, strategy = self.pdf_processor.process_pdf(file_path)
+                               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Christian\OneDrive - Arctaris Michigan Partners, LLC\Desktop\Bank Automation\Codes\Bank-statement-coding\pdf_processor.py", line 160, in process_pdf
+    statement_info = StatementInfo(original_filename=filename) # Create info object early
+                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+TypeError: StatementInfo.__init__() got an unexpected keyword argument 'original_filename'
