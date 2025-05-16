@@ -162,24 +162,17 @@ class PNCStrategy(BankStrategy):
             # Old: r'PHASE\\s+([0-9]+[A-Z]?)\\s+HOLDINGS'
             re.compile(r'([A-Z\\s]+)\\s+([0-9]+[A-Z]?)\\s+([A-Z\\s]+)', re.IGNORECASE) # e.g. "ANY_WORDS NUMERIC_ID ANY_WORDS"
         ]
-        fund_patterns = [
-            # Old: r'(SUB\\s*[-]?\\s*CDE\\s+[0-9]+\\s+LLC)'
-            re.compile(r'([A-Z\\s]*[-]?\\s*CDE\\s+[0-9]+\\s+LLC)', re.IGNORECASE), # Generalized "SUB"
-            # Old: r'(?:Sub-)?CDE[^A-Za-z0-9]*([0-9]+)[^A-Za-z0-9]*LLC'
-            re.compile(r'(?:[A-Z\\s]*-)?CDE[^A-Za-z0-9]*([0-9]+)[^A-Za-z0-9]*LLC', re.IGNORECASE), # Generalized "Sub-"
-            # Old: r'((?:Sub-)?CDE[^A-Za-z0-9]*[0-9]+[^A-Za-z0-9]*LLC)'
-            re.compile(r'((?:[A-Z\\s]*-)?CDE[^A-Za-z0-9]*[0-9]+[^A-Za-z0-9]*LLC)', re.IGNORECASE), # Generalized "Sub-"
-            # Old: r'(ARCTARIS\\s+PRODUCT\\s+DEV(?:ELOPMENT)?\\s+(?:[IVX]+|[0-9]+))'
-            re.compile(r'([A-Z\\s]+PRODUCT\\s+DEV(?:ELOPMENT)?\\s+(?:[IVX]+|[0-9]+))', re.IGNORECASE), # Generalized "ARCTARIS"
-            # Old: r'(ARCTARIS[^A-Za-z0-9]*(?:[A-Za-z0-9\\s\\-]+)[^A-Za-z0-9]*LLC)'
-            re.compile(r'([A-Z\\s]+[^A-Za-z0-9]*(?:[A-Z\\s0-9\\-]+)[^A-Za-z0-9]*LLC)', re.IGNORECASE), # Generalized "ARCTARIS"
+        fund_patterns = ['
+            re.compile(r'([A-Z\\s]*[-]?\\s*CDE\\s+[0-9]+\\s+LLC)', re.IGNORECASE), # Generalized "
+            re.compile(r'(?:[A-Z\\s]*-)?CDE[^A-Za-z0-9]*([0-9]+)[^A-Za-z0-9]*LLC', re.IGNORECASE), # 
+            re.compile(r'((?:[A-Z\\s]*-)?CDE[^A-Za-z0-9]*[0-9]+[^A-Za-z0-9]*LLC)', re.IGNORECASE), # 
+            re.compile(r'([A-Z\\s]+PRODUCT\\s+DEV(?:ELOPMENT)?\\s+(?:[IVX]+|[0-9]+))', re.IGNORECASE), # 
+            re.compile(r'([A-Z\\s]+[^A-Za-z0-9]*(?:[A-Z\\s0-9\\-]+)[^A-Za-z0-9]*LLC)', re.IGNORECASE), # 
             re.compile(r'^([A-Za-z0-9\\s,.\\-]+)\\s+LLC', re.IGNORECASE), # Already generic
-            # Old: r'ARCTARIS\\s+([A-Za-z0-9\\s,.\\-]+?)(?:\\s+LLC|$)'
-            re.compile(r'(?:[A-Z\\s]+)\\s+([A-Za-z0-9\\s,.\\-]+?)(?:\\s+LLC|$)', re.IGNORECASE), # Made "ARCTARIS" part non-capturing
-            re.compile(r'([A-Za-z0-9\\s,.\\-]+FUND[A-Za-z0-9\\s,.\\-]*) ', re.IGNORECASE), # Already generic
-            # Old: r'([A-Za-z]+\\s+EAST\\s+COAST[A-Za-z\\s]+)'
+            re.compile(r'(?:[A-Z\\s]+)\\s+([A-Za-z0-9\\s,.\\-]+?)(?:\\s+LLC|$)', re.IGNORECASE), # 
+            re.compile(r'([A-Za-z0-9\\s,.\\-]+FUND[A-Za-z0-9\\s,.\\-]*) ', re.IGNORECASE), # A
             re.compile(r'([A-Za-z]+\\s+[A-Z\\s]+[A-Za-z\\s]+)', re.IGNORECASE), # Generalized "EAST COAST"
-            re.compile(r'([A-Za-z]+\\s+OPPORTUNITY\\s+ZONE[A-Za-z\\s]+)', re.IGNORECASE) # Kept "OPPORTUNITY ZONE" as it's a common term
+            re.compile(r'([A-Za-z]+\\s+OPPORTUNITY\\s+ZONE[A-Za-z\\s]+)', re.IGNORECASE) # 
         ]
 
         logging.debug(f"PNC: Starting line processing. Sensitive accounts: {len(sensitive_accounts)}")
@@ -214,14 +207,9 @@ class PNCStrategy(BankStrategy):
                 potential_fund_name = None
                 match = arc_impact_pattern.search(line)
                 if match: 
-                    # Old: potential_fund_name = re.sub(r'ARC[\\s-]IMPACT', 'ARC-IMPACT', match.group(1), flags=re.IGNORECASE).upper().strip()
-                    # New: Construct from generalized groups if needed, or take full match if structure is preserved.
-                    # match.group(1) is the full "Generic IMPACT PROGRAM Location LLC"
-                    # match.group(2) is the optional location part
+                  
                     base_name = match.group(1)
-                    # Attempt to re-normalize the "IMPACT PROGRAM" part if it was captured by [A-Z\\s-]+
-                    # This part is tricky to do perfectly generically. For now, use the captured group as is.
-                    # We might need to adjust how "ARC-IMPACT" was specifically formed if that's critical.
+                    
                     potential_fund_name = base_name.upper().strip()
 
                 else:
@@ -231,9 +219,9 @@ class PNCStrategy(BankStrategy):
                             # Adjust construction based on new capture groups
                             if idx == 0 or idx == 1: # For "Generic Product Dev" + Roman/Number
                                 potential_fund_name = f"{match.group(1)} {match.group(2)}".upper().strip()
-                            elif idx == 2: # For "Product Dev" + Roman/Number (without leading org name)
+                            elif idx == 2: # 
                                 potential_fund_name = f"{match.group(1)} {match.group(2)}".upper().strip()
-                            elif idx == 3: # For "ANY_WORDS NUMERIC_ID ANY_WORDS" (old PHASE ... HOLDINGS)
+                            elif idx == 3: # For "ANY_WORDS NUMERIC_ID ANY_WORDS" 
                                 potential_fund_name = f"{match.group(1)} {match.group(2)} {match.group(3)}".upper().strip()
                             break
                     if not potential_fund_name:
@@ -458,8 +446,7 @@ class BerkshireStrategy(BankStrategy):
         if not lines or not any(line.strip() for line in lines):
             logging.warning(f"Berkshire: No text extracted for '{original_filename}'. Expected for image-based PDF. Processing based on filename if possible.")
         else:
-            # This case is unexpected for Berkshire if truly image-based.
-            # It might mean PyMuPDF got *something* (e.g. OCR during PDF generation by bank?)
+            # 
             logging.warning(f"Berkshire: Text was unexpectedly extracted for '{original_filename}'. Strategy will still prioritize filename heuristics and assume manual review needed.")
             # We could potentially try a quick regex scan here if text *is* present, but it complicates the "manual handling" decision.
             # For now, stick to the image-based assumption primarily.
