@@ -11,7 +11,7 @@ This project demonstrates my ability to engineer practical solutions within real
 
 ## 🔄 System Architecture
 
-![Bank Statement Processing Flow](./images/bank-statement-flow.svg)
+![Bank Statement Processing Flow](./images/bank-statement-flow-download.svg)
 
 The system follows a modular design pattern with specialized components that handle different stages of the process - from initial PDF extraction to bank-specific data recognition and finally to structured output generation.
 
